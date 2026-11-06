@@ -8,3 +8,4 @@
 - [x] Remove "Free to play · In your browser" badge
 - [x] Remove features section ("Everything in one universe" cards) and "Ready to play?" box
 - [x] Revert background pattern to the original two-square style, scaled bigger
+- [x] Tighten background spacing: ~2.3x more squares on screen
