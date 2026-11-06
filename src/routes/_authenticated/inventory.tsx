@@ -37,7 +37,7 @@ function Inventory() {
     </div>
 
     {groups.length === 0 && <p className="mt-8 text-center text-muted-foreground">Nothing matches. <Link to="/shop" reloadDocument className="font-bold text-primary underline">Visit the Market</Link></p>}
-    {groups.map(p => { const have = p.blooks.filter(b => b.owned > 0).length; const totalInPack = data.find(x => x.id === p.id)!.blooks; const got = totalInPack.filter(b => b.owned > 0).length;
+    {groups.map(p => { const totalInPack = data.find(x => x.id === p.id)!.blooks; const got = totalInPack.filter(b => b.owned > 0).length;
       return <section key={p.id} className="mt-6">
         <div className="flex items-center justify-between border-b border-surface-border pb-2">
           <h2 className="font-display text-2xl">{p.emoji} {p.name}</h2>
@@ -48,7 +48,7 @@ function Inventory() {
             className={`relative grid size-20 place-items-center rounded-xl text-4xl shadow-[0_4px_0_rgb(0_0_0/0.3)] transition hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${b.owned ? 'bg-surface' : 'bg-surface/50'}`}>
             {b.owned ? b.emoji : <Lock className="size-6 text-muted-foreground" />}
             {b.owned > 0 && <span className="absolute -bottom-1.5 -right-1.5 grid size-6 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">{b.owned}</span>}
-          </button>))}{void have}</div>
+          </button>))}</div>
       </section>; })}
 
     {open && <div role="dialog" aria-modal="true" aria-label={open.name} className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" onClick={() => setOpen(null)}>

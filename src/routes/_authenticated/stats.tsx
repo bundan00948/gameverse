@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { Coins, Sparkles, Package, MessageCircle, Gamepad2, Store, Target, Star, Gift, Users, UserPlus } from 'lucide-react';
+import { Coins, Sparkles, Package, MessageCircle, Gamepad2, Star, Gift, Users, UserPlus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { usePlayer } from '@/features/account/session';
