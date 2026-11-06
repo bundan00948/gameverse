@@ -85,7 +85,7 @@
   --tile-c: oklch(0.85 0.16 90);
   --tile-d: oklch(0.66 0.15 250);
   --tile-fg: oklch(0.2 0.02 270);
-  --surface: oklch(0.22 0 0 / 0.85);
+  --surface: oklch(0.22 0 0);
   --surface-border: oklch(1 0 0 / 0.12);
   --shadow-tile: 0 18px 40px -12px oklch(0 0 0 / 0.6);
   --tiles-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='210' height='210' viewBox='0 0 210 210'%3E%3Cg fill='%23393939'%3E%3Crect x='15' y='15' width='80' height='80' rx='18' transform='rotate(-14 55 55)'/%3E%3Crect x='115' y='115' width='80' height='80' rx='18' transform='rotate(-14 155 155)'/%3E%3C/g%3E%3C/svg%3E");
@@ -121,7 +121,7 @@
   --tile-c: oklch(0.99 0.01 95);
   --tile-d: oklch(0.62 0.16 250);
   --tile-fg: oklch(0.22 0.04 270);
-  --surface: oklch(0.99 0.01 95 / 0.9);
+  --surface: oklch(0.99 0.01 95);
   --surface-border: oklch(0.22 0.04 270 / 0.15);
   --shadow-tile: 0 18px 40px -14px oklch(0.45 0.12 60 / 0.55);
   --tiles-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='210' height='210' viewBox='0 0 210 210'%3E%3Cg fill='%23ffe680'%3E%3Crect x='15' y='15' width='80' height='80' rx='18' transform='rotate(-14 55 55)'/%3E%3Crect x='115' y='115' width='80' height='80' rx='18' transform='rotate(-14 155 155)'/%3E%3C/g%3E%3C/svg%3E");

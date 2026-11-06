@@ -10,7 +10,7 @@ export function SiteHeader() {
   const user = usePlayer();
   return (
     <div className="relative z-20 mx-auto w-full max-w-7xl px-4 pt-4 sm:px-8 sm:pt-6">
-      <header className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-surface-border bg-surface/90 px-4 py-2.5 shadow-tile sm:px-6">
+      <header className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-surface-border bg-surface px-4 py-2.5 shadow-tile sm:px-6">
         <Link
           to="/"
           className="font-display group flex items-center gap-2 text-2xl tracking-tight sm:text-3xl"
