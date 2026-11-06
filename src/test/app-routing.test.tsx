@@ -7,7 +7,7 @@ import { routeTree } from "@/routeTree.gen";
 // Match routes without running loaders or rendering: loaders may need a server or
 // network the test run lacks, and jsdom never loads the stylesheets React waits on.
 describe("App routing", () => {
-  it.each(['/dashboard', '/profile'])("keeps %s under the signed-in gate", (path) => {
+  it.each(['/dashboard', '/stats', '/history', '/shop', '/inventory', '/missions', '/chat', '/settings'])("keeps %s under the signed-in gate", (path) => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
     expect(router.matchRoutes(path).map(match => match.routeId)).toContain('/_authenticated');
   });
