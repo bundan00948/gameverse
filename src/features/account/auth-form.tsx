@@ -37,7 +37,7 @@ export function AuthForm({ register = false }: { register?: boolean }) {
       <div className="flex flex-1 items-center justify-center px-4 pb-16 pt-4">
         <div className="w-full max-w-md rounded-xl border border-surface-border bg-surface p-8 shadow-2xl backdrop-blur-sm">
           {register
-            ? <Link to="/" className="font-display block text-center text-6xl">GameVerse</Link>
+            ? <h1 className="font-display text-center text-5xl">Register</h1>
             : <h1 className="font-display text-center text-5xl">Login</h1>}
           <form className="mt-8 flex flex-col gap-4" onSubmit={submit}>
             {register && <input className={inputClass} name="username" placeholder="Username" autoComplete="username" aria-label="Username" required />}
