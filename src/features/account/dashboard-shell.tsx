@@ -41,7 +41,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             <div className="min-w-0"><p className="text-xs uppercase tracking-wider text-muted-foreground">Signed in as</p><p className="truncate text-lg font-bold">{name}</p></div>
           </div>
           <nav className="flex flex-wrap gap-2 md:flex-col">
-            {nav.map(({ to, label, icon: Icon }) => <Link key={to} to={to} preload={false} className={navClass} activeProps={{ className: activeClass }}><Icon className="size-5" />{label}</Link>)}
+            {nav.map(({ to, label, icon: Icon }) => <Link key={to} to={to} preload={false} reloadDocument className={navClass} activeProps={{ className: activeClass }}><Icon className="size-5" />{label}</Link>)}
           </nav>
           <button type="button" disabled={busy} onClick={logout} className={cn(navClass, 'border-t border-surface-border text-muted-foreground hover:text-foreground disabled:opacity-60 md:mt-4')}><LogOut className="size-5" />{busy ? 'Signing out…' : 'Sign out'}</button>
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
