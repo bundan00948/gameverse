@@ -35,7 +35,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     <main className="bg-tiles min-h-screen">
       <SiteHeader />
       <div className="mx-auto grid max-w-7xl gap-4 px-4 py-4 sm:px-6 md:grid-cols-[176px_minmax(0,1fr)]">
-        <aside className="flex flex-col gap-2 self-start rounded-xl border border-surface-border bg-surface p-2.5 shadow-tile backdrop-blur-md md:sticky md:top-4">
+        <aside className="flex flex-col gap-2 self-start rounded-xl border border-surface-border bg-surface p-2.5 shadow-tile md:sticky md:top-4">
           <div className="flex items-center gap-2 border-b border-surface-border pb-2.5">
             <span className="font-display grid size-8 shrink-0 place-items-center rounded-lg bg-primary text-base text-primary-foreground">{name[0]?.toUpperCase()}</span>
             <div className="min-w-0"><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Signed in</p><p className="truncate text-sm font-bold">{name}</p></div>
@@ -46,7 +46,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           <button type="button" disabled={busy} onClick={logout} className={cn(navClass, 'border-t border-surface-border text-muted-foreground hover:text-foreground disabled:opacity-60 md:mt-1.5')}><LogOut className="size-4" />{busy ? 'Signing out…' : 'Sign out'}</button>
           {error && <p role="alert" className="text-xs text-destructive">{error}</p>}
         </aside>
-        <section className="min-w-0 rounded-xl border border-surface-border bg-surface p-4 shadow-tile backdrop-blur-md sm:p-5">{children}</section>
+        <section className="min-w-0 rounded-xl border border-surface-border bg-surface p-4 shadow-tile sm:p-5">{children}</section>
       </div>
     </main>
   );

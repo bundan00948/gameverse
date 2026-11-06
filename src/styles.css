@@ -140,11 +140,21 @@
 }
 
 @utility bg-tiles {
+  position: relative;
+  isolation: isolate;
   background-color: var(--background);
-  background-image: var(--tiles-image);
   transition: background-color 0.3s ease;
-  background-size: 210px 210px;
-  animation: tiles-drift 46s linear infinite;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -210px;
+    z-index: -1;
+    background-image: var(--tiles-image);
+    background-size: 210px 210px;
+    animation: tiles-drift 46s linear infinite;
+    will-change: transform;
+  }
 }
 
 @utility pedestal-arch {
@@ -153,10 +163,10 @@
 
 @keyframes tiles-drift {
   from {
-    background-position: 0 0;
+    transform: translate3d(0, 0, 0);
   }
   to {
-    background-position: 210px -210px;
+    transform: translate3d(210px, -210px, 0);
   }
 }
 
@@ -177,4 +187,4 @@
 :root { --google-background: #131314; --google-border: #8E918F; --google-foreground: #E3E3E3; }
 .bright { --google-background: #FFFFFF; --google-border: #747775; --google-foreground: #1F1F1F; }
 .google-auth { background: var(--google-background); color: var(--google-foreground); border-color: var(--google-border); }
-@media (prefers-reduced-motion: reduce) { .bg-tiles { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .bg-tiles::before { animation: none; } }
