@@ -36,6 +36,9 @@
   --color-pedestal: var(--pedestal);
   --color-glass: var(--glass);
   --color-glass-hover: var(--glass-hover);
+  --color-discord: var(--discord);
+  --color-discord-hover: var(--discord-hover);
+  --color-discord-foreground: var(--discord-foreground);
   --color-tile-a: var(--tile-a);
   --color-tile-b: var(--tile-b);
   --color-tile-c: var(--tile-c);
@@ -68,6 +71,9 @@
   --input: oklch(0.4 0 0);
   --ring: oklch(0.85 0 0);
 
+  --discord: oklch(0.59 0.2 277);
+  --discord-hover: oklch(0.53 0.2 277);
+  --discord-foreground: oklch(0.99 0 0);
   --pedestal: oklch(0.15 0 0);
   --glass: oklch(1 0 0 / 0.12);
   --glass-hover: oklch(1 0 0 / 0.22);

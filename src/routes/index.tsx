@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PlanetLogo } from "@/components/planet-logo";
-import { ghostButtonClass, solidButtonClass } from "@/components/ghost-button";
+import { discordButtonClass, solidButtonClass } from "@/components/ghost-button";
+import { DiscordIcon } from "@/components/discord-icon";
 import { SiteHeader } from "@/components/site-header";
 import { cn } from "@/lib/utils";
 
@@ -48,8 +49,9 @@ function Index() {
               href="https://discord.com"
               target="_blank"
               rel="noreferrer"
-              className={cn(ghostButtonClass, "h-16 px-10 text-2xl")}
+              className={cn(discordButtonClass, "h-16 px-10 text-2xl")}
             >
+              <DiscordIcon className="size-7" />
               Discord
             </a>
           </div>
