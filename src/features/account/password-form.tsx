@@ -1,0 +1,10 @@
+import { useEffect, useState } from 'react';
+import { Link } from '@tanstack/react-router';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { SiteHeader } from '@/components/site-header';
+export function PasswordForm({ recovery = false }: { recovery?: boolean }) {
+ const [message, setMessage] = useState(''); const [busy, setBusy] = useState(false); const [valid, setValid] = useState(!recovery);
+ useEffect(() => { if (recovery) setValid(new URLSearchParams(window.location.hash.slice(1)).get('type') === 'recovery'); }, [recovery]);
+ return <main className="bg-tiles min-h-screen"><SiteHeader /><section className="mx-auto max-w-md px-5 py-16"><h1 className="font-display text-3xl">{recovery ? 'Reset password' : 'Forgot password'}</h1>{!valid ? <p className="mt-6">Open the password-reset link in your email.</p> : <form className="mt-8 space-y-5" onSubmit={async e => { e.preventDefault(); setBusy(true); const form = new FormData(e.currentTarget); const result = recovery ? await supabase.auth.updateUser({ password: String(form.get('value')) }) : await supabase.auth.resetPasswordForEmail(String(form.get('value')), { redirectTo: window.location.origin + '/reset-password' }); setMessage(result.error ? result.error.message : recovery ? 'Password updated.' : 'Check your email for a password-reset link.'); setBusy(false); }}><label className="block">{recovery ? 'New password' : 'Email'}<input required name="value" type={recovery ? 'password' : 'email'} className="mt-2 h-12 w-full rounded-md border border-input bg-card px-4" /></label><Button disabled={busy} type="submit">{busy ? 'Please wait…' : recovery ? 'Update password' : 'Send reset link'}</Button></form>}{message && <p className="mt-4" role="status">{message}</p>}<Link className="mt-6 block underline" to="/login">Back to Login</Link></section></main>;
+}

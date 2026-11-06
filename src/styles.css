@@ -173,3 +173,8 @@
 @utility animate-float {
   animation: float-soft 5s ease-in-out infinite;
 }
+
+:root { --google-background: #131314; --google-border: #8E918F; --google-foreground: #E3E3E3; }
+.bright { --google-background: #FFFFFF; --google-border: #747775; --google-foreground: #1F1F1F; }
+.google-auth { background: var(--google-background); color: var(--google-foreground); border-color: var(--google-border); }
+@media (prefers-reduced-motion: reduce) { .bg-tiles { animation: none; } }

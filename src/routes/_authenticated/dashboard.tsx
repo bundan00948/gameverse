@@ -1,0 +1,5 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { Gamepad2 } from 'lucide-react';
+import { DashboardShell } from '@/features/account/dashboard-shell';
+export const Route = createFileRoute('/_authenticated/dashboard')({ head: () => ({ meta: [{ title: 'Games dashboard — GameVerse' }, { name: 'description', content: 'Your GameVerse games library.' }, { property: 'og:title', content: 'Games dashboard — GameVerse' }, { property: 'og:description', content: 'Your GameVerse games library.' }, { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary' }] }), component: Dashboard });
+function Dashboard() { return <DashboardShell><p className="text-sm font-bold text-muted-foreground">YOUR UNIVERSE</p><h1 className="mt-2 font-display text-4xl sm:text-5xl">Games</h1><div className="mt-10 flex min-h-80 flex-col items-center justify-center border-y border-surface-border py-12 text-center"><Gamepad2 className="size-20 text-tile-a" /><h2 className="mt-6 text-2xl font-bold">No games added yet</h2><p className="mt-2 text-muted-foreground">Your game library is empty.</p></div></DashboardShell>; }
