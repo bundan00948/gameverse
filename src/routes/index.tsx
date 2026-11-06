@@ -76,7 +76,7 @@ const features: { icon: LucideIcon; title: string; body: string; tone: string }[
 
 function Index() {
   return (
-    <div className="bg-tiles min-h-screen">
+    <div className="bg-tiles min-h-screen overflow-x-clip">
       <SiteHeader />
 
       {/* Hero */}
@@ -86,7 +86,7 @@ function Index() {
             <span className="size-2 rounded-full bg-tile-a" />
             Free to play · In your browser
           </span>
-          <h1 className="font-display mt-6 text-[17vw] leading-[0.9] tracking-tight sm:text-[12vw] lg:text-[7.2vw] xl:text-[6.5rem]">
+          <h1 className="font-display mt-6 text-[15vw] leading-[0.9] tracking-tight sm:text-[12vw] lg:text-[7.2vw] xl:text-[6.5rem]">
             GameVerse
           </h1>
           <p className="mt-6 max-w-xl text-2xl font-medium leading-snug sm:text-3xl">
@@ -109,7 +109,7 @@ function Index() {
         </div>
 
         {/* Game tile cluster */}
-        <div className="relative mx-auto w-full max-w-md lg:max-w-none" aria-hidden="true">
+        <div className="relative mx-auto w-full max-w-[18rem] px-2 sm:max-w-md lg:max-w-none" aria-hidden="true">
           <div className="grid -rotate-6 grid-cols-3 gap-4 sm:gap-5">
             {tiles.map(({ icon: Icon, label, tone, delay }, i) => (
               <div
