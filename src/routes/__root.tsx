@@ -12,7 +12,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { ThemeToggle, themeInitScript } from "../components/theme-toggle";
+import { themeInitScript } from "../components/theme-toggle";
 
 function NotFoundComponent() {
   return (
@@ -126,7 +126,6 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
-      <ThemeToggle className="fixed right-4 top-4 z-50" />
     </QueryClientProvider>
   );
 }
