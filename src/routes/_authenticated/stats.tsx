@@ -45,13 +45,10 @@ function Stats() {
           </div>
         </div>
       </section>
-      <section className={`${panel} grid grid-cols-2 gap-2 p-3`}>
-        <a href="/dashboard" className={`${btn} bg-[oklch(0.62_0.18_40)]`}><Gamepad2 className="size-4" />Play</a>
-        <a href="/shop" className={`${btn} bg-[oklch(0.6_0.16_150)]`}><Store className="size-4" />Market</a>
-        <a href="/missions" className={`${btn} bg-[oklch(0.58_0.2_310)]`}><Target className="size-4" />Missions</a>
-        <button type="button" disabled={claim.isPending} onClick={() => claim.mutate()} className={`${btn} bg-[oklch(0.62_0.17_240)]`}><Gift className="size-4" />Claim</button>
-        {claim.error && <p role="alert" className="col-span-2 text-xs text-destructive">{claim.error.message}</p>}
-        {claim.isSuccess && <p role="status" className="col-span-2 text-xs font-bold">+50 tokens claimed!</p>}
+      <section className={`${panel} flex flex-col justify-center gap-2 p-3`}>
+        <button type="button" disabled={claim.isPending} onClick={() => claim.mutate()} className={`${btn} bg-[oklch(0.62_0.17_240)]`}><Gift className="size-4" />Claim Daily Tokens</button>
+        {claim.error && <p role="alert" className="text-xs text-destructive">{claim.error.message}</p>}
+        {claim.isSuccess && <p role="status" className="text-xs font-bold">+50 tokens claimed!</p>}
       </section>
     </div>
 
