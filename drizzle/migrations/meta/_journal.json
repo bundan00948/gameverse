@@ -15,6 +15,13 @@
       "when": 1793981972185,
       "tag": "0001_dashboard_economy",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793983157290,
+      "tag": "0002_admin_roles",
+      "breakpoints": true
     }
   ]
 }

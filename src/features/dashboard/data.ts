@@ -39,6 +39,21 @@ export const inventoryOptions = () => queryOptions({ queryKey: ['inventory'], qu
   return ok(await supabase.from('user_blooks').select('quantity, blooks(id, name, emoji, rarity, packs(name))').eq('user_id', id));
 } });
 
+export const collectionOptions = () => queryOptions({ queryKey: ['collection'], queryFn: async () => {
+  const id = await uid();
+  const [packs, mine] = await Promise.all([
+    supabase.from('packs').select('id, name, emoji, blooks(id, name, emoji, rarity, weight)').order('sort'),
+    supabase.from('user_blooks').select('blook_id, quantity').eq('user_id', id),
+  ]);
+  const own = new Map(ok(mine).map(m => [m.blook_id, m.quantity]));
+  return ok(packs).map(p => ({ ...p, blooks: p.blooks.map(b => ({ ...b, owned: own.get(b.id) ?? 0 })) }));
+} });
+
+export const isAdminOptions = () => queryOptions({ queryKey: ['is-admin'], staleTime: 300_000, queryFn: async () => {
+  const id = await uid();
+  return ok(await supabase.rpc('has_role', { _user_id: id, _role: 'admin' })) === true;
+} });
+
 export const missionsOptions = () => queryOptions({ queryKey: ['missions'], queryFn: async () => {
   const id = await uid();
   const [missions, claims] = await Promise.all([

@@ -1,11 +1,12 @@
 import { Link, useNavigate } from '@tanstack/react-router';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
-import { Gamepad2, BarChart3, History, Store, Backpack, Target, MessageCircle, Settings, LogOut } from 'lucide-react';
+import { Gamepad2, BarChart3, History, Store, Backpack, Target, MessageCircle, Settings, LogOut, ShieldCheck } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { PlanetLogo } from '@/components/planet-logo';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { usePlayer } from './session';
+import { isAdminOptions } from '@/features/dashboard/data';
 import { cn } from '@/lib/utils';
 
 const nav = [
@@ -13,7 +14,7 @@ const nav = [
   { to: '/dashboard', label: 'Games', icon: Gamepad2 },
   { to: '/history', label: 'History', icon: History },
   { to: '/shop', label: 'Market', icon: Store },
-  { to: '/inventory', label: 'Blooks', icon: Backpack },
+  { to: '/inventory', label: 'Inventory', icon: Backpack },
   { to: '/missions', label: 'Missions', icon: Target },
   { to: '/chat', label: 'Chat', icon: MessageCircle },
   { to: '/settings', label: 'Settings', icon: Settings },
@@ -24,7 +25,7 @@ const navClass =
 const activeClass = 'bg-primary !text-primary-foreground shadow-[0_3px_0_rgb(0_0_0/0.3)] hover:bg-primary';
 
 export function DashboardShell({ children, bare = false }: { children: ReactNode; bare?: boolean }) {
-  const cache = useQueryClient(); const navigate = useNavigate(); const user = usePlayer();
+  const cache = useQueryClient(); const navigate = useNavigate(); const user = usePlayer(); const { data: isAdmin } = useQuery(isAdminOptions());
   const [busy, setBusy] = useState(false); const [error, setError] = useState('');
   async function logout() {
     setBusy(true); await cache.cancelQueries(); cache.clear();
@@ -45,6 +46,7 @@ export function DashboardShell({ children, bare = false }: { children: ReactNode
               <Icon className="size-5 shrink-0" />{label}
             </Link>
           ))}
+          {isAdmin && <Link to="/admin" preload={false} reloadDocument className={cn(navClass, 'text-tile-d')} activeProps={{ className: activeClass }}><ShieldCheck className="size-5 shrink-0" />Admin Panel</Link>}
         </nav>
         <div className="hidden items-center gap-2 border-t border-surface-border p-3 md:flex">
           <span className="font-display grid size-9 shrink-0 place-items-center rounded-lg bg-primary text-lg text-primary-foreground">{name[0]?.toUpperCase()}</span>
