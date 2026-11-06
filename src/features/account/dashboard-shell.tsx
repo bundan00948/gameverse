@@ -20,7 +20,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     if (error) { setError(error.message); setBusy(false); return; }
     await navigate({ to: '/login', replace: true });
   }
-  const name = (user?.user_metadata?.username as string | undefined) || user?.email?.split('@')[0] || 'Player';
+  const name = (user?.user_metadata?.['username'] as string | undefined) || user?.email?.split('@')[0] || 'Player';
   return (
     <main className="bg-tiles min-h-screen">
       <SiteHeader />
