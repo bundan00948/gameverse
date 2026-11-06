@@ -60,7 +60,7 @@ function Index() {
           <div className="absolute bottom-0 left-0 right-0 top-[60vh] bg-pedestal" />
           <img
             src={mascot}
-            alt="GameVerse mascot"
+            alt="GameVerse mascot — a teal space fox holding a game controller"
             width={832}
             height={1216}
             className="animate-float absolute left-1/2 top-[10vh] w-[115%] max-w-none -translate-x-1/2 drop-shadow-2xl"
