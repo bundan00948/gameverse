@@ -142,6 +142,7 @@
 @utility bg-tiles {
   position: relative;
   isolation: isolate;
+  overflow: clip;
   background-color: var(--background);
   transition: background-color 0.3s ease;
 
