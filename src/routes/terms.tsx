@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { SiteHeader } from "@/components/site-header";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
@@ -35,8 +36,10 @@ const sections = [
 
 function Terms() {
   return (
-    <main className="bg-tiles min-h-screen px-4 py-16">
-      <article className="mx-auto max-w-2xl rounded-xl bg-card/95 p-8 shadow-2xl sm:p-12">
+    <main className="bg-tiles min-h-screen pb-16">
+      <SiteHeader />
+      <div className="px-4 pt-4">
+      <article className="mx-auto max-w-2xl rounded-xl border border-surface-border bg-surface backdrop-blur-sm p-8 shadow-2xl sm:p-12">
         <Link to="/" className="font-display text-5xl">
           GameVerse
         </Link>
@@ -53,6 +56,7 @@ function Terms() {
           ← Back home
         </Link>
       </article>
+      </div>
     </main>
   );
 }
