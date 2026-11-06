@@ -22,7 +22,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
 import { Route as AuthenticatedMissionsRouteImport } from './routes/_authenticated/missions'
-import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedShopRouteImport } from './routes/_authenticated/shop'
 import { Route as AuthenticatedStatsRouteImport } from './routes/_authenticated/stats'
 
@@ -90,9 +90,9 @@ const AuthenticatedMissionsRoute = AuthenticatedMissionsRouteImport.update({
   path: '/missions',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedShopRoute = AuthenticatedShopRouteImport.update({
@@ -119,7 +119,7 @@ export interface FileRoutesByFullPath {
   '/history': typeof AuthenticatedHistoryRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/missions': typeof AuthenticatedMissionsRoute
-  '/profile': typeof AuthenticatedProfileRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/shop': typeof AuthenticatedShopRoute
   '/stats': typeof AuthenticatedStatsRoute
 }
@@ -136,7 +136,7 @@ export interface FileRoutesByTo {
   '/history': typeof AuthenticatedHistoryRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/missions': typeof AuthenticatedMissionsRoute
-  '/profile': typeof AuthenticatedProfileRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/shop': typeof AuthenticatedShopRoute
   '/stats': typeof AuthenticatedStatsRoute
 }
@@ -155,7 +155,7 @@ export interface FileRoutesById {
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
   '/_authenticated/missions': typeof AuthenticatedMissionsRoute
-  '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/shop': typeof AuthenticatedShopRoute
   '/_authenticated/stats': typeof AuthenticatedStatsRoute
 }
@@ -174,7 +174,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/inventory'
     | '/missions'
-    | '/profile'
+    | '/settings'
     | '/shop'
     | '/stats'
   fileRoutesByTo: FileRoutesByTo
@@ -191,7 +191,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/inventory'
     | '/missions'
-    | '/profile'
+    | '/settings'
     | '/shop'
     | '/stats'
   id:
@@ -209,7 +209,7 @@ export interface FileRouteTypes {
     | '/_authenticated/history'
     | '/_authenticated/inventory'
     | '/_authenticated/missions'
-    | '/_authenticated/profile'
+    | '/_authenticated/settings'
     | '/_authenticated/shop'
     | '/_authenticated/stats'
   fileRoutesById: FileRoutesById
@@ -318,11 +318,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMissionsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/profile': {
-      id: '/_authenticated/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/shop': {
@@ -348,7 +348,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
   AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
   AuthenticatedMissionsRoute: typeof AuthenticatedMissionsRoute
-  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedShopRoute: typeof AuthenticatedShopRoute
   AuthenticatedStatsRoute: typeof AuthenticatedStatsRoute
 }
@@ -359,7 +359,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
   AuthenticatedMissionsRoute: AuthenticatedMissionsRoute,
-  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedShopRoute: AuthenticatedShopRoute,
   AuthenticatedStatsRoute: AuthenticatedStatsRoute,
 }
