@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/register")({
   head: () => ({
     meta: [
-      { title: "Register — Blacket" },
-      { name: "description", content: "Create your Blacket account and start trading." },
-      { property: "og:title", content: "Register — Blacket" },
-      { property: "og:description", content: "Create your Blacket account and start trading." },
+      { title: "Register — GameVerse" },
+      { name: "description", content: "Create your GameVerse account and start playing." },
+      { property: "og:title", content: "Register — GameVerse" },
+      { property: "og:description", content: "Create your GameVerse account and start playing." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -27,7 +27,7 @@ function Register() {
     <main className="bg-tiles flex min-h-screen items-center justify-center px-4 py-16">
       <div className="w-full max-w-md rounded-xl bg-card/95 p-8 shadow-2xl">
         <Link to="/" className="font-display block text-center text-6xl">
-          BLACKET
+          GameVerse
         </Link>
         {submitted ? (
           <p className="mt-8 text-center text-xl font-medium">

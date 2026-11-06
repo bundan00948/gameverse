@@ -66,6 +66,35 @@
   --tile: oklch(0.31 0 0);
 
   --pedestal-arch: linear-gradient(to bottom, oklch(0.17 0 0) 55%, oklch(0.04 0 0));
+  --tiles-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='%23393939'%3E%3Crect x='8' y='8' width='40' height='40' rx='9' transform='rotate(-14 28 28)'/%3E%3Crect x='68' y='68' width='40' height='40' rx='9' transform='rotate(-14 88 88)'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Bright alternative theme */
+.bright {
+  --background: oklch(0.86 0.15 92);
+  --foreground: oklch(0.22 0.04 270);
+  --card: oklch(0.99 0.01 95);
+  --card-foreground: oklch(0.22 0.04 270);
+  --popover: oklch(0.99 0.01 95);
+  --popover-foreground: oklch(0.22 0.04 270);
+  --primary: oklch(0.22 0.04 270);
+  --primary-foreground: oklch(0.99 0.01 95);
+  --secondary: oklch(0.93 0.08 92);
+  --secondary-foreground: oklch(0.22 0.04 270);
+  --muted: oklch(0.93 0.06 92);
+  --muted-foreground: oklch(0.42 0.05 270);
+  --accent: oklch(0.68 0.2 25);
+  --accent-foreground: oklch(0.99 0 0);
+  --border: oklch(0.22 0.04 270);
+  --input: oklch(0.8 0.06 92);
+  --ring: oklch(0.6 0.2 25);
+
+  --pedestal: oklch(0.62 0.2 28);
+  --glass: oklch(1 0 0 / 0.55);
+  --glass-hover: oklch(1 0 0 / 0.85);
+
+  --pedestal-arch: linear-gradient(to bottom, oklch(0.72 0.18 35) 50%, oklch(0.55 0.2 25));
+  --tiles-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='%23ffe680'%3E%3Crect x='8' y='8' width='40' height='40' rx='9' transform='rotate(-14 28 28)'/%3E%3Crect x='68' y='68' width='40' height='40' rx='9' transform='rotate(-14 88 88)'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 @layer base {
@@ -82,7 +111,8 @@
 
 @utility bg-tiles {
   background-color: var(--background);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='%23393939'%3E%3Crect x='8' y='8' width='40' height='40' rx='9' transform='rotate(-14 28 28)'/%3E%3Crect x='68' y='68' width='40' height='40' rx='9' transform='rotate(-14 88 88)'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: var(--tiles-image);
+  transition: background-color 0.3s ease;
   background-size: 120px 120px;
   animation: tiles-drift 40s linear infinite;
 }

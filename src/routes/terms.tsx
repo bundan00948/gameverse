@@ -3,10 +3,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms of Service — Blacket" },
-      { name: "description", content: "The rules and terms for using Blacket." },
-      { property: "og:title", content: "Terms of Service — Blacket" },
-      { property: "og:description", content: "The rules and terms for using Blacket." },
+      { title: "Terms of Service — GameVerse" },
+      { name: "description", content: "The rules and terms for using GameVerse." },
+      { property: "og:title", content: "Terms of Service — GameVerse" },
+      { property: "og:description", content: "The rules and terms for using GameVerse." },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -38,7 +38,7 @@ function Terms() {
     <main className="bg-tiles min-h-screen px-4 py-16">
       <article className="mx-auto max-w-2xl rounded-xl bg-card/95 p-8 shadow-2xl sm:p-12">
         <Link to="/" className="font-display text-5xl">
-          BLACKET
+          GameVerse
         </Link>
         <h1 className="mt-6 text-3xl font-bold">Terms of Service</h1>
         <div className="mt-8 space-y-6">
