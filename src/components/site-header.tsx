@@ -6,26 +6,29 @@ import { PlanetLogo } from "@/components/planet-logo";
 
 export function SiteHeader() {
   return (
-    <header className="relative z-20 mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-5 sm:px-10">
-      <Link to="/" className="font-display flex items-center gap-2 text-3xl tracking-tight">
-        <PlanetLogo className="size-12" />
-        GameVerse
-      </Link>
-      <nav className="flex items-center gap-2 sm:gap-6">
+    <div className="relative z-20 mx-auto w-full max-w-7xl px-4 pt-4 sm:px-8 sm:pt-6">
+      <header className="flex items-center justify-between gap-3 rounded-2xl border border-surface-border bg-surface/70 px-4 py-2.5 shadow-tile backdrop-blur-md sm:px-6">
         <Link
-          to="/terms"
-          className="hidden text-base font-semibold text-muted-foreground transition-colors hover:text-foreground sm:block"
+          to="/"
+          className="font-display group flex items-center gap-2 text-2xl tracking-tight sm:text-3xl"
         >
-          Rules
+          <PlanetLogo className="size-10 transition-transform duration-500 group-hover:rotate-12 sm:size-11" />
+          GameVerse
         </Link>
-        <ThemeToggle />
-        <Link to="/login" className={cn(ghostButtonClass, "h-11 px-5 text-base")}>
-          Login
-        </Link>
-        <Link to="/register" className={cn(solidButtonClass, "hidden h-11 px-5 text-base sm:inline-flex")}>
-          Register
-        </Link>
-      </nav>
-    </header>
+        <nav className="flex items-center gap-2 sm:gap-3">
+          <ThemeToggle />
+          <span className="mx-1 hidden h-7 w-px bg-surface-border sm:block" />
+          <Link to="/login" className={cn(ghostButtonClass, "h-10 px-4 text-base")}>
+            Login
+          </Link>
+          <Link
+            to="/register"
+            className={cn(solidButtonClass, "hidden h-10 px-5 text-base sm:inline-flex")}
+          >
+            Register
+          </Link>
+        </nav>
+      </header>
+    </div>
   );
 }
