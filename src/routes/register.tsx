@@ -59,7 +59,13 @@ function Register() {
             </button>
           </form>
         )}
-        <Link to="/" className="mt-6 block text-center text-sm text-muted-foreground hover:text-foreground">
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          Already have an account?{" "}
+          <Link to="/login" className="underline hover:text-foreground">
+            Login
+          </Link>
+        </p>
+        <Link to="/" className="mt-3 block text-center text-sm text-muted-foreground hover:text-foreground">
           ← Back home
         </Link>
       </div>
