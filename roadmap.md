@@ -9,3 +9,5 @@
 - [x] Remove features section ("Everything in one universe" cards) and "Ready to play?" box
 - [x] Revert background pattern to the original two-square style, scaled bigger
 - [x] Tighten background spacing: ~2.3x more squares on screen
+- [x] Make the Stats page, sidebar and other dashboard pages more compact so each fits the screen
+- [x] Fix lag: make the drifting background GPU-composited and drop per-frame blur passes
