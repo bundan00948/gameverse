@@ -31,10 +31,10 @@ function Chat() {
         </div>); })}
       <div ref={end} />
     </div>
-    <form className="mt-4 flex gap-2" onSubmit={e => { e.preventDefault(); const b = text.trim(); if (b) send.mutate(b); }}>
+    <form className="mt-3 flex gap-2" onSubmit={e => { e.preventDefault(); const b = text.trim(); if (b) send.mutate(b); }}>
       <label className="sr-only" htmlFor="chat-input">Message</label>
-      <input id="chat-input" value={text} onChange={e => setText(e.target.value)} maxLength={300} placeholder="Type a message…" className="h-12 flex-1 rounded-lg border border-input bg-card px-4" />
-      <button type="submit" disabled={send.isPending || !text.trim()} aria-label="Send message" className="grid size-12 place-items-center rounded-lg bg-primary text-primary-foreground disabled:opacity-50"><Send className="size-5" /></button>
+      <input id="chat-input" value={text} onChange={e => setText(e.target.value)} maxLength={300} placeholder="Type a message…" className="h-10 flex-1 rounded-lg border border-input bg-card px-3 text-sm" />
+      <button type="submit" disabled={send.isPending || !text.trim()} aria-label="Send message" className="grid size-10 place-items-center rounded-lg bg-primary text-primary-foreground disabled:opacity-50"><Send className="size-4" /></button>
     </form>
     {send.error && <p role="alert" className="mt-2 text-destructive">{send.error.message}</p>}
   </DashboardShell>;
