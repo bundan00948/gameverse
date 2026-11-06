@@ -44,7 +44,7 @@ function Index() {
       {/* Hero */}
       <section className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] items-center gap-14 px-6 pb-20 pt-8 sm:px-10 lg:min-h-[calc(100vh-88px)] lg:grid-cols-[1.15fr_1fr] lg:pb-24">
         <div>
-          <h1 className="font-display flex items-center gap-[0.15em] text-[11.5vw] leading-[0.9] tracking-tight sm:text-[12vw] lg:text-[7.2vw] xl:text-[6.5rem]">
+          <h1 className="font-display flex items-center gap-[0.15em] text-[11.5vw] leading-[0.9] tracking-tight sm:text-[10vw] lg:text-[6.4vw] xl:text-[6rem]">
             <img src={planetLogo} alt="" width={128} height={128} className="size-[0.9em] shrink-0" />
             GameVerse
           </h1>
