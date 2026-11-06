@@ -85,7 +85,7 @@
   --tile-c: oklch(0.85 0.16 90);
   --tile-d: oklch(0.66 0.15 250);
   --tile-fg: oklch(0.2 0.02 270);
-  --surface: oklch(0.22 0 0 / 0.85);
+  --surface: oklch(0.22 0 0);
   --surface-border: oklch(1 0 0 / 0.12);
   --shadow-tile: 0 18px 40px -12px oklch(0 0 0 / 0.6);
   --tiles-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='210' height='210' viewBox='0 0 210 210'%3E%3Cg fill='%23393939'%3E%3Crect x='15' y='15' width='80' height='80' rx='18' transform='rotate(-14 55 55)'/%3E%3Crect x='115' y='115' width='80' height='80' rx='18' transform='rotate(-14 155 155)'/%3E%3C/g%3E%3C/svg%3E");
@@ -121,7 +121,7 @@
   --tile-c: oklch(0.99 0.01 95);
   --tile-d: oklch(0.62 0.16 250);
   --tile-fg: oklch(0.22 0.04 270);
-  --surface: oklch(0.99 0.01 95 / 0.9);
+  --surface: oklch(0.99 0.01 95);
   --surface-border: oklch(0.22 0.04 270 / 0.15);
   --shadow-tile: 0 18px 40px -14px oklch(0.45 0.12 60 / 0.55);
   --tiles-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='210' height='210' viewBox='0 0 210 210'%3E%3Cg fill='%23ffe680'%3E%3Crect x='15' y='15' width='80' height='80' rx='18' transform='rotate(-14 55 55)'/%3E%3Crect x='115' y='115' width='80' height='80' rx='18' transform='rotate(-14 155 155)'/%3E%3C/g%3E%3C/svg%3E");
@@ -140,11 +140,22 @@
 }
 
 @utility bg-tiles {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
   background-color: var(--background);
-  background-image: var(--tiles-image);
   transition: background-color 0.3s ease;
-  background-size: 210px 210px;
-  animation: tiles-drift 46s linear infinite;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -210px;
+    z-index: -1;
+    background-image: var(--tiles-image);
+    background-size: 210px 210px;
+    animation: tiles-drift 46s linear infinite;
+    will-change: transform;
+  }
 }
 
 @utility pedestal-arch {
@@ -153,10 +164,10 @@
 
 @keyframes tiles-drift {
   from {
-    background-position: 0 0;
+    transform: translate3d(0, 0, 0);
   }
   to {
-    background-position: 210px -210px;
+    transform: translate3d(210px, -210px, 0);
   }
 }
 
@@ -177,4 +188,4 @@
 :root { --google-background: #131314; --google-border: #8E918F; --google-foreground: #E3E3E3; }
 .bright { --google-background: #FFFFFF; --google-border: #747775; --google-foreground: #1F1F1F; }
 .google-auth { background: var(--google-background); color: var(--google-foreground); border-color: var(--google-border); }
-@media (prefers-reduced-motion: reduce) { .bg-tiles { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .bg-tiles::before { animation: none; } }
