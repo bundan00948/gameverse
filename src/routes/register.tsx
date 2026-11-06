@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { SiteHeader } from "@/components/site-header";
 import { useState } from "react";
 import { ghostButtonClass } from "@/components/ghost-button";
 import { cn } from "@/lib/utils";
@@ -24,8 +25,10 @@ function Register() {
   const [submitted, setSubmitted] = useState(false);
 
   return (
-    <main className="bg-tiles flex min-h-screen items-center justify-center px-4 py-16">
-      <div className="w-full max-w-md rounded-xl bg-card/95 p-8 shadow-2xl">
+    <main className="bg-tiles flex min-h-screen flex-col">
+      <SiteHeader />
+      <div className="flex flex-1 items-center justify-center px-4 pb-16 pt-4">
+      <div className="w-full max-w-md rounded-xl border border-surface-border bg-surface backdrop-blur-sm p-8 shadow-2xl">
         <Link to="/" className="font-display block text-center text-6xl">
           GameVerse
         </Link>
@@ -59,6 +62,7 @@ function Register() {
         <Link to="/" className="mt-6 block text-center text-sm text-muted-foreground hover:text-foreground">
           ← Back home
         </Link>
+      </div>
       </div>
     </main>
   );
