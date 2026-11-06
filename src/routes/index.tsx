@@ -31,7 +31,7 @@ function Index() {
       <SiteHeader />
 
       {/* Hero */}
-      <section className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] items-center gap-14 px-6 pb-20 pt-8 sm:px-10 lg:min-h-[calc(100vh-88px)] lg:pb-24">
+      <section className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] items-center gap-14 px-6 pb-14 pt-6 sm:px-10 lg:min-h-[calc(75vh-88px)] lg:pb-16">
         <div>
           <h1 className="font-display flex items-center gap-[0.15em] text-[11.5vw] leading-[0.9] tracking-tight sm:text-[10vw] lg:text-[6.4vw] xl:text-[6rem]">
             <PlanetLogo className="size-[1.5em] shrink-0" />

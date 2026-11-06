@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { solidButtonClass } from "@/components/ghost-button";
+import { ghostButtonClass, solidButtonClass } from "@/components/ghost-button";
 import { cn } from "@/lib/utils";
 import { PlanetLogo } from "@/components/planet-logo";
 
@@ -19,6 +19,9 @@ export function SiteHeader() {
           Rules
         </Link>
         <ThemeToggle />
+        <Link to="/login" className={cn(ghostButtonClass, "h-11 px-5 text-base")}>
+          Login
+        </Link>
         <Link to="/register" className={cn(solidButtonClass, "hidden h-11 px-5 text-base sm:inline-flex")}>
           Register
         </Link>
