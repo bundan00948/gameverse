@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { supabase } from '@/integrations/supabase/client';
 import { lovable } from '@/integrations/lovable';
@@ -10,7 +10,7 @@ export function AuthForm({ register = false }: { register?: boolean }) {
   const navigate = useNavigate(); const user = usePlayer();
   const [busy, setBusy] = useState(false); const [message, setMessage] = useState('');
   useEffect(() => { if (user) void navigate({ to: '/dashboard', replace: true }); }, [user, navigate]);
-  async function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setMessage('');
     const form = new FormData(event.currentTarget); const email = String(form.get('email')); const password = String(form.get('password'));
     if (register && password !== form.get('confirm')) { setMessage('Passwords do not match.'); setBusy(false); return; }
