@@ -8,6 +8,13 @@
       "when": 1793980203141,
       "tag": "0000_create_player_profiles",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793981972185,
+      "tag": "0001_dashboard_economy",
+      "breakpoints": true
     }
   ]
 }

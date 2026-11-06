@@ -1,7 +1,17 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
-import { Gamepad2, UserRound, LogOut } from 'lucide-react';
+import { Gamepad2, BarChart3, History, Store, Backpack, Target, MessageCircle, Settings, LogOut } from 'lucide-react';
+const nav = [
+  { to: '/dashboard', label: 'Games', icon: Gamepad2 },
+  { to: '/stats', label: 'Stats', icon: BarChart3 },
+  { to: '/history', label: 'History', icon: History },
+  { to: '/shop', label: 'Shop', icon: Store },
+  { to: '/inventory', label: 'Inventory', icon: Backpack },
+  { to: '/missions', label: 'Missions', icon: Target },
+  { to: '/chat', label: 'Chat', icon: MessageCircle },
+  { to: '/settings', label: 'Settings', icon: Settings },
+] as const;
 import { supabase } from '@/integrations/supabase/client';
 import { SiteHeader } from '@/components/site-header';
 import { usePlayer } from './session';
@@ -31,8 +41,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             <div className="min-w-0"><p className="text-xs uppercase tracking-wider text-muted-foreground">Signed in as</p><p className="truncate text-lg font-bold">{name}</p></div>
           </div>
           <nav className="flex flex-wrap gap-2 md:flex-col">
-            <Link to="/dashboard" preload={false} className={navClass} activeProps={{ className: activeClass }}><Gamepad2 className="size-5" />Games</Link>
-            <Link to="/profile" preload={false} className={navClass} activeProps={{ className: activeClass }}><UserRound className="size-5" />Profile</Link>
+            {nav.map(({ to, label, icon: Icon }) => <Link key={to} to={to} preload={false} className={navClass} activeProps={{ className: activeClass }}><Icon className="size-5" />{label}</Link>)}
           </nav>
           <button type="button" disabled={busy} onClick={logout} className={cn(navClass, 'border-t border-surface-border text-muted-foreground hover:text-foreground disabled:opacity-60 md:mt-4')}><LogOut className="size-5" />{busy ? 'Signing out…' : 'Sign out'}</button>
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
