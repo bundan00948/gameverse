@@ -15,7 +15,7 @@ function History() {
   return <DashboardShell>
     <PageTitle kicker="Recently played" title="History" />
     {data.length === 0 ? <Empty>You haven't played any games yet.</Empty> :
-    <ul className="mt-8 divide-y divide-surface-border">{data.map(p => (
-      <li key={p.id} className="flex items-center gap-4 py-3"><span className="text-3xl">{p.games?.emoji}</span><span className="flex-1 text-lg font-bold">{p.games?.title ?? 'Removed game'}</span><time className="text-sm text-muted-foreground">{new Date(p.played_at).toLocaleString()}</time></li>))}</ul>}
+    <ul className="mt-5 divide-y divide-surface-border">{data.map(p => (
+      <li key={p.id} className="flex items-center gap-3 py-2"><span className="text-2xl">{p.games?.emoji}</span><span className="flex-1 text-base font-bold">{p.games?.title ?? 'Removed game'}</span><time className="text-xs text-muted-foreground">{new Date(p.played_at).toLocaleString()}</time></li>))}</ul>}
   </DashboardShell>;
 }

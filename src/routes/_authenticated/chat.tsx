@@ -22,7 +22,7 @@ function Chat() {
   useEffect(() => { end.current?.scrollIntoView({ block: 'nearest' }); }, [data.length]);
   return <DashboardShell>
     <PageTitle kicker="Global" title="Chat" />
-    <div className="mt-6 h-[50vh] space-y-3 overflow-y-auto rounded-xl border border-surface-border p-4">
+    <div className="mt-4 h-[42vh] space-y-2.5 overflow-y-auto rounded-xl border border-surface-border p-3">
       {data.length === 0 && <p className="text-center text-muted-foreground">No messages yet — say hi!</p>}
       {data.map(m => { const mine = m.user_id === user?.id; return (
         <div key={m.id} className={`flex flex-col ${mine ? 'items-end' : 'items-start'}`}>
