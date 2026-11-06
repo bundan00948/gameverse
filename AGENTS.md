@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## App architecture
+- Signed-in pages live under the client-only `_authenticated` gate; public login remains `/login` with `/auth` redirect compatibility, because browser sessions cannot be read during SSR.
+- Auth identity is subscribed once in the root and shared through SessionContext; profile reads and writes use the browser Cloud client with owner-only RLS.
+- Dashboard destinations disable preloading and use automatic route code splitting so only the opened page fetches its content.
