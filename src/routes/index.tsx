@@ -80,13 +80,13 @@ function Index() {
       <SiteHeader />
 
       {/* Hero */}
-      <section className="mx-auto grid max-w-7xl items-center gap-14 px-6 pb-20 pt-8 sm:px-10 lg:min-h-[calc(100vh-88px)] lg:grid-cols-[1.15fr_1fr] lg:pb-24">
+      <section className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] items-center gap-14 px-6 pb-20 pt-8 sm:px-10 lg:min-h-[calc(100vh-88px)] lg:grid-cols-[1.15fr_1fr] lg:pb-24">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-surface-border bg-surface px-4 py-1.5 text-sm font-semibold text-muted-foreground backdrop-blur-sm">
             <span className="size-2 rounded-full bg-tile-a" />
             Free to play · In your browser
           </span>
-          <h1 className="font-display mt-6 text-[15vw] leading-[0.9] tracking-tight sm:text-[12vw] lg:text-[7.2vw] xl:text-[6.5rem]">
+          <h1 className="font-display mt-6 text-[13.5vw] leading-[0.9] tracking-tight sm:text-[12vw] lg:text-[7.2vw] xl:text-[6.5rem]">
             GameVerse
           </h1>
           <p className="mt-6 max-w-xl text-2xl font-medium leading-snug sm:text-3xl">
