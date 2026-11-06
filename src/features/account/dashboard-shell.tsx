@@ -23,7 +23,7 @@ const navClass =
   'group flex items-center gap-3 rounded-lg px-3 py-2 text-[15px] font-bold text-muted-foreground transition-colors hover:bg-glass-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const activeClass = 'bg-primary !text-primary-foreground shadow-[0_3px_0_rgb(0_0_0/0.3)] hover:bg-primary';
 
-export function DashboardShell({ children }: { children: ReactNode }) {
+export function DashboardShell({ children, bare = false }: { children: ReactNode; bare?: boolean }) {
   const cache = useQueryClient(); const navigate = useNavigate(); const user = usePlayer();
   const [busy, setBusy] = useState(false); const [error, setError] = useState('');
   async function logout() {
@@ -56,7 +56,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         </button>
         {error && <p role="alert" className="px-3 pb-2 text-xs text-destructive">{error}</p>}
       </aside>
-      <div className="mx-auto max-w-6xl p-4 sm:p-6">{children}</div>
+      <div className="mx-auto max-w-6xl p-4 sm:p-6">{bare ? children : <section className="rounded-xl border border-surface-border bg-surface p-5 shadow-tile">{children}</section>}</div>
     </main>
   );
 }

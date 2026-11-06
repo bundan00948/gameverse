@@ -29,7 +29,7 @@ function Stats() {
     { label: 'Games Played', value: data.plays, icon: Gamepad2, bg: 'bg-tile-c' },
     { label: 'Messages Sent', value: data.messages, icon: MessageCircle, bg: 'bg-discord' },
   ];
-  return <DashboardShell>
+  return <DashboardShell bare>
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
       <section className={`${panel} flex flex-col gap-4 p-5 sm:flex-row sm:items-center`}>
         <span className="font-display grid size-20 shrink-0 place-items-center rounded-2xl bg-primary text-4xl text-primary-foreground shadow-[0_5px_0_rgb(0_0_0/0.3)]">{name[0]?.toUpperCase()}</span>
