@@ -59,10 +59,10 @@ function Index() {
 
       </section>
 
-      <footer className="border-t border-surface-border">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-6 text-sm text-muted-foreground sm:flex-row sm:px-10">
+      <footer className="border-t border-surface-border bg-surface backdrop-blur-sm">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-6 text-base font-medium text-foreground/85 sm:flex-row sm:px-10">
           <span>© {new Date().getFullYear()} GameVerse</span>
-          <Link to="/terms" className="hover:text-foreground">
+          <Link to="/terms" className="font-semibold underline-offset-4 hover:text-foreground hover:underline">
             Terms of Service
           </Link>
         </div>
