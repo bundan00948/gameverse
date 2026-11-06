@@ -1,6 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import mascot from "@/assets/mascot.png";
-import { ghostButtonClass } from "@/components/ghost-button";
+import {
+  CalendarCheck,
+  Dices,
+  Gamepad2,
+  Gem,
+  MessagesSquare,
+  Puzzle,
+  Rocket,
+  Swords,
+  Trophy,
+  type LucideIcon,
+} from "lucide-react";
+import { ghostButtonClass, solidButtonClass } from "@/components/ghost-button";
+import { SiteHeader } from "@/components/site-header";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -9,7 +21,8 @@ export const Route = createFileRoute("/")({
       { title: "GameVerse — The community driven games universe" },
       {
         name: "description",
-        content: "The #1 community driven games universe for everyone. Register and join the Discord.",
+        content:
+          "Play games, collect and trade, finish daily missions and hang out with friends — all in one universe.",
       },
       { property: "og:title", content: "GameVerse — The community driven games universe" },
       {
@@ -23,57 +36,137 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+type Tile = { icon: LucideIcon; label: string; tone: string; delay: string };
+
+const tiles: Tile[] = [
+  { icon: Gamepad2, label: "Arcade", tone: "bg-tile-a", delay: "0s" },
+  { icon: Trophy, label: "Ranked", tone: "bg-tile-c", delay: "0.6s" },
+  { icon: Swords, label: "Battle", tone: "bg-tile-b", delay: "1.2s" },
+  { icon: Puzzle, label: "Puzzle", tone: "bg-tile-d", delay: "0.3s" },
+  { icon: Rocket, label: "Space", tone: "bg-tile-b", delay: "0.9s" },
+  { icon: Dices, label: "Party", tone: "bg-tile-a", delay: "1.5s" },
+];
+
+const features: { icon: LucideIcon; title: string; body: string; tone: string }[] = [
+  {
+    icon: Gamepad2,
+    title: "Play anything",
+    body: "Jump into a growing library of browser games. No downloads, no waiting.",
+    tone: "bg-tile-a",
+  },
+  {
+    icon: Gem,
+    title: "Collect & trade",
+    body: "Open packs, unlock rare collectibles and trade with the community.",
+    tone: "bg-tile-b",
+  },
+  {
+    icon: CalendarCheck,
+    title: "Daily missions",
+    body: "Claim a free daily reward and complete missions to earn stars.",
+    tone: "bg-tile-c",
+  },
+  {
+    icon: MessagesSquare,
+    title: "Friends & chat",
+    body: "Add friends, compare profiles and chat while you play.",
+    tone: "bg-tile-d",
+  },
+];
+
 function Index() {
   return (
-    <main className="bg-tiles relative min-h-screen overflow-hidden">
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-[1600px] flex-col justify-center px-6 py-16 sm:px-12 lg:px-[8vw]">
-        <h1 className="font-display text-[17vw] leading-[0.9] tracking-tight text-foreground sm:text-[13vw] lg:text-[8vw]">
-          GameVerse
-        </h1>
-        <p className="mt-6 max-w-[34rem] text-2xl font-medium leading-snug sm:text-3xl lg:text-[2.6rem] lg:leading-[1.3]">
-          The #1 community driven
-          <br />
-          games universe
-          <br />
-          for everyone!
-        </p>
+    <div className="bg-tiles min-h-screen">
+      <SiteHeader />
 
-        <div className="mt-12 flex w-full max-w-[24rem] flex-col gap-5">
-          <Link to="/register" className={cn(ghostButtonClass, "h-28 text-5xl sm:text-6xl")}>
-            Register
+      {/* Hero */}
+      <section className="mx-auto grid max-w-7xl items-center gap-14 px-6 pb-20 pt-8 sm:px-10 lg:min-h-[calc(100vh-88px)] lg:grid-cols-[1.15fr_1fr] lg:pb-24">
+        <div>
+          <span className="inline-flex items-center gap-2 rounded-full border border-surface-border bg-surface px-4 py-1.5 text-sm font-semibold text-muted-foreground backdrop-blur-sm">
+            <span className="size-2 rounded-full bg-tile-a" />
+            Free to play · In your browser
+          </span>
+          <h1 className="font-display mt-6 text-[17vw] leading-[0.9] tracking-tight sm:text-[12vw] lg:text-[7.2vw] xl:text-[6.5rem]">
+            GameVerse
+          </h1>
+          <p className="mt-6 max-w-xl text-2xl font-medium leading-snug sm:text-3xl">
+            The #1 community driven games universe for everyone!
+          </p>
+
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+            <Link to="/register" className={cn(solidButtonClass, "h-16 px-10 text-2xl")}>
+              Register
+            </Link>
+            <a
+              href="https://discord.com"
+              target="_blank"
+              rel="noreferrer"
+              className={cn(ghostButtonClass, "h-16 px-10 text-2xl")}
+            >
+              Discord
+            </a>
+          </div>
+        </div>
+
+        {/* Game tile cluster */}
+        <div className="relative mx-auto w-full max-w-md lg:max-w-none" aria-hidden="true">
+          <div className="grid -rotate-6 grid-cols-3 gap-4 sm:gap-5">
+            {tiles.map(({ icon: Icon, label, tone, delay }, i) => (
+              <div
+                key={label}
+                className={cn(
+                  "animate-float flex aspect-square flex-col items-center justify-center gap-2 rounded-3xl text-tile-fg shadow-tile",
+                  tone,
+                  i % 2 === 1 && "translate-y-8",
+                )}
+                style={{ animationDelay: delay }}
+              >
+                <Icon className="size-1/3" strokeWidth={2.2} />
+                <span className="text-sm font-bold sm:text-base">{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section id="features" className="mx-auto max-w-7xl scroll-mt-6 px-6 pb-24 sm:px-10">
+        <h2 className="font-display text-4xl sm:text-5xl">Everything in one universe</h2>
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {features.map(({ icon: Icon, title, body, tone }) => (
+            <article
+              key={title}
+              className="rounded-2xl border border-surface-border bg-surface p-6 backdrop-blur-sm transition-transform duration-200 hover:-translate-y-1"
+            >
+              <div className={cn("flex size-12 items-center justify-center rounded-xl text-tile-fg", tone)}>
+                <Icon className="size-6" />
+              </div>
+              <h3 className="mt-5 text-xl font-bold">{title}</h3>
+              <p className="mt-2 leading-relaxed text-muted-foreground">{body}</p>
+            </article>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <div className="mt-16 flex flex-col items-start justify-between gap-6 rounded-3xl border border-surface-border bg-surface p-8 backdrop-blur-sm sm:flex-row sm:items-center sm:p-10">
+          <div>
+            <h2 className="font-display text-3xl sm:text-4xl">Ready to play?</h2>
+            <p className="mt-2 text-lg text-muted-foreground">Create your free account in seconds.</p>
+          </div>
+          <Link to="/register" className={cn(solidButtonClass, "h-14 px-8 text-xl")}>
+            Get started
           </Link>
-          <a
-            href="https://discord.com"
-            target="_blank"
-            rel="noreferrer"
-            className={cn(ghostButtonClass, "h-28 text-5xl sm:text-6xl")}
-          >
-            Discord
-          </a>
         </div>
-      </div>
+      </section>
 
-      {/* Pedestal + mascot */}
-      <div className="pointer-events-none absolute bottom-0 right-[8vw] hidden w-[22vw] max-w-[360px] lg:block">
-        <div className="relative h-[100vh]">
-          <div className="pedestal-arch absolute left-0 right-0 top-[40vh] h-[15vh] rounded-t-full" />
-          <div className="absolute bottom-0 left-0 right-0 top-[60vh] bg-pedestal" />
-          <img
-            src={mascot}
-            alt="GameVerse mascot — a teal space fox holding a game controller"
-            width={832}
-            height={1216}
-            className="animate-float absolute left-1/2 top-[10vh] w-[115%] max-w-none -translate-x-1/2 drop-shadow-2xl"
-          />
+      <footer className="border-t border-surface-border">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-6 text-sm text-muted-foreground sm:flex-row sm:px-10">
+          <span>© {new Date().getFullYear()} GameVerse</span>
+          <Link to="/terms" className="hover:text-foreground">
+            Terms of Service
+          </Link>
         </div>
-      </div>
-
-      <Link
-        to="/terms"
-        className="absolute bottom-3 right-4 z-10 text-xs text-muted-foreground hover:text-foreground"
-      >
-        Terms of Service
-      </Link>
-    </main>
+      </footer>
+    </div>
   );
 }
