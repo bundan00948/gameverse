@@ -143,8 +143,8 @@
   background-color: var(--background);
   background-image: var(--tiles-image);
   transition: background-color 0.3s ease;
-  background-size: 200px 200px;
-  animation: tiles-drift 40s linear infinite;
+  background-size: 320px 320px;
+  animation: tiles-drift 46s linear infinite;
 }
 
 @utility pedestal-arch {
@@ -156,7 +156,7 @@
     background-position: 0 0;
   }
   to {
-    background-position: 200px -200px;
+    background-position: 320px -320px;
   }
 }
 
