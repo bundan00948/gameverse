@@ -356,6 +356,7 @@ export type Database = {
       }
       mission_progress: { Args: { _kind: string }; Returns: number }
       open_pack: { Args: { _pack: string }; Returns: Json }
+      open_packs: { Args: { _pack: string; _quantity: number }; Returns: Json }
       record_play: { Args: { _game: string }; Returns: undefined }
       sell_blook: { Args: { _blook: string }; Returns: number }
     }
