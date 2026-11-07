@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { Play } from 'lucide-react';
+import { Play, Gamepad2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { gamesOptions } from '@/features/dashboard/data';
@@ -23,7 +23,7 @@ function Games() {
     {data.length === 0 ? <Empty>No games added yet.</Empty> :
     <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{data.map(g => (
       <article key={g.id} className={card}>
-        <div className="text-4xl">{g.emoji}</div>
+        <Gamepad2 className="size-8 text-muted-foreground" />
         <h2 className="mt-2 text-base font-bold">{g.title}</h2>
         <p className="mt-1 min-h-8 text-sm text-muted-foreground">{g.description}</p>
         <button type="button" disabled={play.isPending} onClick={() => play.mutate(g)} className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2 text-sm font-bold text-primary-foreground transition hover:-translate-y-0.5 disabled:opacity-60"><Play className="size-4" />Play</button>
