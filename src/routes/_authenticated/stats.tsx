@@ -42,7 +42,7 @@ function Stats() {
   const [search, setSearch] = useState('');
   const players = [...ids].filter(([, identity]) => `${identity.username} ${identity.displayName}`.toLowerCase().includes(search.trim().toLowerCase())).sort((a, b) => playerName(a[1]).localeCompare(playerName(b[1])));
   const level = Math.floor(data.plays / 5); const xp = (data.plays % 5) * 20;
-  const claim = useMutation({ mutationFn: async () => { const { error } = await supabase.rpc('claim_daily'); if (error) throw error; }, onSuccess: () => cache.invalidateQueries() });
+  const claim = useMutation({ mutationFn: async () => { const { error } = await supabase.rpc('claim_daily'); if (error) throw error; }, onSuccess: () => { for (const key of ['wallet', 'stats', 'missions']) void cache.invalidateQueries({ queryKey: [key] }); } });
   const items = [
     { label: 'Tokens', value: data.tokens, icon: tokensIcon.url, curved: false },
     { label: 'Blooks Unlocked', value: `${data.blooks} / ${data.totalBlooks}`, icon: unlockedIcon.url, curved: false },
@@ -68,7 +68,7 @@ function Stats() {
       </div>
       <div className="flex flex-wrap gap-3 sm:max-w-[50%]">
         <Button type="button" variant="ghost" onClick={() => setBrowsing(true)} className={`${btn} flex-1 bg-stats-action text-stats-action-foreground`}><Search className="size-4" />View Stats</Button>
-        {!own && <Button asChild variant="outline" className="flex-1"><Link to="/stats" search={{}} reloadDocument>My Stats</Link></Button>}
+        {!own && <Button asChild variant="outline" className="flex-1"><Link to="/stats" search={{}}>My Stats</Link></Button>}
         {own && <Button type="button" variant="ghost" disabled={claim.isPending} onClick={() => claim.mutate()} className={`${btn} flex-1 bg-[oklch(0.6_0.17_145)]`}><Star className="size-4 fill-current" />Claim Tokens</Button>}
       </div>
       {claim.error && <p role="alert" className="text-xs text-destructive">{claim.error.message}</p>}
@@ -87,7 +87,7 @@ function Stats() {
     <section className="mt-8">
       <div className="flex justify-between"><h2 className={tab}>Friends</h2><h2 className={tab}>Requests</h2></div>
       <div className={`${box} grid gap-5 rounded-t-none p-6 md:grid-cols-2`}>
-        <p className="flex items-center gap-2 text-sm text-muted-foreground"><Users className="size-4" />No friends yet. Say hi in <Link to="/chat" reloadDocument className="font-bold text-primary underline">Chat</Link>.</p>
+        <p className="flex items-center gap-2 text-sm text-muted-foreground"><Users className="size-4" />No friends yet. Say hi in <Link to="/chat" className="font-bold text-primary underline">Chat</Link>.</p>
         <p className="flex items-center gap-2 text-sm text-muted-foreground md:justify-end"><UserPlus className="size-4" />No friend requests.</p>
       </div>
     </section>
@@ -99,7 +99,7 @@ function Stats() {
         <input id="player-search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search players…" className="h-11 rounded-md border border-input bg-background px-3" />
         <div className="grid max-h-[55dvh] gap-2 overflow-y-auto">
           {players.map(([id, identity]) => <Button key={id} asChild variant="ghost" className="h-auto justify-start whitespace-normal border border-surface-border p-3">
-            <Link to="/stats" search={{ player: id }} preload={false} reloadDocument onClick={() => setBrowsing(false)}><PlayerAvatar name={playerName(identity)} identity={identity} /><span className="min-w-0 flex-1"><PlayerName name={playerName(identity)} identity={identity} className="block break-words" /><span className="block text-xs text-muted-foreground">{identity.role?.name ?? 'Player'} · @{identity.username}</span></span><BadgeList identity={identity} /></Link>
+            <Link to="/stats" search={{ player: id }} preload={false} onClick={() => setBrowsing(false)}><PlayerAvatar name={playerName(identity)} identity={identity} /><span className="min-w-0 flex-1"><PlayerName name={playerName(identity)} identity={identity} className="block break-words" /><span className="block text-xs text-muted-foreground">{identity.role?.name ?? 'Player'} · @{identity.username}</span></span><BadgeList identity={identity} /></Link>
           </Button>)}
           {!players.length && <p role="status" className="py-4 text-muted-foreground">No players found.</p>}
         </div>
