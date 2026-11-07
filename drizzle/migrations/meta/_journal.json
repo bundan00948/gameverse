@@ -50,6 +50,20 @@
       "when": 1794013588101,
       "tag": "0006_market_appearance",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794014539078,
+      "tag": "0007_pack_quantity_purchase",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794014549162,
+      "tag": "0008_pack_quantity_atomic_lock",
+      "breakpoints": true
     }
   ]
 }

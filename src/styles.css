@@ -235,7 +235,15 @@
 .market-pack-name { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; text-align: center; font-family: var(--font-display); font-size: 24px; }
 .market-pack-price { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 42px; border-top: 3px solid var(--market-foreground); background: var(--market-price); font-family: var(--font-display); font-size: 23px; }
 .market-pack-price svg { width: 20px; height: 20px; }
-.pack-confirm { max-height: 90dvh; overflow-y: auto; background: var(--surface); border-color: var(--surface-border); }
+.pack-confirm { width: calc(100% - 32px); max-width: 960px; max-height: 90dvh; overflow-y: auto; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 28px; padding: 32px; border: 4px solid var(--surface-border); border-radius: var(--market-radius); background: var(--surface); color: var(--foreground); }
+.pack-preview { align-self: start; border-radius: var(--market-radius); box-shadow: var(--shadow-tile); }
+.pack-purchase-details { display: flex; min-width: 0; flex-direction: column; padding-top: 12px; }
+.pack-unit-price { display: flex; align-items: center; gap: 8px; align-self: start; margin-top: 16px; padding: 8px 12px; border-radius: var(--radius); background: var(--glass); font-weight: bold; font-size: 20px; }
+.pack-drop-rates { display: grid; gap: 8px; margin-top: 16px; max-height: 200px; overflow-y: auto; }
+.pack-quantity { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 28px; font-size: 20px; font-weight: bold; }
+.pack-quantity input { width: 72px; border: 3px solid var(--surface-border); border-radius: var(--radius); padding: 8px; background: var(--glass); text-align: center; }
+.pack-buy { width: 100%; height: auto; min-height: 64px; margin-top: 24px; white-space: normal; font-family: var(--font-display); font-size: 24px; }
+@media (max-width: 640px) { .pack-confirm { grid-template-columns: minmax(0,1fr); grid-template-rows: auto auto; align-content: start; padding: 20px; gap: 12px; } .pack-preview { width: min(100%,160px); justify-self: center; } .pack-purchase-details { padding-top: 0; } .pack-drop-rates { max-height: 120px; } .pack-quantity { padding-top: 12px; font-size: 18px; } .pack-buy { margin-top: 16px; min-height: 52px; } }
 .pack-stage { position: fixed; inset: 0; width: 100%; height: 100dvh; max-width: none; transform: none; border: 0; border-radius: 0; padding: 24px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: radial-gradient(circle, var(--glow), var(--pedestal)); color: var(--market-foreground); }
 .pack-stage-background { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .35; pointer-events: none; }
 .opening-pack { position: relative; width: 280px; height: 280px; padding: 20px; border-radius: var(--market-radius); background: linear-gradient(145deg, var(--pack-start), var(--pack-end)); box-shadow: var(--shadow-tile); }
