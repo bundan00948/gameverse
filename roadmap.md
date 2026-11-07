@@ -1,7 +1,7 @@
 # Roadmap
 
-- [ ] Add alphabetical Blooks admin grid with editable pack assignments
-- [ ] Preserve blooks and owned inventory when a pack is deleted; verify the flow
+- [x] Add alphabetical Blooks admin grid with editable pack assignments
+- [x] Preserve blooks and owned inventory when a pack is deleted; verify the flow
 
 - [x] Match the pack selection popup to the reference using GameVerse colors and verify quantity and drop-rate controls
 
