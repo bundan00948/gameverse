@@ -26,7 +26,7 @@ const nav = [
 ] as const;
 
 const navClass =
-  'gv-nav-link group flex min-h-11 items-center gap-3 rounded-md px-3 py-2 text-sm font-bold text-muted-foreground transition-colors hover:bg-glass-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
+  'gv-nav-link group flex min-h-11 items-center gap-3 rounded-md px-3 py-2 font-display text-base tracking-wide text-muted-foreground transition-colors hover:bg-glass-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const activeClass = 'gv-nav-active';
 
 export function DashboardShell({ children, bare = false, market = false }: { children: ReactNode; bare?: boolean; market?: boolean }) {
