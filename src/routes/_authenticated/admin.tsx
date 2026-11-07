@@ -34,11 +34,11 @@ function Admin() {
   const navigate = Route.useNavigate();
   if (isLoading) return <DashboardShell><p>Loading…</p></DashboardShell>;
   if (!isAdmin) return <DashboardShell><PageTitle kicker="Staff" title="Admin Panel" /><p className="mt-4 text-muted-foreground">This page is for staff only.</p></DashboardShell>;
-  return <DashboardShell bare>
+  return <DashboardShell bare><div className="staff-workspace">
     <PageTitle kicker="Staff" title="Admin Panel" />
-    <nav aria-label="Admin sections" className="mt-6 flex flex-wrap gap-2 border-b border-surface-border pb-3">{tabs.map(t => { const Icon = tabIcons[t]; return <Button key={t} type="button" variant={tab === t ? 'default' : 'ghost'} aria-pressed={tab === t} onClick={() => navigate({ search: { tab: t }, replace: true })} className="gap-2 font-bold"><Icon />{t}</Button>; })}</nav>
+    <nav aria-label="Admin sections" className="staff-tabs">{tabs.map(t => { const Icon = tabIcons[t]; return <Button key={t} type="button" variant={tab === t ? 'default' : 'ghost'} aria-pressed={tab === t} onClick={() => navigate({ search: { tab: t }, replace: true })} className="gap-2 font-bold"><Icon />{t}</Button>; })}</nav>
     <div className="mt-6">{tab === 'Blooks' ? <BlooksPanel /> : tab === 'Users' ? <Users /> : tab === 'Shop' ? <Shop /> : tab === 'Games' ? <Table title="Games" table="games" fields={['title', 'description', 'play_url']} blank={{ emoji: '', title: 'New game', description: '', play_url: '' }} /> : <Table title="Missions" table="missions" fields={['title', 'kind', 'goal', 'reward']} blank={{ title: 'New mission', kind: 'plays', goal: 5, reward: 10 }} />}</div>
-  </DashboardShell>;
+  </div></DashboardShell>;
 }
 
 type U = Awaited<ReturnType<typeof listUsers>>[number];
@@ -84,7 +84,7 @@ function Table({ table, fields, blank, filter, title }: { table: TableName; fiel
   const done = () => { ['admin', 'admin-blooks', 'games', 'shop', 'collection', 'inventory'].forEach(key => cache.invalidateQueries({ queryKey: [key] })); };
   const add = useMutation({ mutationFn: async () => { const { error } = await supabase.from(table).insert({ ...blank, ...(filter ? { [filter.col]: filter.val } : {}) } as never); if (error) throw error; }, onSuccess: done });
   return <div className="space-y-4">
-    <div className="flex items-center justify-between">{title ? <h3 className="font-bold">{title}</h3> : <span />}<Button type="button" onClick={() => add.mutate()} disabled={add.isPending} className={btn}><Plus className="size-3.5" />Add</Button></div>
+    <div className="flex flex-wrap items-center justify-between gap-3">{title ? <h3 className="text-xl font-bold">{title} <span className="ml-2 text-sm text-muted-foreground">{data?.length ?? 0}</span></h3> : <span />}<Button type="button" onClick={() => add.mutate()} disabled={add.isPending}><Plus />{add.isPending ? 'Adding…' : `Add ${table === 'missions' ? 'mission' : table === 'games' ? 'game' : 'pack'}`}</Button></div>
     {error && <p className="text-xs text-destructive">{error.message}</p>}
     {add.error && <p className="text-xs text-destructive">{add.error.message}</p>}
     {data?.map(r => <EditRow key={r.id} table={table} row={r} fields={fields} onDone={done} />)}
@@ -95,13 +95,13 @@ function EditRow({ table, row, fields, onDone }: { table: TableName; row: Row; f
   const save = useMutation({ mutationFn: async () => { if (table === 'games' && f['play_url'] && !gameEmbedUrl(String(f['play_url']))) throw new Error('Enter a valid HTTPS embed link.'); const patch = Object.fromEntries([...fields, ...Object.keys(row).filter(k => k.endsWith('image_url'))].map(k => [k, f[k]])); const { error } = await supabase.from(table).update(patch as never).eq('id', row.id); if (error) throw error; }, onSuccess: onDone });
   const del = useMutation({ mutationFn: async () => { const { error } = await supabase.from(table).delete().eq('id', row.id); if (error) throw error; }, onSuccess: onDone });
   return <div className="rounded-lg border border-surface-border bg-surface p-4">
+    <div className="staff-item-heading"><h4 className="min-w-0 break-words text-lg font-bold">{String(row['name'] ?? row['title'] ?? '')}</h4><span className="text-xs font-bold uppercase text-muted-foreground">{table === 'packs' ? 'Pack' : table === 'games' ? 'Game' : 'Mission'}</span></div>
     <div className="grid min-w-0 grid-cols-1 items-end gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {fields.map(k => <label key={k} className="min-w-0 text-xs font-bold capitalize">{k === 'play_url' ? 'Embed link' : k.replaceAll('_', ' ')}
         <input className={input} type={k.startsWith('gradient_') ? 'color' : typeof row[k] === 'number' ? 'number' : 'text'} value={f[k] ?? ''} onChange={e => setF({ ...f, [k]: typeof row[k] === 'number' ? Number(e.target.value) : e.target.value })} /></label>)}
       {Object.keys(row).filter(k => k.endsWith('image_url')).map(k => <ImagePicker key={k} label={k === 'image_url' ? table === 'packs' ? 'Pack image' : table === 'games' ? 'Application icon' : 'Blook image' : k === 'open_image_url' ? 'Pack open container image' : 'Bottom-right pattern image'} value={(f[k] as string | null) ?? null} onChange={url => setF({ ...f, [k]: url as string })} />)}
-      <Button type="button" disabled={save.isPending} onClick={() => save.mutate()}><Save className="size-3.5" />Save</Button>
-      <Button type="button" onClick={() => confirm(table === 'packs' ? 'Delete this pack? Its blooks and owned copies will be kept and unassigned.' : 'Delete this?') && del.mutate()} variant="destructive" className={btn} aria-label="Delete"><Trash2 className="size-3.5" /></Button>
     </div>
+    <div className="staff-actions"><Button type="button" disabled={save.isPending || del.isPending} onClick={() => confirm(table === 'packs' ? 'Delete this pack? Its blooks and owned copies will be kept and unassigned.' : 'Delete this?') && del.mutate()} variant="outline" aria-label="Delete" title="Delete"><Trash2 className="text-destructive" /></Button><Button type="button" disabled={save.isPending || del.isPending} onClick={() => save.mutate()}><Save />{save.isPending ? 'Saving…' : 'Save changes'}</Button></div>
     {(save.error || del.error) && <p className="mt-1 text-xs text-destructive">{(save.error ?? del.error)?.message}</p>}
     {save.isSuccess && <p className="mt-1 text-xs">Saved.</p>}
   </div>;
@@ -128,7 +128,7 @@ function RarityEditor() {
     if (r.error) throw r.error;
   }, onSuccess: () => { cache.invalidateQueries({ queryKey: ['market-appearance'] }); cache.invalidateQueries({ queryKey: ['admin-rarity'] }); } });
   return <section className="space-y-3 border-b border-surface-border pb-4"><h3 className="font-bold">Rarity colors</h3>
-    <div className="flex flex-wrap gap-4">{Object.entries(colors).map(([key, value]) => <label key={key} className="flex items-center gap-2 text-sm capitalize">{key}<input aria-label={`${key} color`} type="color" value={value} onChange={e => setDraft({ ...colors, [key]: e.target.value })} /></label>)}</div>
+    <div className="staff-rarity-grid">{Object.entries(colors).map(([key, value]) => <label key={key}>{key}<input aria-label={`${key} color`} type="color" value={value} onChange={e => setDraft({ ...colors, [key]: e.target.value })} /></label>)}</div>
     <Button size="sm" onClick={() => save.mutate()} disabled={!data || save.isPending}><Save />Save rarity colors</Button>
     {(error || save.error) && <p role="alert" className="text-destructive">{(error ?? save.error)?.message}</p>}
     {save.isSuccess && <p role="status">Saved.</p>}

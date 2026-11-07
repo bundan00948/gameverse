@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Coins, Minus, Plus } from 'lucide-react';
+import { Coins, Minus, Plus, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
@@ -23,6 +23,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   const [quantity, setQuantity] = useState(1);
   const [rates, setRates] = useState(false);
   const [pullIndex, setPullIndex] = useState(0);
+  const scene = useRef<HTMLDivElement>(null);
   const cost = purchaseTotal(pack.price, quantity);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
@@ -37,13 +38,16 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   });
   const result = buy.data?.[pullIndex];
   const pull = result ? { ...result, ...pack.blooks.find(b => b.id === result.id) } : undefined;
-  const glow = colors?.[pull?.rarity ?? 'common'] ?? rarityDefaults[pull?.rarity ?? 'common'] ?? 'var(--muted)';
+  const glow = stage === 'ready' ? safeColor(pack.gradient_start, '#17b9cc') : colors?.[pull?.rarity ?? 'common'] ?? rarityDefaults[pull?.rarity ?? 'common'] ?? 'var(--muted)';
   const total = pack.blooks.reduce((s, b) => s + b.weight, 0) || 1;
   const variables = { '--glow': glow, '--pack-start': safeColor(pack.gradient_start, '#17b9cc'), '--pack-end': safeColor(pack.gradient_end, '#308ee5') } as CSSProperties;
   function crack() { if (stage !== 'ready') return; setStage('burst'); timer.current = setTimeout(() => setStage('reveal'), 650); }
 
-  return <Dialog open onOpenChange={open => { if (!open && !buy.isPending) onClose(); }}>
-    <DialogContent aria-describedby={undefined} className={stage === 'confirm' ? 'pack-confirm' : 'pack-stage'} style={variables} onClick={() => { if (stage === 'reveal') onClose(); }}>
+  return <Dialog open onOpenChange={open => { if (!open && !buy.isPending && stage === 'confirm') onClose(); }}>
+    <DialogContent ref={scene} aria-describedby={undefined} className={stage === 'confirm' ? 'pack-confirm' : 'pack-stage translate-x-0 translate-y-0'} style={variables}
+      onPointerDownOutside={e => { if (buy.isPending || stage !== 'confirm') e.preventDefault(); }}
+      onEscapeKeyDown={e => { if (buy.isPending || stage !== 'confirm') e.preventDefault(); }}
+      onPointerMove={e => { if (stage === 'confirm') return; const rect = e.currentTarget.getBoundingClientRect(); scene.current?.style.setProperty('--scene-x', `${((e.clientX - rect.left) / rect.width) * 100}%`); scene.current?.style.setProperty('--scene-y', `${((e.clientY - rect.top) / rect.height) * 100}%`); }}>
       <DialogTitle className="sr-only">{stage === 'confirm' ? pack.name : `Opening ${pack.name}`}</DialogTitle>
       {stage === 'confirm' ? <>
         <div className="pack-preview market-pack-art">
@@ -70,13 +74,15 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
         {tokens < cost && <p className="mt-2 text-sm text-muted-foreground">Not enough tokens</p>}
         </div>
       </> : <>
+        <div aria-hidden className="pack-scene-gradient" />
         {pack.open_image_url && <img src={pack.open_image_url} alt="" className="pack-stage-background" />}
         {stage === 'reveal' && <div aria-hidden className="pack-rays absolute size-[160vmax]" />}
-        {stage === 'burst' && <><div aria-hidden className="pack-flash absolute inset-0 bg-foreground" />{Array.from({ length: 18 }, (_, i) => <span key={i} aria-hidden className="pack-spark absolute size-3 rounded-full bg-market-coin" style={{ '--a': `${i * 20}deg` } as CSSProperties} />)}</>}
-        {(stage === 'ready' || stage === 'burst') && <Button variant="ghost" onClick={crack} disabled={stage === 'burst'} aria-label={`Open ${pack.name}`} className={`opening-pack ${stage === 'ready' ? 'pack-wobble' : 'pack-break'}`}>
+        {stage === 'burst' && <><div aria-hidden className="pack-flash absolute inset-0 bg-foreground" />{Array.from({ length: 18 }, (_, i) => <span key={i} aria-hidden className="pack-spark absolute size-3 rounded-full" style={{ '--a': `${i * 20}deg` } as CSSProperties} />)}</>}
+        {stage === 'reveal' && <div key={`confetti-${pullIndex}`} aria-hidden className="pack-confetti">{Array.from({ length: 64 }, (_, i) => <span key={i} style={{ '--confetti-x': `${(i * 37) % 100}%`, '--confetti-delay': `${(i % 12) * 0.08}s`, '--confetti-duration': `${2.4 + (i % 5) * 0.25}s`, '--confetti-drift': `${(i % 2 ? 1 : -1) * (40 + i % 70)}px`, '--confetti-turn': `${(i % 2 ? 1 : -1) * (360 + i * 13)}deg` } as CSSProperties} />)}</div>}
+        {(stage === 'ready' || stage === 'burst') && <div className="pack-ready"><Button variant="ghost" onClick={crack} disabled={stage === 'burst'} aria-label={`Open ${pack.name}`} className={`opening-pack ${stage === 'ready' ? 'pack-wobble' : 'pack-break'}`}>
           <BlookArt src={pack.image_url} alt={pack.name} className="size-full" />{!pack.image_url && <span className="font-display text-3xl">{pack.name}</span>}
-        </Button>}
-        {stage === 'reveal' && pull && <div className="pack-result" onClick={e => e.stopPropagation()}>
+        </Button><Button size="lg" variant="secondary" disabled={stage === 'burst'} onClick={crack}><Sparkles />{stage === 'burst' ? 'Opening…' : 'Open pack'}</Button><span className="text-sm font-bold">{pullIndex + 1} / {buy.data?.length ?? 1}</span></div>}
+        {stage === 'reveal' && pull && <div key={`result-${pullIndex}`} className="pack-result" aria-live="polite">
           <BlookArt src={pull.image_url ?? null} alt={pull.name} className="pack-reveal size-56" />
           <h2 className="mt-6 font-display text-4xl">{pull.name}</h2><span className="rarity-label mt-2">{pull.rarity}</span>
           <div className="mt-8 flex flex-wrap justify-center gap-3"><Button disabled={sell.isPending || sold !== null} onClick={() => sell.mutate(pull.id)}>{sold !== null ? `Sold for ${sold}` : <>Sell <Coins />{sellPrice[pull.rarity] ?? 2}</>}</Button>{pullIndex + 1 < (buy.data?.length ?? 0) ? <Button onClick={() => { setPullIndex(i => i + 1); setSold(null); setStage('ready'); }}>Next Pack ({pullIndex + 1}/{buy.data?.length})</Button> : <Button variant="secondary" onClick={onClose}>Back to Market</Button>}</div>

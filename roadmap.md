@@ -1,5 +1,9 @@
 # Roadmap
 
+- [x] Fix pack-opening failure and layout shifting; verify an authenticated purchase and reveal
+- [x] Add rarity-blended falling confetti and interactive opening gradients
+- [x] Polish staff-panel layout and action buttons; verify desktop and phone
+
 - [x] Add game icon uploads and admin embed links
 - [x] Redesign Games and verify embedded play, history, and phone layout
 
