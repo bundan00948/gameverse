@@ -36,3 +36,4 @@ use the editor.
 - Store Market appearance on pack rows and rarity colors in the admin-protected market_settings table; validate saved colors before using them as CSS variables.
 - Quantity purchases use one authenticated atomic database function with a wallet row lock; purchased results are revealed sequentially without additional charges.
 - Blooks use nullable pack assignments with ON DELETE SET NULL; query the full catalog for admin and inventory so unassigned blooks and owned copies remain visible.
+- Admin sections use validated tab search state and mount only the selected panel; the legacy Blooks URL redirects to its integrated admin tab.
