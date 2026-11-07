@@ -1,8 +1,8 @@
 # Roadmap
 
-- [ ] Replace emoji artwork and redesign Market to match the supplied pack reference
-- [ ] Add admin picture, gradient, opening background, pattern, and rarity color controls
-- [ ] Verify saved appearance controls and authenticated pack opening
+- [x] Replace emoji artwork and redesign Market to match the supplied pack reference
+- [x] Add admin picture, gradient, opening background, pattern, and rarity color controls
+- [x] Verify saved appearance controls and authenticated purchase confirmation (full opening blocked: current player has 10 tokens)
 
 - [x] Connect real signup, login, logout and password recovery
 - [x] Add signed-in Games dashboard and editable player Profile pages with on-demand loading

@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { BlookArt } from '@/features/dashboard/blook-art';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { Lock, Search, X } from 'lucide-react';
 import { DashboardShell } from '@/features/account/dashboard-shell';
-import { collectionOptions, rarityClass } from '@/features/dashboard/data';
+import { appearanceOptions, collectionOptions } from '@/features/dashboard/data';
 import { PageError, meta } from '@/features/dashboard/page';
 
 export const Route = createFileRoute('/_authenticated/inventory')({
@@ -18,6 +18,7 @@ const select = 'rounded-lg border border-surface-border bg-surface px-3 py-2 tex
 
 function Inventory() {
   const { data } = useSuspenseQuery(collectionOptions());
+  const { data: colors } = useQuery(appearanceOptions());
   const [q, setQ] = useState(''); const [rarity, setRarity] = useState('all'); const [show, setShow] = useState('all');
   const [open, setOpen] = useState<Blook | null>(null);
   const all = data.flatMap(p => p.blooks);
@@ -57,7 +58,7 @@ function Inventory() {
         <button type="button" onClick={() => setOpen(null)} aria-label="Close" className="absolute right-3 top-3 rounded-md p-1 hover:bg-glass-hover"><X className="size-5" /></button>
         <div className="mx-auto grid size-28 place-items-center rounded-2xl bg-glass-hover text-6xl">{open.owned ? <BlookArt src={open.image_url} alt={open.name} className="size-24 text-7xl" /> : <Lock className="size-10 text-muted-foreground" />}</div>
         <h2 className="mt-4 font-display text-3xl">{open.owned ? open.name : '???'}</h2>
-        <p className={`text-sm font-bold uppercase ${rarityClass[open.rarity] ?? ''}`}>{open.rarity}</p>
+        <p className="text-sm font-bold uppercase" style={{ color: colors?.[open.rarity] }}>{open.rarity}</p>
         <dl className="mt-4 grid grid-cols-3 gap-2 text-sm">
           <div className="rounded-lg bg-glass-hover p-2"><dt className="text-xs text-muted-foreground">Pack</dt><dd className="font-bold">{open.pack}</dd></div>
           <div className="rounded-lg bg-glass-hover p-2"><dt className="text-xs text-muted-foreground">Owned</dt><dd className="font-bold">{open.owned}</dd></div>
