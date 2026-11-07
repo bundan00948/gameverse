@@ -19,7 +19,7 @@ export const Route = createFileRoute('/_authenticated/shop')({
 function Shop() {
   const { data: packs } = useSuspenseQuery(shopOptions()); const { data: wallet } = useSuspenseQuery(walletOptions()); const [chosen, setChosen] = useState<string | null>(null);
   const pack = packs.find(p => p.id === chosen);
-  return <DashboardShell bare market><div>
+  return <DashboardShell bare><div>
     <div className="flex flex-wrap items-center justify-between gap-3">
       <h1 className="font-display text-3xl drop-shadow-[0_3px_0_rgb(0_0_0/0.3)] sm:text-4xl">Market</h1>
           </div>
