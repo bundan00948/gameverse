@@ -1,6 +1,7 @@
 import { queryOptions } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { rarityColors } from './appearance';
+import { groupCollection } from './blook-catalog';
 
 async function uid() {
   const { data, error } = await supabase.auth.getUser();
@@ -48,12 +49,13 @@ export const inventoryOptions = () => queryOptions({ queryKey: ['inventory'], qu
 
 export const collectionOptions = () => queryOptions({ queryKey: ['collection'], queryFn: async () => {
   const id = await uid();
-  const [packs, mine] = await Promise.all([
-    supabase.from('packs').select('id, name, emoji, image_url, blooks(id, name, emoji, image_url, rarity, weight)').order('sort'),
+  const [packs, blooks, mine] = await Promise.all([
+    supabase.from('packs').select('id, name, image_url').order('sort'),
+    supabase.from('blooks').select('id, name, pack_id, emoji, image_url, rarity, weight'),
     supabase.from('user_blooks').select('blook_id, quantity').eq('user_id', id),
   ]);
   const own = new Map(ok(mine).map(m => [m.blook_id, m.quantity]));
-  return ok(packs).map(p => ({ ...p, blooks: p.blooks.map(b => ({ ...b, owned: own.get(b.id) ?? 0 })) }));
+  return groupCollection(ok(packs), ok(blooks), own);
 } });
 
 export const isAdminOptions = () => queryOptions({ queryKey: ['is-admin'], staleTime: 300_000, queryFn: async () => {
