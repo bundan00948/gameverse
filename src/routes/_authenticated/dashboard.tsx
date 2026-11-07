@@ -56,12 +56,14 @@ function Games() {
       <PageTitle kicker="Your universe" title="Games"><span className="text-sm font-bold text-muted-foreground">{data.length} games</span></PageTitle>
       <div className="mt-5 flex border-b border-surface-border pb-4"><label className="relative w-full sm:max-w-sm"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><input aria-label="Search games" placeholder="Search games…" value={search} onChange={e => setSearch(e.target.value)} className="w-full rounded-md border border-surface-border bg-surface py-2 pl-9 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" /></label></div>
       {!visible.length ? <Empty>{data.length ? 'No games match your search.' : 'No games added yet.'}</Empty> :
-      <div className="mt-6 grid grid-cols-3 gap-x-4 gap-y-6 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">{visible.map(game => <div key={game.id} className="min-w-0">
-        <Button variant="ghost" onClick={() => launch(game)} disabled={!gameEmbedUrl(game.play_url)} aria-label={`Play ${game.title}`} title={gameEmbedUrl(game.play_url) ? game.title : `${game.title} — coming soon`} className="aspect-square h-auto w-full overflow-hidden rounded-lg border border-surface-border bg-surface p-0 shadow-tile transition-transform hover:-translate-y-1 hover:bg-surface focus-visible:ring-2 disabled:opacity-60">
+      <div className="mt-6 grid grid-cols-4 gap-3 sm:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8">{visible.map(game => <div key={game.id} className="min-w-0">
+        <Button variant="ghost" onClick={() => launch(game)} disabled={!gameEmbedUrl(game.play_url)} aria-label={`Play ${game.title}`} title={gameEmbedUrl(game.play_url) ? game.title : `${game.title} — coming soon`} className="group relative aspect-square h-auto w-full overflow-hidden rounded-lg border border-surface-border bg-surface p-0 shadow-tile transition-transform hover:-translate-y-1 hover:bg-surface focus-visible:ring-2 disabled:opacity-60">
           {game.image_url && <img src={game.image_url} alt={game.title} loading="lazy" draggable={false} className="block size-full object-contain" />}
+          <span className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/65 p-2 text-center opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+            <span className="break-words text-xs font-bold text-white">{game.title}</span>
+            {!gameEmbedUrl(game.play_url) && <span className="text-[10px] text-white/70">Coming soon</span>}
+          </span>
         </Button>
-        <h2 className="mt-2 break-words text-center text-sm font-bold">{game.title}</h2>
-        {!gameEmbedUrl(game.play_url) && <p className="mt-1 text-center text-xs text-muted-foreground">Coming soon</p>}
       </div>)}</div>}
     </>}
   </DashboardShell>;
