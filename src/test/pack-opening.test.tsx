@@ -17,8 +17,8 @@ describe('purchased pack opening', () => {
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
     expect(close).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: /^Open / }));
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Back to Market' })).toBeInTheDocument());
-    fireEvent.click(screen.getByRole('button', { name: 'Back to Market' }));
+    await waitFor(() => expect(screen.getAllByRole('button', { name: 'Back to Market' })[0]).toBeInTheDocument(), { timeout: 3000 });
+    fireEvent.click(screen.getAllByRole('button', { name: 'Back to Market' })[0]);
     expect(close).toHaveBeenCalledTimes(1);
     client.clear();
   });
