@@ -13,6 +13,8 @@ import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import { SessionProvider } from "@/features/account/session";
+import { validatedPlayer } from "@/features/account/auth-user";
+import titanFont from "@/assets/fonts/titan-one-latin.woff2?url";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -90,12 +92,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Titan+One&family=Fredoka:wght@400;500;600;700&family=Nunito:wght@600;700;800&display=swap",
-      },
+      { rel: "preload", as: "font", type: "font/woff2", href: titanFont, crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
         href: appCss,
@@ -163,7 +160,7 @@ function RootComponent() {
   }, []);
   useEffect(() => {
     let active = true;
-    const refresh = () => { void supabase.auth.getUser().then(({ data }) => { if (active) setUser(data.user); }); };
+    const refresh = () => { void validatedPlayer().then(player => { if (active) setUser(player); }); };
     refresh();
     const profileChanged = (event: StorageEvent) => { if (event.key === 'gameverse-profile-updated') void queryClient.invalidateQueries({ queryKey: ['identities'] }); };
     window.addEventListener('storage', profileChanged);
