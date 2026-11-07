@@ -1,7 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
-import { Coins, Gamepad2, BarChart3, History, Store, Backpack, Target, MessageCircle, Settings, LogOut, ShieldCheck } from 'lucide-react';
+import { Gamepad2, BarChart3, History, Store, Backpack, Target, MessageCircle, Settings, LogOut, ShieldCheck } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { PlanetLogo } from '@/components/planet-logo';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,9 @@ import { usePlayer } from './session';
 import { walletOptions } from '@/features/dashboard/data';
 import { notificationsOptions, permissionsOptions } from '@/features/dashboard/roles';
 import { cn } from '@/lib/utils';
+import tokensIcon from '@/assets/icons/stats-tokens.png.asset.json';
+import { identitiesOptions } from '@/features/dashboard/roles';
+import { PlayerAvatar, PlayerName } from '@/features/dashboard/player-identity';
 
 const nav = [
   { to: '/stats', label: 'Stats', icon: BarChart3 },
@@ -26,7 +29,7 @@ const navClass =
 const activeClass = 'gv-nav-active';
 
 export function DashboardShell({ children, bare = false, market = false }: { children: ReactNode; bare?: boolean; market?: boolean }) {
-  const cache = useQueryClient(); const navigate = useNavigate(); const user = usePlayer(); const { data: perms = [] } = useQuery(permissionsOptions()); const isAdmin = perms.length > 0; const { data: notes = [] } = useQuery(notificationsOptions()); const unread = notes.filter(n => !n.read).length; const { data: wallet } = useQuery(walletOptions());
+  const cache = useQueryClient(); const navigate = useNavigate(); const user = usePlayer(); const { data: perms = [] } = useQuery(permissionsOptions()); const isAdmin = perms.length > 0; const { data: notes = [] } = useQuery(notificationsOptions()); const unread = notes.filter(n => !n.read).length; const { data: wallet } = useQuery(walletOptions()); const { data: ids } = useQuery(identitiesOptions()); const me = user ? ids?.get(user.id) : undefined;
   const [busy, setBusy] = useState(false); const [error, setError] = useState('');
   async function logout() {
     setBusy(true); await cache.cancelQueries(); cache.clear();
@@ -36,7 +39,7 @@ export function DashboardShell({ children, bare = false, market = false }: { chi
   }
   const name = (user?.user_metadata?.['username'] as string | undefined) || user?.email?.split('@')[0] || 'Player';
   return (
-    <div className={cn(market ? 'market-background' : 'bg-tiles', 'gv-shell min-h-dvh md:pl-56')}>
+    <div className={cn(market ? 'market-background' : 'bg-tiles', 'gv-shell relative min-h-dvh md:pl-56')}>
       <a href="#page-content" className="gv-skip-link">Skip to content</a>
       <aside aria-label="GameVerse sidebar" className="gv-sidebar z-20 flex flex-col border-b border-surface-border bg-surface md:fixed md:inset-y-0 md:left-0 md:w-56 md:border-b-0 md:border-r">
         <Link to="/" reloadDocument className="flex min-h-20 items-center gap-2 px-4 py-4 font-display text-2xl">
@@ -60,12 +63,13 @@ export function DashboardShell({ children, bare = false, market = false }: { chi
         </Button>
         {error && <p role="alert" className="px-3 pb-2 text-xs text-destructive">{error}</p>}
       </aside>
-      <header className="gv-topbar flex min-h-20 items-center justify-between gap-3 border-b border-surface-border px-4 sm:px-8">
-        <span className="text-xs font-bold uppercase text-muted-foreground">GameVerse / <span className="text-foreground">Player space</span></span>
-        <div className="flex min-w-0 items-center gap-3"><span aria-label={`${wallet?.tokens ?? 0} tokens`} className="flex shrink-0 items-center gap-2 font-display text-lg"><Coins aria-hidden="true" className="size-5 text-tile-c" />{wallet?.tokens ?? '–'}</span>
-        <Link to="/stats" preload={false} reloadDocument className="flex min-h-11 min-w-0 items-center gap-2 rounded-md border border-surface-border bg-surface px-3 text-sm font-bold"><span className="grid size-7 shrink-0 place-items-center rounded bg-primary font-display text-primary-foreground">{name[0]?.toUpperCase()}</span><span className="max-w-32 truncate">{name}</span></Link></div>
+      <header className="gv-topbar pointer-events-none absolute right-4 top-4 z-10 flex justify-end sm:right-8">
+        <div className="pointer-events-auto flex min-w-0 items-center gap-1 rounded-xl border border-surface-border bg-surface p-1 shadow-[0_4px_0_rgb(0_0_0/0.3)]">
+          <span aria-label={`${wallet?.tokens ?? 0} tokens`} className="flex shrink-0 items-center gap-1.5 px-2 font-display text-lg"><img src={tokensIcon.url} alt="" className="size-6 object-contain" />{wallet?.tokens ?? '–'}</span>
+          <Link to="/stats" preload={false} reloadDocument className="flex min-h-10 min-w-0 items-center gap-2 rounded-lg bg-glass-hover px-2 text-sm font-bold"><PlayerAvatar name={name} identity={me} className="size-7 rounded text-sm" /><PlayerName name={name} identity={me} className="max-w-32 truncate" /></Link>
+        </div>
       </header>
-      <main id="page-content" tabIndex={-1} className={cn('gv-content mx-auto w-full max-w-7xl p-4 sm:p-8', !bare && 'gv-standard-page')}>{children}</main>
+      <main id="page-content" tabIndex={-1} className={cn('gv-content mx-auto w-full max-w-7xl p-4 pt-20 sm:p-8 sm:pt-20', !bare && 'gv-standard-page')}>{children}</main>
     </div>
   );
 }
