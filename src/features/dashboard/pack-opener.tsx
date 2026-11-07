@@ -17,6 +17,7 @@ export const rarityStyle: Record<string, { glow: string; tag: string; label: str
   legendary: { glow: 'oklch(0.75 0.19 60)', tag: 'bg-[oklch(0.68_0.19_55)]', label: 'Legendary' },
   chroma: { glow: 'oklch(0.7 0.25 0)', tag: 'rarity-rainbow', label: 'Chroma' },
 };
+const packBg: Record<string, string> = { 'tile-a': 'bg-tile-a', 'tile-b': 'bg-tile-b', 'tile-c': 'bg-tile-c', 'tile-d': 'bg-tile-d' };
 const sellPrice: Record<string, number> = { common: 2, uncommon: 5, rare: 15, epic: 30, legendary: 75, chroma: 200 };
 
 export function PackOpener({ pack, tokens, onClose }: { pack: Pack; tokens: number; onClose: () => void }) {
@@ -66,7 +67,7 @@ export function PackOpener({ pack, tokens, onClose }: { pack: Pack; tokens: numb
 
       {(stage === 'ready' || stage === 'burst') && (
         <button type="button" onClick={crack} disabled={stage === 'burst'} aria-label={`Click to open ${pack.name}`}
-          className={cn('relative grid size-56 place-items-center rounded-2xl border-4 border-white/70 text-8xl shadow-2xl', `bg-${pack.color}`, stage === 'ready' ? 'pack-wobble' : 'pack-break')}>
+          className={cn('relative grid size-56 place-items-center rounded-2xl border-4 border-white/70 text-8xl shadow-2xl', packBg[pack.color] ?? 'bg-tile-a', stage === 'ready' ? 'pack-wobble' : 'pack-break')}>
           {pack.emoji}<span className="absolute -bottom-10 font-display text-lg text-white">Click to open!</span>
         </button>)}
 

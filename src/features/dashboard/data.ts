@@ -32,7 +32,7 @@ export const historyOptions = () => queryOptions({ queryKey: ['history'], queryF
   return ok(await supabase.from('game_plays').select('id, played_at, games(title, emoji)').eq('user_id', id).order('played_at', { ascending: false }).limit(50));
 } });
 
-export const shopOptions = () => queryOptions({ queryKey: ['shop'], staleTime: 60_000, queryFn: async () => ok(await supabase.from('packs').select('id, name, emoji, color, price, blooks(id, name, emoji, rarity)').order('sort')) });
+export const shopOptions = () => queryOptions({ queryKey: ['shop'], staleTime: 60_000, queryFn: async () => ok(await supabase.from('packs').select('id, name, emoji, color, price, blooks(id, name, emoji, rarity, weight)').order('sort')) });
 
 export const inventoryOptions = () => queryOptions({ queryKey: ['inventory'], queryFn: async () => {
   const id = await uid();
