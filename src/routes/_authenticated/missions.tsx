@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { Check } from 'lucide-react';
-import tokenIcon from '@/assets/icons/stats-tokens.png.asset.json';
+import tokenIcon from '@/assets/icons/gameverse-token.webp.asset.json';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { DashboardShell } from '@/features/account/dashboard-shell';

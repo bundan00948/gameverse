@@ -3,7 +3,7 @@ import { BlookArt } from '@/features/dashboard/blook-art';
 import { useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { PackOpener } from '@/features/dashboard/pack-opener';
-import tokenIcon from '@/assets/icons/stats-tokens.png.asset.json';
+import tokenIcon from '@/assets/icons/gameverse-token.webp.asset.json';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { shopOptions, walletOptions } from '@/features/dashboard/data';
 import { PageError, meta } from '@/features/dashboard/page';
