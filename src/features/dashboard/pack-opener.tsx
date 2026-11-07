@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Coins } from 'lucide-react';
+import { Coins, Minus, Plus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { BlookArt } from './blook-art';
 import { appearanceOptions } from './data';
 import { rarityDefaults, safeColor } from './appearance';
+import { purchaseTotal, validQuantity } from './purchase';
 
 type Blook = { id: string; name: string; image_url: string | null; rarity: string; weight: number };
 export type Pack = { id: string; name: string; image_url: string | null; gradient_start: string; gradient_end: string; open_image_url: string | null; pattern_image_url: string | null; price: number; blooks: Blook[] };
@@ -19,18 +20,22 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   const { data: colors } = useQuery(appearanceOptions());
   const [stage, setStage] = useState<'confirm' | 'ready' | 'burst' | 'reveal'>('confirm');
   const [sold, setSold] = useState<number | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const [rates, setRates] = useState(false);
+  const [pullIndex, setPullIndex] = useState(0);
+  const cost = purchaseTotal(pack.price, quantity);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
   const refresh = () => ['wallet', 'stats', 'inventory', 'collection', 'missions'].forEach(k => cache.invalidateQueries({ queryKey: [k] }));
   const buy = useMutation({
-    mutationFn: async () => { const r = await supabase.rpc('open_pack', { _pack: pack.id }); if (r.error) throw r.error; return r.data as unknown as Pull; },
+    mutationFn: async () => { const r = await supabase.rpc('open_packs', { _pack: pack.id, _quantity: quantity }); if (r.error) throw r.error; return r.data as unknown as Pull[]; },
     onSuccess: () => { refresh(); setStage('ready'); },
   });
   const sell = useMutation({
     mutationFn: async (id: string) => { const r = await supabase.rpc('sell_blook', { _blook: id }); if (r.error) throw r.error; return r.data; },
     onSuccess: n => { refresh(); setSold(n); },
   });
-  const result = buy.data;
+  const result = buy.data?.[pullIndex];
   const pull = result ? { ...result, ...pack.blooks.find(b => b.id === result.id) } : undefined;
   const glow = colors?.[pull?.rarity ?? 'common'] ?? rarityDefaults[pull?.rarity ?? 'common'] ?? 'var(--muted)';
   const total = pack.blooks.reduce((s, b) => s + b.weight, 0) || 1;
@@ -39,15 +44,31 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
 
   return <Dialog open onOpenChange={open => { if (!open && !buy.isPending) onClose(); }}>
     <DialogContent aria-describedby={undefined} className={stage === 'confirm' ? 'pack-confirm' : 'pack-stage'} style={variables} onClick={() => { if (stage === 'reveal') onClose(); }}>
-      <DialogTitle className={stage === 'confirm' ? 'font-display text-2xl' : 'sr-only'}>{stage === 'confirm' ? pack.name : `Opening ${pack.name}`}</DialogTitle>
+      <DialogTitle className="sr-only">{stage === 'confirm' ? pack.name : `Opening ${pack.name}`}</DialogTitle>
       {stage === 'confirm' ? <>
-        <ul className="max-h-[55vh] space-y-2 overflow-y-auto">{[...pack.blooks].sort((a, b) => b.weight - a.weight).map(b => <li key={b.id} className="flex items-center gap-2 rounded-md bg-glass p-2">
+        <div className="pack-preview market-pack-art">
+          {pack.pattern_image_url && <img src={pack.pattern_image_url} alt="" className="market-pack-pattern" />}
+          <BlookArt src={pack.image_url} alt={pack.name} className="market-pack-picture" />
+          {!pack.image_url && <span className="market-pack-name">{pack.name}</span>}
+        </div>
+        <div className="pack-purchase-details">
+        <h2 className="font-display text-3xl sm:text-4xl">{pack.name}</h2>
+        <Button variant="secondary" className="mt-3 self-start" aria-expanded={rates} aria-controls="pack-drop-rates" onClick={() => setRates(!rates)}>{rates ? 'Hide Drop Rates' : 'Show Drop Rates'}</Button>
+        <span className="pack-unit-price"><Coins className="size-5 text-market-coin" />{pack.price}</span>
+        {rates && <ul id="pack-drop-rates" className="pack-drop-rates">{[...pack.blooks].sort((a, b) => b.weight - a.weight).map(b => <li key={b.id} className="flex items-center gap-2 rounded-md bg-glass p-2">
           <BlookArt src={b.image_url} alt={b.name} className="size-10" /><span className="min-w-0 flex-1 font-bold">{b.name}</span>
           <span className="rarity-label" style={{ '--glow': colors?.[b.rarity] ?? rarityDefaults[b.rarity] } as CSSProperties}>{b.rarity}</span>
           <span className="text-sm">{((b.weight / total) * 100).toFixed(2)}%</span>
-        </li>)}</ul>
+        </li>)}</ul>}
+        <div className="pack-quantity"><label htmlFor="pack-quantity">Purchase Quantity:</label><div className="flex items-center gap-1">
+          <Button size="icon" variant="ghost" aria-label="Decrease quantity" disabled={quantity <= 1 || buy.isPending} onClick={() => setQuantity(n => n - 1)}><Minus /></Button>
+          <input id="pack-quantity" type="number" min="1" step="1" value={quantity} disabled={buy.isPending} onChange={e => setQuantity(Number(e.target.value))} />
+          <Button size="icon" variant="ghost" aria-label="Increase quantity" disabled={buy.isPending} onClick={() => setQuantity(n => n + 1)}><Plus /></Button>
+        </div></div>
         {buy.error && <p role="alert" className="text-destructive">{buy.error.message}</p>}
-        <Button disabled={buy.isPending || tokens < pack.price || !pack.blooks.length} onClick={() => buy.mutate()} className="font-display text-lg">{buy.isPending ? 'Purchasing…' : tokens < pack.price ? 'Not enough tokens' : <>Buy for <Coins />{pack.price}</>}</Button>
+        <Button disabled={buy.isPending || !validQuantity(quantity) || tokens < cost || !pack.blooks.length} onClick={() => buy.mutate()} className="pack-buy">{buy.isPending ? 'Purchasing…' : <>Buy {quantity} for <Coins className="text-market-coin" />{cost}</>}</Button>
+        {tokens < cost && <p className="mt-2 text-sm text-muted-foreground">Not enough tokens</p>}
+        </div>
       </> : <>
         {pack.open_image_url && <img src={pack.open_image_url} alt="" className="pack-stage-background" />}
         {stage === 'reveal' && <div aria-hidden className="pack-rays absolute size-[160vmax]" />}
@@ -58,7 +79,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
         {stage === 'reveal' && pull && <div className="pack-result" onClick={e => e.stopPropagation()}>
           <BlookArt src={pull.image_url ?? null} alt={pull.name} className="pack-reveal size-56" />
           <h2 className="mt-6 font-display text-4xl">{pull.name}</h2><span className="rarity-label mt-2">{pull.rarity}</span>
-          <div className="mt-8 flex flex-wrap justify-center gap-3"><Button disabled={sell.isPending || sold !== null} onClick={() => sell.mutate(pull.id)}>{sold !== null ? `Sold for ${sold}` : <>Sell <Coins />{sellPrice[pull.rarity] ?? 2}</>}</Button><Button variant="secondary" onClick={onClose}>Back to Market</Button></div>
+          <div className="mt-8 flex flex-wrap justify-center gap-3"><Button disabled={sell.isPending || sold !== null} onClick={() => sell.mutate(pull.id)}>{sold !== null ? `Sold for ${sold}` : <>Sell <Coins />{sellPrice[pull.rarity] ?? 2}</>}</Button>{pullIndex + 1 < (buy.data?.length ?? 0) ? <Button onClick={() => { setPullIndex(i => i + 1); setSold(null); setStage('ready'); }}>Next Pack ({pullIndex + 1}/{buy.data?.length})</Button> : <Button variant="secondary" onClick={onClose}>Back to Market</Button>}</div>
           {sell.error && <p role="alert" className="mt-2 text-destructive">{sell.error.message}</p>}
         </div>}
       </>}
