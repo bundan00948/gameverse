@@ -7,7 +7,8 @@ import { DashboardShell } from '@/features/account/dashboard-shell';
 import { usePlayer } from '@/features/account/session';
 import { chatOptions } from '@/features/dashboard/data';
 import { PageError, PageTitle, meta } from '@/features/dashboard/page';
-import { identitiesOptions, notificationsOptions, permissionsOptions, roleGradient, type Identity } from '@/features/dashboard/roles';
+import { identitiesOptions, notificationsOptions, permissionsOptions, roleTextStyle, type Identity } from '@/features/dashboard/roles';
+import { BadgeList, PlayerAvatar, PlayerName } from '@/features/dashboard/player-identity';
 
 export const Route = createFileRoute('/_authenticated/chat')({
   loader: ({ context }) => Promise.all([context.queryClient.ensureQueryData(chatOptions()), context.queryClient.ensureQueryData(identitiesOptions())]),
@@ -18,12 +19,10 @@ export const Route = createFileRoute('/_authenticated/chat')({
 type Msg = { id: string; username: string; body: string; user_id: string; reply_to: string | null; created_at: string };
 
 function Name({ name, identity }: { name: string; identity?: Identity | undefined }) {
-  const paint = roleGradient(identity?.role?.colors);
-  const style = paint ? { backgroundImage: paint.startsWith('#') ? undefined : paint, color: paint.startsWith('#') ? paint : 'transparent', backgroundClip: 'text', WebkitBackgroundClip: 'text' } : undefined;
   return <span className="inline-flex flex-wrap items-center gap-1.5">
-    <span className="font-bold" style={style}>{name}</span>
-    {identity?.role && <span className="text-xs font-bold" style={style}>[{identity.role.name}]</span>}
-    {identity?.badges.map(b => b.image_url ? <img key={b.id} src={b.image_url} alt={b.name} title={b.name} className="size-4 object-contain" /> : <span key={b.id} title={b.name} className="rounded bg-glass-hover px-1 text-[10px] font-bold">{b.name}</span>)}
+    <PlayerName name={name} identity={identity} />
+    {identity?.role && <span className="text-xs font-bold" style={roleTextStyle(identity.role.colors)}>[{identity.role.name}]</span>}
+    <BadgeList identity={identity} />
   </span>;
 }
 
@@ -46,7 +45,7 @@ function Chat() {
       {data.length === 0 && <p className="text-center text-muted-foreground">No messages yet — say hi!</p>}
       {data.map(m => { const parent = m.reply_to ? byId.get(m.reply_to) : undefined; const mentionsMe = parent?.user_id === user?.id && m.user_id !== user?.id; return (
         <div key={m.id} className={`group relative flex gap-3 rounded-lg px-2 py-1.5 hover:bg-glass-hover ${mentionsMe ? 'border-l-4 border-tile-d bg-tile-d/15' : ''}`}>
-          <span className="font-display grid size-9 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">{(m.username || 'P')[0]?.toUpperCase()}</span>
+          <PlayerAvatar name={m.username || 'Player'} identity={ids.get(m.user_id)} />
           <div className="min-w-0 flex-1">
             <p className="text-sm"><Name name={m.username || 'Player'} identity={ids.get(m.user_id)} /> <span className="ml-1 text-xs text-muted-foreground">{new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span></p>
             {m.reply_to && <p className="truncate text-xs text-muted-foreground"><Reply className="mr-1 inline size-3" />{parent ? <>@{parent.username || 'Player'}: {parent.body}</> : 'Original message unavailable'}</p>}
