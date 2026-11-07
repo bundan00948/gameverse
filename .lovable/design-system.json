@@ -443,7 +443,8 @@
       {
         "name": "--market-shadow",
         "raw": "0 5px 0 #1672a64d",
-        "source": "src/styles.css"
+        "source": "src/styles.css",
+        "usage": "Reach for this token on Market pack cards and purchase panels when you want the signature hard-edged drop shadow that gives shop elements their raised, game-like depth."
       }
     ],
     "other": [
