@@ -4,10 +4,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const backend = vi.hoisted(() => ({
   rpc: vi.fn(),
   getUser: vi.fn(),
+  getSession: vi.fn(),
   from: vi.fn(),
 }));
 vi.mock('@/integrations/supabase/client', () => ({
-  supabase: { rpc: backend.rpc, auth: { getUser: backend.getUser }, from: backend.from },
+  supabase: { rpc: backend.rpc, auth: { getUser: backend.getUser, getSession: backend.getSession }, from: backend.from },
 }));
 
 import { statsOptions, walletOptions } from '@/features/dashboard/data';
@@ -17,6 +18,7 @@ describe('Shared loading cache', () => {
     vi.clearAllMocks();
     backend.rpc.mockResolvedValue({ data: { tokens: 100, packs_opened: 2 }, error: null });
     backend.getUser.mockResolvedValue({ data: { user: { id: 'player' } }, error: null });
+    backend.getSession.mockResolvedValue({ data: { session: { user: { id: 'player' } } }, error: null });
     backend.from.mockImplementation(() => ({
       select: () => ({
         count: 10,
@@ -32,6 +34,7 @@ describe('Shared loading cache', () => {
     expect(stats.tokens).toBe(100);
     expect(backend.rpc).toHaveBeenCalledTimes(1);
     expect(backend.rpc).toHaveBeenCalledWith('ensure_wallet');
+    expect(backend.getUser).not.toHaveBeenCalled();
     client.clear();
   });
 

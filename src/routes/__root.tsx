@@ -13,7 +13,6 @@ import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import { SessionProvider } from "@/features/account/session";
-import { validatedPlayer } from "@/features/account/auth-user";
 import titanFont from "@/assets/fonts/titan-one-latin.woff2?url";
 
 import appCss from "../styles.css?url";
@@ -160,7 +159,8 @@ function RootComponent() {
   }, []);
   useEffect(() => {
     let active = true;
-    const refresh = () => { void validatedPlayer().then(player => { if (active) setUser(player); }); };
+    // Display identity uses the local session; the signed-in gate still verifies getUser().
+    const refresh = () => { void supabase.auth.getSession().then(({ data }) => { if (active) setUser(data.session?.user ?? null); }); };
     refresh();
     const profileChanged = (event: StorageEvent) => { if (event.key === 'gameverse-profile-updated') void queryClient.invalidateQueries({ queryKey: ['identities'] }); };
     window.addEventListener('storage', profileChanged);
