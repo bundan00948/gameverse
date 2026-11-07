@@ -267,7 +267,7 @@
 @media (max-width: 640px) { .pack-confirm { grid-template-columns: minmax(0,1fr); grid-template-rows: auto auto; align-content: start; padding: 20px; gap: 12px; } .pack-preview { width: min(100%,160px); justify-self: center; } .pack-purchase-details { padding-top: 0; } .pack-drop-rates { max-height: 120px; } .pack-quantity { padding-top: 12px; font-size: 18px; } .pack-buy { margin-top: 16px; min-height: 52px; } }
 .pack-stage { position: fixed; inset: 0; width: 100%; height: 100dvh; max-width: none; translate: none; transform: none; animation: none; border: 0; border-radius: 0; padding: 24px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--pedestal); color: var(--market-foreground); }
 .pack-stage > button:last-child { display: none; }
-.pack-scene-gradient { position: absolute; inset: -12%; pointer-events: none; background: radial-gradient(ellipse at var(--scene-x,50%) var(--scene-y,45%), color-mix(in srgb, var(--glow) 75%, transparent), transparent 62%), linear-gradient(135deg, color-mix(in srgb, var(--glow) 45%, var(--pedestal)), var(--pedestal)); animation: pack-scene-breathe 6s ease-in-out infinite alternate; }
+.pack-scene-gradient { position: absolute; inset: -12%; pointer-events: none; background: radial-gradient(ellipse at var(--scene-x,50%) var(--scene-y,45%), color-mix(in srgb, var(--glow) 75%, transparent), transparent 62%), linear-gradient(135deg, color-mix(in srgb, var(--glow) 45%, var(--pedestal)), var(--pedestal)); }
 @keyframes pack-scene-breathe { from { transform: scale(1) rotate(-4deg); opacity: .8; } to { transform: scale(1.08) rotate(4deg); opacity: 1; } }
 .pack-ready { position: relative; display: flex; flex-direction: column; align-items: center; gap: 24px; }
 .pack-rays { pointer-events: none; left: 50%; top: 50%; margin: -80vmax 0 0 -80vmax; will-change: transform; }
@@ -353,7 +353,6 @@
 .pack-unbox-half { position: absolute; inset: 0; z-index: 2; padding: 20px; border-radius: var(--market-radius); background: linear-gradient(145deg, var(--pack-start), var(--pack-end)); box-shadow: var(--shadow-tile); }
 .pack-unbox-half-top { clip-path: inset(0 0 62% 0); transform-origin: 0% 38%; }
 .pack-unbox-half-bot { clip-path: inset(38% 0 0 0); transform-origin: 50% 100%; }
-.pack-unbox:not(.torn) .pack-unbox-half { animation: pack-wobble 1.2s ease-in-out infinite; }
 .torn .pack-unbox-half-top { animation: packRipTopFlap .9s cubic-bezier(.3,.6,.4,1) forwards; }
 .pack-unbox-cover-drop .pack-unbox-half-bot { animation: packCoverFallAway .62s ease-in forwards; }
 .pack-unbox-click-layer { position: absolute; inset: 0; z-index: 6; cursor: pointer; background: transparent; border: 0; border-radius: var(--market-radius); -webkit-tap-highlight-color: transparent; }
@@ -381,6 +380,5 @@
 @media (prefers-reduced-motion: reduce) { .pack-unbox-half, .pack-unbox-blook, .pack-bg-rip-flash-dark, .pack-reveal-card { animation-duration: .01s !important; } }
 
 .pack-confetti span { animation-iteration-count: infinite; }
-.torn .pack-unbox-half-bot { animation: packTornShake .35s ease-out; }
 @keyframes packTornShake { 0%,100% { transform: none; } 30% { transform: translateX(-2%) rotate(-1.5deg); } 65% { transform: translateX(1.5%) rotate(1deg); } }
 .pack-unbox-cover-drop.torn .pack-unbox-half-bot { animation: packCoverFallAway .62s ease-in forwards; }
