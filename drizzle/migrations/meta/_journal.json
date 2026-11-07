@@ -78,6 +78,13 @@
       "when": 1794017179196,
       "tag": "0010_game_application_icons",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1794032722857,
+      "tag": "0011_roles_badges_replies",
+      "breakpoints": true
     }
   ]
 }
