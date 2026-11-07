@@ -100,7 +100,7 @@ function EditRow({ table, row, fields, onDone }: { table: TableName; row: Row; f
 }
 
 function Shop() {
-  const { data: packs } = useQuery({ queryKey: ['admin', 'packs', ''], queryFn: async () => { const r = await supabase.from('packs').select('id, name').order('sort'); if (r.error) throw r.error; return r.data; } });
+  const { data: packs } = useQuery({ queryKey: ['admin', 'packs', 'selector'], queryFn: async () => { const r = await supabase.from('packs').select('id, name').order('sort'); if (r.error) throw r.error; return r.data; } });
   const [pack, setPack] = useState('');
   return <div className="space-y-6">
     <RarityEditor />
