@@ -2,10 +2,14 @@ import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 
-type Ctx = { supabase: { rpc: (fn: 'has_role', args: { _user_id: string; _role: 'admin' }) => PromiseLike<{ data: boolean | null }> }; userId: string };
-async function assertAdmin(context: Ctx) {
-  const { data } = await context.supabase.rpc('has_role', { _user_id: context.userId, _role: 'admin' });
-  if (!data) throw new Error('Staff only');
+type Ctx = { supabase: { rpc: (fn: 'has_permission', args: { _user_id: string; _perm: string }) => PromiseLike<{ data: boolean | null }> }; userId: string };
+async function hasPerm(context: Ctx, perm: string) {
+  const { data } = await context.supabase.rpc('has_permission', { _user_id: context.userId, _perm: perm });
+  return !!data;
+}
+async function assertAdmin(context: Ctx, perms: string[] = ['users']) {
+  const checks = await Promise.all(perms.map(p => hasPerm(context, p)));
+  if (!checks.some(Boolean)) throw new Error('Staff only');
   const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
   return supabaseAdmin;
 }
@@ -13,7 +17,7 @@ async function assertAdmin(context: Ctx) {
 export const listUsers = createServerFn({ method: 'GET' })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const admin = await assertAdmin(context as unknown as Ctx);
+    const admin = await assertAdmin(context as unknown as Ctx, ['users', 'roles', 'badges']);
     const { data, error } = await admin.auth.admin.listUsers({ perPage: 200 });
     if (error) throw new Error(error.message);
     const ids = data.users.map(u => u.id);
@@ -39,11 +43,14 @@ export const updateUser = createServerFn({ method: 'POST' })
   }).parse(d))
   .handler(async ({ data, context }) => {
     const admin = await assertAdmin(context as unknown as Ctx);
-    if (data.id === (context as unknown as Ctx).userId && !data.admin) throw new Error("You can't remove your own staff access");
+    const ctx = context as unknown as Ctx;
+    const { data: isFull } = await (ctx.supabase.rpc as unknown as (f: 'has_role', a: { _user_id: string; _role: 'admin' }) => PromiseLike<{ data: boolean | null }>)('has_role', { _user_id: ctx.userId, _role: 'admin' });
+    if (data.id === ctx.userId && !data.admin) throw new Error("You can't remove your own staff access");
     const auth = await admin.auth.admin.updateUserById(data.id, { ...(data.password ? { password: data.password } : {}), user_metadata: { username: data.username } });
     if (auth.error) throw new Error(auth.error.message);
     await admin.from('profiles').update({ username: data.username, display_name: data.displayName }).eq('id', data.id);
     await admin.from('wallets').upsert({ user_id: data.id, tokens: data.tokens });
+    if (!isFull) return { ok: true };
     if (data.admin) await admin.from('user_roles').upsert({ user_id: data.id, role: 'admin' }, { onConflict: 'user_id,role' });
     else await admin.from('user_roles').delete().eq('user_id', data.id).eq('role', 'admin');
     return { ok: true };
