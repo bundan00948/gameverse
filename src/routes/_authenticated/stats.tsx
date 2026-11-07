@@ -21,8 +21,8 @@ export const Route = createFileRoute('/_authenticated/stats')({
   component: Stats, errorComponent: PageError, notFoundComponent: () => <p>Not found.</p>,
 });
 
-const box = 'rounded-xl bg-surface shadow-[0_6px_0_rgb(0_0_0/0.35)]';
-const tab = 'inline-block rounded-t-xl bg-surface px-6 pt-2 pb-1 font-display text-3xl shadow-[0_6px_0_rgb(0_0_0/0.35)]';
+const box = 'rounded-xl border border-white/10 bg-surface shadow-[0_6px_0_rgb(0_0_0/0.35)]';
+const tab = 'inline-block rounded-t-xl border border-b-0 border-white/10 bg-surface px-6 pt-2 pb-1 font-display text-3xl shadow-[0_6px_0_rgb(0_0_0/0.35)]';
 const btn = 'flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-bold text-white shadow-[0_4px_0_rgb(0_0_0/0.35)] transition hover:-translate-y-0.5 hover:brightness-110 active:translate-y-1 active:shadow-none disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 
 function Stats() {
@@ -64,8 +64,8 @@ function Stats() {
 
     <section className="mt-10">
       <h2 className={tab}>Stats</h2>
-      <div className={`${box} grid grid-cols-1 gap-4 rounded-tl-none p-5 sm:grid-cols-2 xl:grid-cols-4`}>{items.map(i => (
-        <div key={i.label} className="relative flex items-center gap-3 rounded-xl bg-glass-hover px-4 py-3 shadow-[0_4px_0_rgb(0_0_0/0.25)]">
+      <div className={`${box} grid grid-cols-1 gap-5 rounded-tl-none p-6 sm:grid-cols-2 xl:grid-cols-4`}>{items.map(i => (
+        <div key={i.label} className="relative flex items-center gap-4 rounded-xl border border-white/10 bg-glass-hover px-5 py-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_4px_0_rgb(0_0_0/0.25)]">
           <img src={i.icon} alt="" className={`size-12 shrink-0 object-contain object-center ${i.curved ? 'rotate-[8deg] rounded-[var(--market-radius)]' : ''}`} />
           <div className="min-w-0 flex-1 text-center"><p className="text-sm text-muted-foreground">{i.label}</p><p className="font-display text-3xl leading-none">{i.value.toLocaleString()}</p></div>
         </div>))}</div>
