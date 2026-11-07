@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { ImagePicker } from '@/features/dashboard/image-picker';
 import { listUsers } from '@/lib/admin.functions';
-import { permissionList, roleGradient } from '@/features/dashboard/roles';
+import { maxRoleColors, parseColorList, permissionList, roleTextStyle } from '@/features/dashboard/roles';
 
 const input = 'mt-1 w-full min-w-0 rounded-md border border-surface-border bg-background px-3 py-2 text-sm';
 type Player = { id: string; label: string };
@@ -44,16 +44,17 @@ function RoleRow({ role, players }: { role: Role; players: Player[] }) {
   const cache = useQueryClient(); const [f, setF] = useState(role);
   const save = useMutation({ mutationFn: async () => { const { error } = await supabase.from('staff_roles').update({ name: f.name, colors: f.colors, permissions: f.permissions, sort: f.sort }).eq('id', role.id); if (error) throw error; }, onSuccess: () => refresh(cache) });
   const del = useMutation({ mutationFn: async () => { const { error } = await supabase.from('staff_roles').delete().eq('id', role.id); if (error) throw error; }, onSuccess: () => refresh(cache) });
-  const paint = roleGradient(f.colors) ?? '#888888';
+  const [colorText, setColorText] = useState(role.colors.join(', '));
+  const setColors = (colors: string[]) => { setF({ ...f, colors }); setColorText(colors.join(', ')); };
   return <div className="rounded-lg border border-surface-border bg-surface p-4">
-    <p className="mb-3 font-display text-2xl" style={{ backgroundImage: paint.startsWith('#') ? undefined : paint, color: paint.startsWith('#') ? paint : 'transparent', backgroundClip: 'text', WebkitBackgroundClip: 'text' }}>{f.name || 'Role'}</p>
+    <p className="mb-3 font-display text-2xl" style={roleTextStyle(f.colors)}>{f.name || 'Role'}</p>
     <div className="grid gap-3 sm:grid-cols-[1fr_120px]">
       <label className="text-xs font-bold">Name<input className={input} value={f.name} maxLength={30} onChange={e => setF({ ...f, name: e.target.value })} /></label>
       <label className="text-xs font-bold">Order<input type="number" className={input} value={f.sort} onChange={e => setF({ ...f, sort: Number(e.target.value) })} /></label>
     </div>
-    <p className="mt-3 text-xs font-bold">Name colors (up to 5 makes a gradient)</p>
-    <div className="mt-1 flex flex-wrap items-center gap-2">{f.colors.map((c, i) => <span key={i} className="inline-flex items-center gap-1"><input type="color" aria-label={`Color ${i + 1}`} value={c} onChange={e => setF({ ...f, colors: f.colors.map((x, j) => j === i ? e.target.value : x) })} className="h-9 w-12 rounded" />{f.colors.length > 1 && <button type="button" aria-label={`Remove color ${i + 1}`} onClick={() => setF({ ...f, colors: f.colors.filter((_, j) => j !== i) })}><X className="size-4" /></button>}</span>)}
-      {f.colors.length < 5 && <Button type="button" size="sm" variant="outline" onClick={() => setF({ ...f, colors: [...f.colors, '#ffffff'] })}><Plus />Color</Button>}</div>
+    <label className="mt-3 block text-xs font-bold">Name colors (up to {maxRoleColors}, separated by commas)<input className={input + ' font-mono'} value={colorText} placeholder="#ff4d6d, #ffd166, #06d6a0" onChange={e => { setColorText(e.target.value); const c = parseColorList(e.target.value); if (c.length) setF({ ...f, colors: c }); }} /></label>
+    <div className="mt-1 flex flex-wrap items-center gap-2">{f.colors.map((c, i) => <span key={i} className="inline-flex items-center gap-1"><input type="color" aria-label={`Color ${i + 1}`} value={c} onChange={e => setColors(f.colors.map((x, j) => j === i ? e.target.value : x))} className="h-9 w-12 rounded" />{f.colors.length > 1 && <button type="button" aria-label={`Remove color ${i + 1}`} onClick={() => setColors(f.colors.filter((_, j) => j !== i))}><X className="size-4" /></button>}</span>)}
+      {f.colors.length < maxRoleColors && <Button type="button" size="sm" variant="outline" onClick={() => setColors([...f.colors, '#ffffff'])}><Plus />Color</Button>}</div>
     <p className="mt-3 text-xs font-bold">Access</p>
     <div className="mt-1 grid gap-1.5 sm:grid-cols-2 xl:grid-cols-4">{permissionList.map(p => <label key={p.key} className="flex items-center gap-2 text-sm"><input type="checkbox" checked={f.permissions.includes(p.key)} onChange={e => setF({ ...f, permissions: e.target.checked ? [...f.permissions, p.key] : f.permissions.filter(x => x !== p.key) })} />{p.label}</label>)}</div>
     <Members table="user_staff_roles" column="role_id" id={role.id} players={players} members={role.user_staff_roles.map(u => u.user_id)} />
