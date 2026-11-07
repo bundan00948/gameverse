@@ -50,8 +50,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   return <Dialog open onOpenChange={open => { if (!open && !buy.isPending && stage === 'confirm') onClose(); }}>
     <DialogContent ref={scene} aria-describedby={undefined} className={stage === 'confirm' ? 'pack-confirm' : 'pack-stage translate-x-0 translate-y-0'} style={variables}
       onPointerDownOutside={e => { if (buy.isPending || stage !== 'confirm') e.preventDefault(); }}
-      onEscapeKeyDown={e => { if (buy.isPending || stage !== 'confirm') e.preventDefault(); }}
-      onPointerMove={e => { return; const rect = e.currentTarget.getBoundingClientRect(); scene.current?.style.setProperty('--scene-x', `${((e.clientX - rect.left) / rect.width) * 100}%`); scene.current?.style.setProperty('--scene-y', `${((e.clientY - rect.top) / rect.height) * 100}%`); }}>
+      onEscapeKeyDown={e => { if (buy.isPending || stage !== 'confirm') e.preventDefault(); }}>
       <DialogTitle className="sr-only">{stage === 'confirm' ? pack.name : `Opening ${pack.name}`}</DialogTitle>
       {stage === 'confirm' ? <>
         <div className="pack-preview market-pack-art">
