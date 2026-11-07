@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           emoji: string
           id: string
+          image_url: string | null
           name: string
           pack_id: string
           rarity: string
@@ -26,6 +27,7 @@ export type Database = {
         Insert: {
           emoji: string
           id?: string
+          image_url?: string | null
           name: string
           pack_id: string
           rarity?: string
@@ -34,6 +36,7 @@ export type Database = {
         Update: {
           emoji?: string
           id?: string
+          image_url?: string | null
           name?: string
           pack_id?: string
           rarity?: string
@@ -184,6 +187,7 @@ export type Database = {
           color: string
           emoji: string
           id: string
+          image_url: string | null
           name: string
           price: number
           sort: number
@@ -192,6 +196,7 @@ export type Database = {
           color?: string
           emoji?: string
           id?: string
+          image_url?: string | null
           name: string
           price?: number
           sort?: number
@@ -200,6 +205,7 @@ export type Database = {
           color?: string
           emoji?: string
           id?: string
+          image_url?: string | null
           name?: string
           price?: number
           sort?: number

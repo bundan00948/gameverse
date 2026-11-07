@@ -29,6 +29,13 @@
       "when": 1794011880805,
       "tag": "0003_pack_sell",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794012193515,
+      "tag": "0004_pack_blook_images",
+      "breakpoints": true
     }
   ]
 }
