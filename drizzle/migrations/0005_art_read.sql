@@ -1,0 +1,1 @@
+CREATE POLICY "Signed in read art" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'art');
