@@ -6,7 +6,7 @@ export interface BlookArtProps extends HTMLAttributes<HTMLSpanElement> { src?: s
 export const BlookArt = forwardRef<HTMLSpanElement, BlookArtProps>(function BlookArt({ src, alt, className, ...props }, ref) {
   return (
     <span ref={ref} {...props} className={cn('inline-grid aspect-square size-12 shrink-0 place-items-center overflow-hidden leading-none', className)}>
-      {src && <img src={src} alt={alt} loading="lazy" draggable={false} className="block size-full min-h-0 min-w-0 object-contain object-center" />}
+      {src && <img src={src} alt={alt} decoding="async" draggable={false} className="block size-full min-h-0 min-w-0 object-contain object-center" />}
     </span>
   );
 });
