@@ -33,3 +33,4 @@ use the editor.
 - Signed-in pages live under the client-only `_authenticated` gate; public login remains `/login` with `/auth` redirect compatibility, because browser sessions cannot be read during SSR.
 - Auth identity is subscribed once in the root and shared through SessionContext; profile reads and writes use the browser Cloud client with owner-only RLS.
 - Dashboard destinations disable preloading and use automatic route code splitting so only the opened page fetches its content.
+- Store Market appearance on pack rows and rarity colors in the admin-protected market_settings table; validate saved colors before using them as CSS variables.

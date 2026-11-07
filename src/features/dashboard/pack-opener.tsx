@@ -56,7 +56,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
           <BlookArt src={pack.image_url} alt={pack.name} className="size-full" />{!pack.image_url && <span className="font-display text-3xl">{pack.name}</span>}
         </Button>}
         {stage === 'reveal' && pull && <div className="pack-result" onClick={e => e.stopPropagation()}>
-          <BlookArt src={pull.image_url} alt={pull.name} className="pack-reveal size-56" />
+          <BlookArt src={pull.image_url ?? null} alt={pull.name} className="pack-reveal size-56" />
           <h2 className="mt-6 font-display text-4xl">{pull.name}</h2><span className="rarity-label mt-2">{pull.rarity}</span>
           <div className="mt-8 flex flex-wrap justify-center gap-3"><Button disabled={sell.isPending || sold !== null} onClick={() => sell.mutate(pull.id)}>{sold !== null ? `Sold for ${sold}` : <>Sell <Coins />{sellPrice[pull.rarity] ?? 2}</>}</Button><Button variant="secondary" onClick={onClose}>Back to Market</Button></div>
           {sell.error && <p role="alert" className="mt-2 text-destructive">{sell.error.message}</p>}
