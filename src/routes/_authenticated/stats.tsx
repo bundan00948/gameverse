@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Star, Users, UserPlus, X, Pencil, Search } from 'lucide-react';
+import { Star, Users, UserPlus, X, Pencil, Search } from '@/lib/icons';
 import tokensIcon from '@/assets/icons/gameverse-token.webp.asset.json';
 import unlockedIcon from '@/assets/icons/stats-unlocked.png.asset.json';
 import openedIcon from '@/assets/icons/stats-opened.png.asset.json';

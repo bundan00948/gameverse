@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { RotateCw, Sparkles } from 'lucide-react';
+import { RotateCw, Sparkles } from '@/lib/icons';
 import tokenIcon from '@/assets/icons/gameverse-token.webp.asset.json';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';

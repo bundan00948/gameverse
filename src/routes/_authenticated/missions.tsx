@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { Check } from 'lucide-react';
+import { Check } from '@/lib/icons';
 import tokenIcon from '@/assets/icons/gameverse-token.webp.asset.json';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';

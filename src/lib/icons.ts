@@ -1,0 +1,23 @@
+// Per-icon imports avoid the full icon catalog in the development preview.
+export { default as Backpack } from 'lucide-react/dist/esm/icons/backpack.js';
+export { default as BarChart3 } from 'lucide-react/dist/esm/icons/chart-column.js';
+export { default as Check } from 'lucide-react/dist/esm/icons/check.js';
+export { default as Gamepad2 } from 'lucide-react/dist/esm/icons/gamepad-2.js';
+export { default as History } from 'lucide-react/dist/esm/icons/history.js';
+export { default as Lock } from 'lucide-react/dist/esm/icons/lock.js';
+export { default as LogOut } from 'lucide-react/dist/esm/icons/log-out.js';
+export { default as MessageCircle } from 'lucide-react/dist/esm/icons/message-circle.js';
+export { default as Moon } from 'lucide-react/dist/esm/icons/moon.js';
+export { default as Pencil } from 'lucide-react/dist/esm/icons/pencil.js';
+export { default as RotateCw } from 'lucide-react/dist/esm/icons/rotate-cw.js';
+export { default as Search } from 'lucide-react/dist/esm/icons/search.js';
+export { default as Settings } from 'lucide-react/dist/esm/icons/settings.js';
+export { default as ShieldCheck } from 'lucide-react/dist/esm/icons/shield-check.js';
+export { default as Sparkles } from 'lucide-react/dist/esm/icons/sparkles.js';
+export { default as Star } from 'lucide-react/dist/esm/icons/star.js';
+export { default as Store } from 'lucide-react/dist/esm/icons/store.js';
+export { default as Sun } from 'lucide-react/dist/esm/icons/sun.js';
+export { default as Target } from 'lucide-react/dist/esm/icons/target.js';
+export { default as UserPlus } from 'lucide-react/dist/esm/icons/user-plus.js';
+export { default as Users } from 'lucide-react/dist/esm/icons/users.js';
+export { default as X } from 'lucide-react/dist/esm/icons/x.js';
