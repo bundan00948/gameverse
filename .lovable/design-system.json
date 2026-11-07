@@ -724,6 +724,9 @@
       "name": "PackOpener",
       "file": "src/features/dashboard/pack-opener",
       "import_path": "",
+      "usage": "Use for pack selection with interchangeable artwork and drop rates, quantity shortcuts, and sequential purchased reveals.",
+      "examples": [{ "label": "Purchase a catalog pack", "code": "<PackOpener pack={selectedPack} tokens={wallet.tokens} onClose={() => setSelectedPack(null)} />" }],
+      "antipatterns": ["Do not add a frame or gradient container around the purchased pack artwork.", "Do not charge again when advancing through purchased pulls."],
       "props": [
         {
           "name": "pack",

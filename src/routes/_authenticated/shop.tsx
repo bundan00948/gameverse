@@ -3,7 +3,7 @@ import { BlookArt } from '@/features/dashboard/blook-art';
 import { useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { PackOpener } from '@/features/dashboard/pack-opener';
-import { Coins } from 'lucide-react';
+import tokenIcon from '@/assets/icons/stats-tokens.png.asset.json';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { shopOptions, walletOptions } from '@/features/dashboard/data';
 import { PageError, meta } from '@/features/dashboard/page';
@@ -31,7 +31,7 @@ function Shop() {
           <BlookArt src={p.image_url} alt={p.name} className="market-pack-picture" />
           {!p.image_url && <span className="market-pack-name">{p.name}</span>}
         </span>
-        <span className="market-pack-price"><Coins className="text-market-coin" />{p.price}</span>
+        <span className="market-pack-price"><img src={tokenIcon.url} alt="" className="size-5 object-contain" />{p.price}</span>
       </Button>))}</div></div>
     {pack && <PackOpener pack={pack} tokens={wallet.tokens} onClose={() => setChosen(null)} />}
   </DashboardShell>;
