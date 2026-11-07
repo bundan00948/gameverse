@@ -1,8 +1,8 @@
 # Roadmap
 
-- [ ] Move signed-in theme selection into Settings and verify persistence
-- [ ] Refresh all page layouts with shared original GameVerse styling
-- [ ] Fix accessibility issues and verify signed-in desktop and phone flows
+- [x] Move signed-in theme selection into Settings and verify persistence
+- [x] Refresh all page layouts with shared original GameVerse styling
+- [x] Fix accessibility issues and verify signed-in desktop and phone flows
 
 - [x] Fix pack-opening failure and layout shifting; verify an authenticated purchase and reveal
 - [x] Add rarity-blended falling confetti and interactive opening gradients

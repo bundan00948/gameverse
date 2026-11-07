@@ -156,7 +156,7 @@
   isolation: isolate;
   overflow: clip;
   background-color: var(--background);
-  transition: background-color 0.3s ease;
+  /* Change text and canvas together so theme switching never loses contrast. */
 
   &::before {
     content: "";
