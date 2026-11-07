@@ -297,8 +297,8 @@
 .gv-shell { --shadow-tile: var(--layout-shadow); }
 .gv-sidebar { box-shadow: 1px 0 0 var(--surface-border); }
 .gv-nav-link { flex-shrink: 0; white-space: nowrap; }
-.gv-nav-active { background: var(--glass-hover); color: var(--foreground); box-shadow: inset 3px 0 0 var(--layout-accent); }
-.gv-nav-active svg { color: var(--layout-accent); }
+.gv-nav-active { background: var(--glass-hover); color: var(--foreground); box-shadow: inset 3px 0 0 var(--border); }
+.gv-nav-active svg { color: var(--foreground); }
 .gv-topbar { background: transparent; }
 .gv-content { outline: none; padding-bottom: 3rem; }
 .gv-content > .gv-page-title, .gv-content > div:first-child > .gv-page-title { padding-bottom: 1.25rem; border-bottom: 1px solid var(--surface-border); }
