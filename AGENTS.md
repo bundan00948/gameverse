@@ -35,3 +35,4 @@ use the editor.
 - Dashboard destinations disable preloading and use automatic route code splitting so only the opened page fetches its content.
 - Store Market appearance on pack rows and rarity colors in the admin-protected market_settings table; validate saved colors before using them as CSS variables.
 - Quantity purchases use one authenticated atomic database function with a wallet row lock; purchased results are revealed sequentially without additional charges.
+- Blooks use nullable pack assignments with ON DELETE SET NULL; query the full catalog for admin and inventory so unassigned blooks and owned copies remain visible.
