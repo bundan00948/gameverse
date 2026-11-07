@@ -92,6 +92,13 @@
       "when": 1794033702124,
       "tag": "0012_profile_avatar_role_colors",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1794048018017,
+      "tag": "0013_player_directory_and_shared_stats",
+      "breakpoints": true
     }
   ]
 }

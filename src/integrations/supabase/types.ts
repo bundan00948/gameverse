@@ -529,6 +529,26 @@ export type Database = {
           user_id: string
         }[]
       }
+      player_directory: {
+        Args: never
+        Returns: {
+          display_name: string
+          image_url: string
+          user_id: string
+          username: string
+        }[]
+      }
+      player_stats: {
+        Args: { _player: string }
+        Returns: {
+          blooks: number
+          messages: number
+          packs_opened: number
+          plays: number
+          tokens: number
+          user_id: string
+        }[]
+      }
       record_play: { Args: { _game: string }; Returns: undefined }
       sell_blook: { Args: { _blook: string }; Returns: number }
     }

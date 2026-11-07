@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Add orange View Stats player search and other-player stats
+- [ ] Synchronize saved names, pictures, roles and badges across player displays
+- [ ] Verify profile viewing and synchronization with signed-in desktop and phone checks
+
 - [x] Move signed-in theme selection into Settings and verify persistence
 - [x] Refresh all page layouts with shared original GameVerse styling
 - [x] Fix accessibility issues and verify signed-in desktop and phone flows
