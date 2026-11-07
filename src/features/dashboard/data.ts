@@ -17,7 +17,9 @@ export const gamesOptions = () => queryOptions({ queryKey: ['games'], staleTime:
 
 export const walletOptions = () => queryOptions({ queryKey: ['wallet'], queryFn: async () => ok(await supabase.rpc('ensure_wallet')) });
 
-export const statsOptions = (player?: string) => queryOptions({ queryKey: ['stats', player ?? 'me'], queryFn: async () => {
+export const statsOptions = (player?: string) => queryOptions({ queryKey: ['stats', player ?? 'me'], queryFn: async () => ({ ...(await loadStats(player)), totalBlooks: (await supabase.from('blooks').select('id', { count: 'exact', head: true })).count ?? 0 }) });
+
+async function loadStats(player?: string) {
   if (player) {
     const rows = ok(await supabase.rpc('player_stats', { _player: player }));
     const row = rows[0];
@@ -33,7 +35,7 @@ export const statsOptions = (player?: string) => queryOptions({ queryKey: ['stat
   ]);
   const w = ok(wallet);
   return { tokens: w.tokens, packsOpened: w.packs_opened, blooks: ok(blooks).length, plays: plays.count ?? 0, messages: msgs.count ?? 0 };
-} });
+}
 
 export const historyOptions = () => queryOptions({ queryKey: ['history'], queryFn: async () => {
   const id = await uid();
