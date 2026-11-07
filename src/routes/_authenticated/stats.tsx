@@ -51,16 +51,18 @@ function Stats() {
   ];
   return <DashboardShell bare>
     <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-      <Button variant="ghost" type="button" disabled={!own} onClick={() => setPicking(true)} aria-label={own ? "Change profile picture" : `${name} profile picture`} className="group relative grid size-28 shrink-0 place-items-center rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-        <PlayerAvatar name={name} identity={me} className="size-28 rounded-2xl text-5xl" />
-        <span className="absolute bottom-1 right-1 grid size-7 place-items-center rounded-full bg-surface opacity-0 shadow transition group-hover:opacity-100 group-focus-visible:opacity-100"><Pencil className="size-3.5" /></span>
-      </Button>
-      <div className="w-full max-w-[22rem]">
-        <div className={`${box} px-5 py-2.5 text-center`}>
+      <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
+        <Button variant="ghost" type="button" disabled={!own} onClick={() => setPicking(true)} aria-label={own ? "Change profile picture" : `${name} profile picture`} className="group relative grid size-28 shrink-0 place-items-center rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <PlayerAvatar name={name} identity={me} className="size-28 rounded-2xl text-4xl" />
+          <span className="absolute bottom-1 right-1 grid size-7 place-items-center rounded-full bg-surface opacity-0 shadow transition group-hover:opacity-100 group-focus-visible:opacity-100"><Pencil className="size-3.5" /></span>
+        </Button>
+        <div className={`${box} w-full max-w-[22rem] px-5 py-2.5 text-center`}>
           <h1 className="truncate font-display text-3xl leading-tight"><PlayerName name={name} identity={me} className="font-normal" /></h1>
           <p className="text-xs text-muted-foreground" style={roleTextStyle(me?.role?.colors)}>{me?.role?.name ?? 'Player'}</p>
           {me?.badges.length ? <div className="mt-1.5 flex justify-center"><BadgeList identity={me} size="lg" /></div> : null}
         </div>
+      </div>
+      <div className="w-full max-w-[22rem]">
         <div className="mt-3 flex items-center">
           <span className="relative z-10 -mr-2.5 grid size-12 shrink-0 place-items-center"><Star className="absolute size-12 fill-tile-b text-tile-b drop-shadow" /><span className="relative font-display text-base text-white">{level}</span></span>
           <div className="h-3 flex-1 overflow-hidden rounded-r-full bg-black/40" title={`${5 - (data.plays % 5)} games to next level`}><div className="h-full bg-tile-b transition-all" style={{ width: `${xp}%` }} /></div>
