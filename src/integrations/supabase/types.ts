@@ -324,6 +324,7 @@ export type Database = {
       mission_progress: { Args: { _kind: string }; Returns: number }
       open_pack: { Args: { _pack: string }; Returns: Json }
       record_play: { Args: { _game: string }; Returns: undefined }
+      sell_blook: { Args: { _blook: string }; Returns: number }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
