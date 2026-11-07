@@ -1,0 +1,1 @@
+ALTER FUNCTION public.open_packs(uuid, integer) SECURITY DEFINER;
