@@ -6,6 +6,7 @@
 
 @theme inline {
   --font-display: "Titan One", "Fredoka", system-ui, sans-serif;
+  --font-nav: "Nunito", system-ui, sans-serif;
   --font-sans: "Quicksand", system-ui, sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);
