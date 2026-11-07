@@ -34,7 +34,7 @@ export function PackOpener({ pack, tokens, onClose }: { pack: Pack; tokens: numb
     onSuccess: n => { refresh(); setSold(n); setTimeout(onClose, 900); },
   });
   const total = pack.blooks.reduce((s, b) => s + b.weight, 0) || 1;
-  const pull = buy.data; const style = rarityStyle[pull?.rarity ?? 'common'] ?? rarityStyle.common!;
+  const pull = buy.data; const style = rarityStyle[pull?.rarity ?? 'common'] ?? rarityStyle['common']!;
 
   function crack() { setStage('burst'); setTimeout(() => setStage('reveal'), 650); }
 
