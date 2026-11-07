@@ -2,10 +2,12 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
 import { useState } from 'react';
-import { Trash2, Plus, Save, Shield, Users as UsersIcon, Store, Backpack, Gamepad2, Target } from 'lucide-react';
+import { Trash2, Plus, Save, Shield, Users as UsersIcon, Store, Backpack, Gamepad2, Target, Crown, Award } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { isAdminOptions } from '@/features/dashboard/data';
+import { permissionsOptions } from '@/features/dashboard/roles';
+import { RolesPanel, BadgesPanel } from '@/features/admin/roles-panel';
 import { PageError, PageTitle, meta } from '@/features/dashboard/page';
 import { ImagePicker } from '@/features/dashboard/image-picker';
 import { Button } from '@/components/ui/button';
@@ -25,31 +27,35 @@ export const Route = createFileRoute('/_authenticated/admin')({
 
 const input = 'mt-1 w-full min-w-0 rounded-md border border-surface-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const btn = 'inline-flex items-center gap-2 rounded-md px-3 py-2 text-xs font-bold disabled:opacity-50';
-const tabs = ['Users', 'Shop', 'Blooks', 'Games', 'Missions'] as const;
-const tabIcons = { Users: UsersIcon, Shop: Store, Blooks: Backpack, Games: Gamepad2, Missions: Target };
+const tabs = ['Users', 'Roles', 'Badges', 'Shop', 'Blooks', 'Games', 'Missions'] as const;
+const tabIcons = { Users: UsersIcon, Roles: Crown, Badges: Award, Shop: Store, Blooks: Backpack, Games: Gamepad2, Missions: Target };
+const tabPerm = { Users: 'users', Roles: 'roles', Badges: 'badges', Shop: 'shop', Blooks: 'blooks', Games: 'games', Missions: 'missions' } as const;
 
 function Admin() {
-  const { data: isAdmin, isLoading } = useQuery(isAdminOptions());
-  const { tab = 'Users' } = Route.useSearch();
+  const { data: perms = [], isLoading } = useQuery(permissionsOptions());
+  const { data: isFullAdmin = false } = useQuery(isAdminOptions());
+  const allowed = tabs.filter(t => perms.includes(tabPerm[t]));
+  const search = Route.useSearch();
+  const tab = search.tab && allowed.includes(search.tab) ? search.tab : allowed[0];
   const navigate = Route.useNavigate();
   if (isLoading) return <DashboardShell><p>Loading…</p></DashboardShell>;
-  if (!isAdmin) return <DashboardShell><PageTitle kicker="Staff" title="Admin Panel" /><p className="mt-4 text-muted-foreground">This page is for staff only.</p></DashboardShell>;
+  if (!tab) return <DashboardShell><PageTitle kicker="Staff" title="Admin Panel" /><p className="mt-4 text-muted-foreground">This page is for staff only.</p></DashboardShell>;
   return <DashboardShell bare><div className="staff-workspace">
     <PageTitle kicker="Staff" title="Admin Panel" />
-    <nav aria-label="Admin sections" className="staff-tabs">{tabs.map(t => { const Icon = tabIcons[t]; return <Button key={t} type="button" variant={tab === t ? 'default' : 'ghost'} aria-pressed={tab === t} onClick={() => navigate({ search: { tab: t }, replace: true })} className="gap-2 font-bold"><Icon />{t}</Button>; })}</nav>
-    <div className="mt-6">{tab === 'Blooks' ? <BlooksPanel /> : tab === 'Users' ? <Users /> : tab === 'Shop' ? <Shop /> : tab === 'Games' ? <Table title="Games" table="games" fields={['title', 'description', 'play_url']} blank={{ emoji: '', title: 'New game', description: '', play_url: '' }} /> : <Table title="Missions" table="missions" fields={['title', 'kind', 'goal', 'reward']} blank={{ title: 'New mission', kind: 'plays', goal: 5, reward: 10 }} />}</div>
+    <nav aria-label="Admin sections" className="staff-tabs">{allowed.map(t => { const Icon = tabIcons[t]; return <Button key={t} type="button" variant={tab === t ? 'default' : 'ghost'} aria-pressed={tab === t} onClick={() => navigate({ search: { tab: t }, replace: true })} className="gap-2 font-bold"><Icon />{t}</Button>; })}</nav>
+    <div className="mt-6">{tab === 'Blooks' ? <BlooksPanel /> : tab === 'Users' ? <Users canGrantStaff={isFullAdmin} /> : tab === 'Roles' ? <RolesPanel /> : tab === 'Badges' ? <BadgesPanel /> : tab === 'Shop' ? <Shop /> : tab === 'Games' ? <Table title="Games" table="games" fields={['title', 'description', 'play_url']} blank={{ emoji: '', title: 'New game', description: '', play_url: '' }} /> : <Table title="Missions" table="missions" fields={['title', 'kind', 'goal', 'reward']} blank={{ title: 'New mission', kind: 'plays', goal: 5, reward: 10 }} />}</div>
   </div></DashboardShell>;
 }
 
 type U = Awaited<ReturnType<typeof listUsers>>[number];
-function Users() {
+function Users({ canGrantStaff }: { canGrantStaff: boolean }) {
   const fetchUsers = useServerFn(listUsers);
   const { data, error, isLoading } = useQuery({ queryKey: ['admin-users'], queryFn: () => fetchUsers() });
   if (isLoading) return <p>Loading players…</p>;
   if (error) return <p className="text-destructive">{error.message}</p>;
-  return <div className="space-y-4">{data?.map(u => <UserRow key={u.id} u={u} />)}</div>;
+  return <div className="space-y-4">{data?.map(u => <UserRow key={u.id} u={u} canGrantStaff={canGrantStaff} />)}</div>;
 }
-function UserRow({ u }: { u: U }) {
+function UserRow({ u, canGrantStaff }: { u: U; canGrantStaff: boolean }) {
   const cache = useQueryClient(); const save = useServerFn(updateUser); const del = useServerFn(deleteUser);
   const [f, setF] = useState({ username: u.username, displayName: u.displayName, tokens: u.tokens, password: '', admin: u.admin });
   const m = useMutation({ mutationFn: () => save({ data: { id: u.id, ...f, password: f.password || undefined } }), onSuccess: () => { setF(s => ({ ...s, password: '' })); cache.invalidateQueries({ queryKey: ['admin-users'] }); } });
@@ -61,7 +67,7 @@ function UserRow({ u }: { u: U }) {
       <label className="text-xs">Display name<input className={input} value={f.displayName} onChange={e => setF({ ...f, displayName: e.target.value })} /></label>
       <label className="text-xs">Tokens<input type="number" className={input} value={f.tokens} onChange={e => setF({ ...f, tokens: Number(e.target.value) })} /></label>
       <label className="text-xs">New password<input type="password" placeholder="leave blank to keep" className={input} value={f.password} onChange={e => setF({ ...f, password: e.target.value })} /></label>
-      <label className="flex items-end gap-1 pb-1 text-xs font-bold"><input type="checkbox" checked={f.admin} onChange={e => setF({ ...f, admin: e.target.checked })} /><Shield className="size-3.5" />Staff</label>
+      <label className="flex items-end gap-1 pb-1 text-xs font-bold"><input type="checkbox" disabled={!canGrantStaff} checked={f.admin} onChange={e => setF({ ...f, admin: e.target.checked })} /><Shield className="size-3.5" />Full admin</label>
       <div className="flex items-end justify-end gap-2 sm:col-span-2 xl:col-span-3">
         <Button type="button" disabled={m.isPending} onClick={() => m.mutate()}><Save className="size-3.5" />Save</Button>
         <Button type="button" disabled={d.isPending} onClick={() => confirm(`Delete ${u.email}?`) && d.mutate()} variant="destructive" className={btn} aria-label="Delete user"><Trash2 className="size-3.5" /></Button>

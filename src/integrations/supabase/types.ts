@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      badges: {
+        Row: {
+          description: string
+          id: string
+          image_url: string | null
+          name: string
+          sort: number
+        }
+        Insert: {
+          description?: string
+          id?: string
+          image_url?: string | null
+          name: string
+          sort?: number
+        }
+        Update: {
+          description?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          sort?: number
+        }
+        Relationships: []
+      }
       blooks: {
         Row: {
           emoji: string
@@ -57,6 +81,7 @@ export type Database = {
           body: string
           created_at: string
           id: string
+          reply_to: string | null
           user_id: string
           username: string
         }
@@ -64,6 +89,7 @@ export type Database = {
           body: string
           created_at?: string
           id?: string
+          reply_to?: string | null
           user_id?: string
           username?: string
         }
@@ -71,10 +97,19 @@ export type Database = {
           body?: string
           created_at?: string
           id?: string
+          reply_to?: string | null
           user_id?: string
           username?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_reply_to_fkey"
+            columns: ["reply_to"]
+            isOneToOne: false
+            referencedRelation: "chat_messages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       game_plays: {
         Row: {
@@ -200,6 +235,44 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          actor_name: string
+          body: string
+          created_at: string
+          id: string
+          message_id: string | null
+          read: boolean
+          user_id: string
+        }
+        Insert: {
+          actor_name?: string
+          body?: string
+          created_at?: string
+          id?: string
+          message_id?: string | null
+          read?: boolean
+          user_id: string
+        }
+        Update: {
+          actor_name?: string
+          body?: string
+          created_at?: string
+          id?: string
+          message_id?: string | null
+          read?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "chat_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       packs: {
         Row: {
           color: string
@@ -263,6 +336,56 @@ export type Database = {
         }
         Relationships: []
       }
+      staff_roles: {
+        Row: {
+          colors: string[]
+          created_at: string
+          id: string
+          name: string
+          permissions: string[]
+          sort: number
+        }
+        Insert: {
+          colors?: string[]
+          created_at?: string
+          id?: string
+          name: string
+          permissions?: string[]
+          sort?: number
+        }
+        Update: {
+          colors?: string[]
+          created_at?: string
+          id?: string
+          name?: string
+          permissions?: string[]
+          sort?: number
+        }
+        Relationships: []
+      }
+      user_badges: {
+        Row: {
+          badge_id: string
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_blooks: {
         Row: {
           blook_id: string
@@ -307,6 +430,29 @@ export type Database = {
         }
         Relationships: []
       }
+      user_staff_roles: {
+        Row: {
+          role_id: string
+          user_id: string
+        }
+        Insert: {
+          role_id: string
+          user_id: string
+        }
+        Update: {
+          role_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_staff_roles_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "staff_roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wallets: {
         Row: {
           last_claim: string | null
@@ -350,6 +496,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      has_permission: {
+        Args: { _perm: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -358,6 +508,7 @@ export type Database = {
         Returns: boolean
       }
       mission_progress: { Args: { _kind: string }; Returns: number }
+      my_permissions: { Args: never; Returns: string[] }
       open_pack: { Args: { _pack: string }; Returns: Json }
       open_packs: { Args: { _pack: string; _quantity: number }; Returns: Json }
       record_play: { Args: { _game: string }; Returns: undefined }
