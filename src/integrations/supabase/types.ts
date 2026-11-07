@@ -132,6 +132,21 @@ export type Database = {
         }
         Relationships: []
       }
+      market_settings: {
+        Row: {
+          colors: Json
+          id: string
+        }
+        Insert: {
+          colors?: Json
+          id?: string
+        }
+        Update: {
+          colors?: Json
+          id?: string
+        }
+        Relationships: []
+      }
       mission_claims: {
         Row: {
           claimed_at: string
@@ -186,27 +201,39 @@ export type Database = {
         Row: {
           color: string
           emoji: string
+          gradient_end: string
+          gradient_start: string
           id: string
           image_url: string | null
           name: string
+          open_image_url: string | null
+          pattern_image_url: string | null
           price: number
           sort: number
         }
         Insert: {
           color?: string
           emoji?: string
+          gradient_end?: string
+          gradient_start?: string
           id?: string
           image_url?: string | null
           name: string
+          open_image_url?: string | null
+          pattern_image_url?: string | null
           price?: number
           sort?: number
         }
         Update: {
           color?: string
           emoji?: string
+          gradient_end?: string
+          gradient_start?: string
           id?: string
           image_url?: string | null
           name?: string
+          open_image_url?: string | null
+          pattern_image_url?: string | null
           price?: number
           sort?: number
         }

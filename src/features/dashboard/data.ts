@@ -1,5 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { rarityColors } from './appearance';
 
 async function uid() {
   const { data, error } = await supabase.auth.getUser();
@@ -32,7 +33,13 @@ export const historyOptions = () => queryOptions({ queryKey: ['history'], queryF
   return ok(await supabase.from('game_plays').select('id, played_at, games(title, emoji)').eq('user_id', id).order('played_at', { ascending: false }).limit(50));
 } });
 
-export const shopOptions = () => queryOptions({ queryKey: ['shop'], staleTime: 60_000, queryFn: async () => ok(await supabase.from('packs').select('id, name, emoji, image_url, color, price, blooks(id, name, emoji, image_url, rarity, weight)').order('sort')) });
+export const shopOptions = () => queryOptions({ queryKey: ['shop'], staleTime: 60_000, queryFn: async () => ok(await supabase.from('packs').select('id, name, image_url, gradient_start, gradient_end, open_image_url, pattern_image_url, price, blooks(id, name, image_url, rarity, weight)').order('sort')) });
+
+export const appearanceOptions = () => queryOptions({ queryKey: ['market-appearance'], queryFn: async () => {
+  const r = await supabase.from('market_settings').select('colors').eq('id', 'rarity').maybeSingle();
+  if (r.error) throw r.error;
+  return rarityColors(r.data?.colors);
+} });
 
 export const inventoryOptions = () => queryOptions({ queryKey: ['inventory'], queryFn: async () => {
   const id = await uid();

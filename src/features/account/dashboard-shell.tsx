@@ -24,7 +24,7 @@ const navClass =
   'group flex items-center gap-2.5 rounded-md px-3 py-1.5 text-[15px] font-bold text-muted-foreground transition-colors hover:bg-glass-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const activeClass = 'bg-foreground !text-background hover:bg-foreground';
 
-export function DashboardShell({ children, bare = false }: { children: ReactNode; bare?: boolean }) {
+export function DashboardShell({ children, bare = false, market = false }: { children: ReactNode; bare?: boolean; market?: boolean }) {
   const cache = useQueryClient(); const navigate = useNavigate(); const user = usePlayer(); const { data: isAdmin } = useQuery(isAdminOptions()); const { data: wallet } = useQuery(walletOptions());
   const [busy, setBusy] = useState(false); const [error, setError] = useState('');
   async function logout() {
@@ -35,7 +35,7 @@ export function DashboardShell({ children, bare = false }: { children: ReactNode
   }
   const name = (user?.user_metadata?.['username'] as string | undefined) || user?.email?.split('@')[0] || 'Player';
   return (
-    <main className="bg-tiles min-h-screen md:pl-52">
+    <main className={cn(market ? 'market-background' : 'bg-tiles', 'min-h-screen md:pl-52')}>
       <aside className="z-20 flex flex-col border-b border-surface-border bg-surface md:fixed md:inset-y-0 md:left-0 md:w-52 md:border-b-0 md:border-r">
         <Link to="/" reloadDocument className="flex items-center gap-2 px-4 py-4 font-display text-2xl tracking-wide">
           <PlanetLogo className="size-8" />GameVerse
