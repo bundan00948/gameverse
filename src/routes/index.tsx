@@ -27,13 +27,13 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="bg-tiles min-h-screen overflow-x-clip">
+    <div className="bg-tiles min-h-dvh overflow-x-clip">
       <SiteHeader />
 
       {/* Hero */}
-      <section className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] items-center gap-14 px-6 pb-14 pt-6 sm:px-10 lg:min-h-[calc(75vh-88px)] lg:pb-16">
+      <main className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] items-center gap-14 px-6 pb-14 pt-6 sm:px-10 lg:min-h-[calc(75vh-88px)] lg:pb-16">
         <div>
-          <h1 className="font-display flex items-center gap-[0.15em] text-[11.5vw] leading-[0.9] tracking-tight sm:text-[10vw] lg:text-[6.4vw] xl:text-[6rem]">
+          <h1 className="font-display flex items-center gap-[0.15em] text-3xl leading-[0.9]  sm:text-6xl lg:text-7xl xl:text-[6rem]">
             <PlanetLogo className="size-[1.5em] shrink-0" />
             GameVerse
           </h1>
@@ -57,7 +57,7 @@ function Index() {
           </div>
         </div>
 
-      </section>
+      </main>
 
       <footer className="border-t border-surface-border">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-6 text-sm text-muted-foreground sm:flex-row sm:px-10">

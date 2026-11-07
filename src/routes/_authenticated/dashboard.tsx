@@ -59,9 +59,9 @@ function Games() {
       <div className="mt-6 grid grid-cols-4 gap-3 sm:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8">{visible.map(game => <div key={game.id} className="min-w-0">
         <Button variant="ghost" onClick={() => launch(game)} disabled={!gameEmbedUrl(game.play_url)} aria-label={`Play ${game.title}`} title={gameEmbedUrl(game.play_url) ? game.title : `${game.title} — coming soon`} className="group relative aspect-square h-auto w-full overflow-hidden rounded-lg border border-surface-border bg-surface p-0 shadow-tile transition-transform hover:-translate-y-1 hover:bg-surface focus-visible:ring-2 disabled:opacity-60">
           {game.image_url && <img src={game.image_url} alt={game.title} loading="lazy" draggable={false} className="block size-full object-contain" />}
-          <span className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/65 p-2 text-center opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
-            <span className="break-words text-xs font-bold text-white">{game.title}</span>
-            {!gameEmbedUrl(game.play_url) && <span className="text-[10px] text-white/70">Coming soon</span>}
+          <span className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-overlay-background p-2 text-center opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+            <span className="break-words text-xs font-bold text-overlay-foreground">{game.title}</span>
+            {!gameEmbedUrl(game.play_url) && <span className="text-[10px] text-overlay-foreground">Coming soon</span>}
           </span>
         </Button>
       </div>)}</div>}

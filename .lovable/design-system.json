@@ -483,7 +483,17 @@
     {
       "name": "ThemeToggle",
       "file": "src/components/theme-toggle",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Use on public pages to change the remembered GameVerse theme. Signed-in appearance is selected in Settings.",
+      "examples": [
+        {
+          "label": "Typical usage",
+          "code": "<ThemeToggle />"
+        }
+      ],
+      "antipatterns": [
+        "Do not add another signed-in sidebar theme toggle."
+      ]
     },
     {
       "name": "Button",
@@ -519,6 +529,16 @@
           "type": "boolean",
           "default": "false"
         }
+      ],
+      "usage": "Use for actions with consistent touch targets and keyboard focus.",
+      "examples": [
+        {
+          "label": "Typical usage",
+          "code": "<Button onClick={saveProfile}>Save profile</Button>"
+        }
+      ],
+      "antipatterns": [
+        "Do not omit accessible names on icon-only actions."
       ]
     },
     {
@@ -549,7 +569,17 @@
     {
       "name": "DialogContent",
       "file": "src/components/ui/dialog",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Use within Dialog for focus trapping, Escape handling, and accessible modal contents.",
+      "examples": [
+        {
+          "label": "Typical usage",
+          "code": "<Dialog open={open} onOpenChange={setOpen}><DialogContent aria-describedby={undefined}><DialogTitle>Choose a blook</DialogTitle></DialogContent></Dialog>"
+        }
+      ],
+      "antipatterns": [
+        "Do not hand-build modal focus behavior or omit DialogTitle."
+      ]
     },
     {
       "name": "DialogHeader",
@@ -574,17 +604,47 @@
     {
       "name": "AuthForm",
       "file": "src/features/account/auth-form",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Use the GameVerse account form for login or registration with visible field labels.",
+      "examples": [
+        {
+          "label": "Typical usage",
+          "code": "<AuthForm register />"
+        }
+      ],
+      "antipatterns": [
+        "Do not remove visible labels or expose credentials in error messages."
+      ]
     },
     {
       "name": "DashboardShell",
       "file": "src/features/account/dashboard-shell",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Wrap each signed-in page in the shared navigation and single main landmark. Keep data fetching in the page loader.",
+      "examples": [
+        {
+          "label": "Typical usage",
+          "code": "<DashboardShell bare><PageTitle kicker=\"Your universe\" title=\"Games\" /></DashboardShell>"
+        }
+      ],
+      "antipatterns": [
+        "Do not nest another main landmark or wrap whole page sections in cards."
+      ]
     },
     {
       "name": "PasswordForm",
       "file": "src/features/account/password-form",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Use for email recovery or password reset with announced submission results.",
+      "examples": [
+        {
+          "label": "Typical usage",
+          "code": "<PasswordForm recovery />"
+        }
+      ],
+      "antipatterns": [
+        "Do not display submission failures only visually."
+      ]
     },
     {
       "name": "SessionContext",
@@ -647,6 +707,16 @@
           "type": "function",
           "required": true
         }
+      ],
+      "usage": "Use in staff forms for an image preview, keyboard-accessible upload, and remove action.",
+      "examples": [
+        {
+          "label": "Typical usage",
+          "code": "<ImagePicker label=\"Pack image\" value={image} onChange={setImage} />"
+        }
+      ],
+      "antipatterns": [
+        "Do not crop uploaded art or replace it with emoji."
       ]
     },
     {
@@ -674,17 +744,47 @@
     {
       "name": "PageTitle",
       "file": "src/features/dashboard/page",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Use for a consistent page heading and optional page actions.",
+      "examples": [
+        {
+          "label": "Typical usage",
+          "code": "<PageTitle kicker=\"Recently played\" title=\"History\" />"
+        }
+      ],
+      "antipatterns": [
+        "Do not skip heading levels."
+      ]
     },
     {
       "name": "PageError",
       "file": "src/features/dashboard/page",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Use for page failures with a keyboard-accessible retry action.",
+      "examples": [
+        {
+          "label": "Typical usage",
+          "code": "<PageError error={error} />"
+        }
+      ],
+      "antipatterns": [
+        "Do not show a dead-end error without a retry or navigation action."
+      ]
     },
     {
       "name": "Empty",
       "file": "src/features/dashboard/page",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Use for an empty collection or filtered result with a clear status.",
+      "examples": [
+        {
+          "label": "Typical usage",
+          "code": "<Empty>No games match your search.</Empty>"
+        }
+      ],
+      "antipatterns": [
+        "Do not imply a loading error when there are simply no results."
+      ]
     },
     {
       "name": "Constants",
