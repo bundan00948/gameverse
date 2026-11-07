@@ -1,0 +1,10 @@
+ALTER TABLE public.packs ADD COLUMN gradient_start text NOT NULL DEFAULT '#17b9cc', ADD COLUMN gradient_end text NOT NULL DEFAULT '#308ee5', ADD COLUMN open_image_url text, ADD COLUMN pattern_image_url text;
+COMMENT ON COLUMN public.packs.emoji IS 'DEPRECATED: artwork uses image_url only';
+COMMENT ON COLUMN public.blooks.emoji IS 'DEPRECATED: artwork uses image_url only';
+COMMENT ON COLUMN public.packs.color IS 'DEPRECATED: use gradient_start and gradient_end';
+CREATE TABLE public.market_settings (id text PRIMARY KEY DEFAULT 'rarity', colors jsonb NOT NULL DEFAULT '{}'::jsonb);
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.market_settings TO authenticated;
+GRANT ALL ON public.market_settings TO service_role;
+ALTER TABLE public.market_settings ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "read market appearance" ON public.market_settings FOR SELECT TO authenticated USING (true);
+CREATE POLICY "admin market appearance" ON public.market_settings FOR ALL TO authenticated USING (public.has_role(auth.uid(), 'admin')) WITH CHECK (public.has_role(auth.uid(), 'admin'));

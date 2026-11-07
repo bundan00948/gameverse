@@ -43,6 +43,13 @@
       "when": 1794012201641,
       "tag": "0005_art_read",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794013588101,
+      "tag": "0006_market_appearance",
+      "breakpoints": true
     }
   ]
 }
