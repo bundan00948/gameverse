@@ -73,7 +73,7 @@ function Stats() {
 
     <section className="mt-8">
       <div className="flex justify-between"><h2 className={tab}>Friends</h2><h2 className={tab}>Requests</h2></div>
-      <div className={`${box} grid gap-4 rounded-t-none p-5 md:grid-cols-2`}>
+      <div className={`${box} grid gap-5 rounded-t-none p-6 md:grid-cols-2`}>
         <p className="flex items-center gap-2 text-sm text-muted-foreground"><Users className="size-4" />No friends yet. Say hi in <Link to="/chat" reloadDocument className="font-bold text-primary underline">Chat</Link>.</p>
         <p className="flex items-center gap-2 text-sm text-muted-foreground md:justify-end"><UserPlus className="size-4" />No friend requests.</p>
       </div>
