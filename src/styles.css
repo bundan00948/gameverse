@@ -299,7 +299,7 @@
 .gv-nav-link { flex-shrink: 0; white-space: nowrap; }
 .gv-nav-active { background: var(--glass-hover); color: var(--foreground); box-shadow: inset 3px 0 0 var(--layout-accent); }
 .gv-nav-active svg { color: var(--layout-accent); }
-.gv-topbar { background: var(--layout-header); }
+.gv-topbar { background: transparent; }
 .gv-content { outline: none; padding-bottom: 3rem; }
 .gv-content > .gv-page-title, .gv-content > div:first-child > .gv-page-title { padding-bottom: 1.25rem; border-bottom: 1px solid var(--surface-border); }
 .gv-content h1 { overflow-wrap: anywhere; }
@@ -327,9 +327,6 @@
 @media (max-width:767px) {
   .gv-sidebar > a { min-height: 64px; }
   .gv-sidebar > button { position: absolute; right: .5rem; top: .65rem; margin: 0; }
-  .gv-topbar { min-height: 64px; }
-  .gv-topbar > span { display: none; }
-  .gv-topbar > div { width: 100%; justify-content: space-between; }
   .gv-navigation { border-top: 1px solid var(--surface-border); padding-top: .5rem; }
   .gv-chat-log { height: 48dvh; }
 }
