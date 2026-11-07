@@ -77,7 +77,7 @@ function Stats() {
 
     <section className="mt-10">
       <h2 className={tab}>Stats</h2>
-      <div className={`${box} grid grid-cols-2 gap-6 rounded-tl-none p-6 lg:grid-cols-4`}>{items.map(i => (
+      <div className={`${box} grid grid-cols-2 gap-3 rounded-tl-none p-4 lg:grid-cols-4`}>{items.map(i => (
         <div key={i.label} className="relative flex items-center gap-2 rounded-xl border border-white/10 bg-glass-hover px-3 py-1 shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_4px_0_rgb(0_0_0/0.25)]">
           <img src={i.icon} alt="" className={`size-12 shrink-0 object-contain object-center ${i.curved ? 'rotate-[8deg] rounded-[var(--market-radius)]' : ''}`} />
           <div className="min-w-0 flex-1 text-center"><p className="text-sm text-muted-foreground">{i.label}</p><p className="font-display text-3xl leading-none">{i.value.toLocaleString()}</p></div>
