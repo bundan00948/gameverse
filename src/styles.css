@@ -53,8 +53,8 @@
 
 :root {
   --radius: 0.5rem;
-  --stats-action: oklch(.76 .16 55);
-  --stats-action-foreground: oklch(.2 .02 55);
+  --stats-action: oklch(.62 .15 50);
+  --stats-action-foreground: oklch(.98 0 0);
   --background: oklch(0.27 0 0);
   --foreground: oklch(0.98 0 0);
   --card: oklch(0.22 0 0);

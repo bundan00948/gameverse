@@ -4,4 +4,4 @@ component_library: ""
 source_type: local
 upstream_package: ""
 starter_template: custom_design_system_tailwind
-stack_packages: []
+stack_packages: [react, react-dom, "@tanstack/react-router", "@tanstack/react-query", "@supabase/supabase-js", "@radix-ui/react-dialog", "@radix-ui/react-slot", lucide-react, class-variance-authority, clsx, tailwind-merge]
