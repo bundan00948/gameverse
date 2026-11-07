@@ -41,7 +41,7 @@ function Inventory() {
       <select aria-label="Show" className={select} value={show} onChange={e => setShow(e.target.value)}><option value="all">All blooks</option><option value="owned">Unlocked</option><option value="locked">Locked</option></select>
     </div>
 
-    {groups.length === 0 && <p className="mt-8 text-center text-muted-foreground">Nothing matches. <Link to="/shop" reloadDocument className="font-bold text-primary underline">Visit the Market</Link></p>}
+    {groups.length === 0 && <p className="mt-8 text-center text-muted-foreground">Nothing matches. <Link to="/shop" className="font-bold text-primary underline">Visit the Market</Link></p>}
     {groups.map(p => { const totalInPack = data.find(x => x.id === p.id)?.blooks ?? []; const got = totalInPack.filter(b => b.owned > 0).length;
       return <section key={p.id} className="mt-6">
         <div className="flex items-center justify-between border-b border-surface-border pb-2">
@@ -65,7 +65,7 @@ function Inventory() {
           <div className="rounded-lg bg-glass-hover p-2"><dt className="text-xs text-muted-foreground">Owned</dt><dd className="font-bold">{open.owned}</dd></div>
           <div className="rounded-lg bg-glass-hover p-2"><dt className="text-xs text-muted-foreground">Chance</dt><dd className="font-bold">{open.pack === 'Unassigned' ? '—' : `${((open.weight / open.total) * 100).toFixed(1)}%`}</dd></div>
         </dl>
-        {!open.owned && open.pack !== 'Unassigned' && <Link to="/shop" reloadDocument className="mt-4 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">Find it in the Market</Link>}
+        {!open.owned && open.pack !== 'Unassigned' && <Link to="/shop" className="mt-4 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">Find it in the Market</Link>}
     </DialogContent></Dialog>}
   </DashboardShell>;
 }

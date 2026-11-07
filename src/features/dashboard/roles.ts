@@ -61,7 +61,7 @@ export const identitiesOptions = () => queryOptions({ queryKey: ['identities'], 
   return map as Map<string, Identity>;
 } });
 
-export const notificationsOptions = () => queryOptions({ queryKey: ['notifications'], refetchInterval: 15_000, queryFn: async () => {
+export const notificationsOptions = () => queryOptions({ queryKey: ['notifications'], staleTime: 15_000, refetchInterval: 15_000, queryFn: async () => {
   const r = await supabase.from('notifications').select('id, actor_name, body, message_id, read, created_at').order('created_at', { ascending: false }).limit(30);
   if (r.error) throw new Error(r.error.message);
   return r.data;

@@ -43,21 +43,21 @@ export function DashboardShell({ children, bare = false, market = false }: { chi
     <div className={cn(market ? 'market-background' : 'bg-tiles', 'gv-shell relative min-h-dvh md:pl-56')}>
       <a href="#page-content" className="gv-skip-link">Skip to content</a>
       <aside aria-label="GameVerse sidebar" className="gv-sidebar z-20 flex flex-col border-b border-surface-border bg-surface md:fixed md:inset-y-0 md:left-0 md:w-56 md:border-b-0 md:border-r">
-        <Link to="/" reloadDocument className="flex min-h-20 items-center gap-2 px-4 py-4 font-display text-2xl">
+        <Link to="/" className="flex min-h-20 items-center gap-2 px-4 py-4 font-display text-2xl">
           <PlanetLogo className="size-8" />GameVerse
         </Link>
         <nav aria-label="Main navigation" className="gv-navigation flex gap-1 overflow-x-auto px-3 pb-3 md:flex-1 md:flex-col md:overflow-y-auto">
           {nav.map(({ to, label, icon: Icon }) => (
-            <Link key={to} to={to} preload={false} reloadDocument className={navClass} activeProps={{ className: activeClass }}>
+            <Link key={to} to={to} preload={false} className={navClass} activeProps={{ className: activeClass }}>
               <Icon aria-hidden="true" className="size-5 shrink-0" />{label}{to === '/chat' && unread > 0 && <span aria-label={`${unread} new replies`} className="ml-auto rounded-full bg-destructive px-1.5 text-xs text-destructive-foreground">{unread}</span>}
             </Link>
           ))}
-          {isAdmin && <Link to="/admin" preload={false} reloadDocument className={cn(navClass, 'text-tile-d')} activeProps={{ className: activeClass }}><ShieldCheck className="size-5 shrink-0" />Admin Panel</Link>}
+          {isAdmin && <Link to="/admin" preload={false} className={cn(navClass, 'text-tile-d')} activeProps={{ className: activeClass }}><ShieldCheck className="size-5 shrink-0" />Admin Panel</Link>}
         </nav>
         <div className="hidden items-center gap-2 border-t border-surface-border p-3 md:flex">
           <PlayerAvatar name={name} identity={me} />
           <p className="min-w-0 flex-1 truncate text-sm font-bold"><PlayerName name={name} identity={me} /></p>
-          <Link to="/settings" preload={false} reloadDocument aria-label="Account settings" className="grid size-11 shrink-0 place-items-center rounded-md hover:bg-glass-hover"><Settings className="size-5" /></Link>
+          <Link to="/settings" preload={false} aria-label="Account settings" className="grid size-11 shrink-0 place-items-center rounded-md hover:bg-glass-hover"><Settings className="size-5" /></Link>
         </div>
         <Button variant="ghost" type="button" disabled={busy} onClick={logout} className={cn(navClass, 'mx-3 mb-3 justify-start hover:text-destructive disabled:opacity-60')}>
           <LogOut className="size-5" />{busy ? 'Signing out…' : 'Sign out'}
@@ -67,7 +67,7 @@ export function DashboardShell({ children, bare = false, market = false }: { chi
       <header className="gv-topbar pointer-events-none absolute right-4 top-4 z-10 flex justify-end sm:right-8">
         <div className="pointer-events-auto flex min-w-0 items-stretch gap-2">
           <span aria-label={`${wallet?.tokens ?? 0} tokens`} className="flex shrink-0 items-center gap-1.5 rounded-xl border border-white/10 bg-black/70 px-3 py-1.5 font-display text-lg shadow-[0_4px_0_rgb(0_0_0/0.3)] backdrop-blur-sm"><img src={tokensIcon.url} alt="" className="size-6 object-contain" />{wallet?.tokens ?? '–'}</span>
-          <Link to="/stats" preload={false} reloadDocument className="flex min-h-10 min-w-0 items-center gap-2 rounded-xl border border-white/10 bg-black/70 px-3 py-1.5 text-sm font-bold shadow-[0_4px_0_rgb(0_0_0/0.3)] backdrop-blur-sm transition-colors hover:bg-black/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><PlayerAvatar name={name} identity={me} className="size-7 rounded text-sm" /><PlayerName name={name} identity={me} className="max-w-32 truncate" /></Link>
+          <Link to="/stats" preload={false} className="flex min-h-10 min-w-0 items-center gap-2 rounded-xl border border-white/10 bg-black/70 px-3 py-1.5 text-sm font-bold shadow-[0_4px_0_rgb(0_0_0/0.3)] backdrop-blur-sm transition-colors hover:bg-black/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><PlayerAvatar name={name} identity={me} className="size-7 rounded text-sm" /><PlayerName name={name} identity={me} className="max-w-32 truncate" /></Link>
         </div>
       </header>
       <main id="page-content" tabIndex={-1} className={cn('gv-content mx-auto w-full max-w-7xl p-4 pt-20 sm:p-8 sm:pt-20', !bare && 'gv-standard-page')}>{children}</main>
