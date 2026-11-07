@@ -1,7 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Coins, Sparkles, Package, MessageCircle, Star, Users, UserPlus, X, Pencil } from 'lucide-react';
+import { Star, Users, UserPlus, X, Pencil } from 'lucide-react';
+import tokensIcon from '@/assets/icons/stats-tokens.png.asset.json';
+import unlockedIcon from '@/assets/icons/stats-unlocked.png.asset.json';
+import openedIcon from '@/assets/icons/stats-opened.png.asset.json';
+import messagesIcon from '@/assets/icons/stats-messages.png.asset.json';
 import { supabase } from '@/integrations/supabase/client';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { usePlayer } from '@/features/account/session';
@@ -29,10 +33,10 @@ function Stats() {
   const level = Math.floor(data.plays / 5); const xp = (data.plays % 5) * 20;
   const claim = useMutation({ mutationFn: async () => { const { error } = await supabase.rpc('claim_daily'); if (error) throw error; }, onSuccess: () => cache.invalidateQueries() });
   const items = [
-    { label: 'Tokens', value: data.tokens, icon: Coins, color: 'text-tile-d' },
-    { label: 'Blooks Unlocked', value: data.blooks, icon: Sparkles, color: 'text-tile-c' },
-    { label: 'Packs Opened', value: data.packsOpened, icon: Package, color: 'text-tile-a' },
-    { label: 'Messages Sent', value: data.messages, icon: MessageCircle, color: 'text-tile-b' },
+    { label: 'Tokens', value: data.tokens, icon: tokensIcon.url, curved: false },
+    { label: 'Blooks Unlocked', value: data.blooks, icon: unlockedIcon.url, curved: false },
+    { label: 'Packs Opened', value: data.packsOpened, icon: openedIcon.url, curved: true },
+    { label: 'Messages Sent', value: data.messages, icon: messagesIcon.url, curved: false },
   ];
   return <DashboardShell bare>
     <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
@@ -62,7 +66,7 @@ function Stats() {
       <h2 className={tab}>Stats</h2>
       <div className={`${box} grid grid-cols-1 gap-4 rounded-tl-none p-5 sm:grid-cols-2 xl:grid-cols-4`}>{items.map(i => (
         <div key={i.label} className="relative flex items-center gap-3 rounded-xl bg-glass-hover px-4 py-3 shadow-[0_4px_0_rgb(0_0_0/0.25)]">
-          <i.icon className={`size-10 shrink-0 ${i.color}`} />
+          <img src={i.icon} alt="" className={`size-12 shrink-0 object-contain object-center ${i.curved ? 'rotate-[8deg] rounded-[var(--market-radius)]' : ''}`} />
           <div className="min-w-0 flex-1 text-center"><p className="text-sm text-muted-foreground">{i.label}</p><p className="font-display text-3xl leading-none">{i.value.toLocaleString()}</p></div>
         </div>))}</div>
     </section>
