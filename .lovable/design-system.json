@@ -2,24 +2,39 @@
   "meta": {
     "name": "GameVerse",
     "package": "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system_tailwind",
+    "stack_dependencies": {
+      "@radix-ui/react-dialog": "^1.1.15",
+      "@radix-ui/react-slot": "^1.2.4",
+      "@supabase/supabase-js": "^2.119.0",
+      "@tanstack/react-query": "^5.101.1",
+      "@tanstack/react-router": "1.170.41",
+      "class-variance-authority": "^0.7.1",
+      "clsx": "^2.1.1",
+      "lucide-react": "^0.575.0",
+      "react": "^19.2.0",
+      "react-dom": "^19.2.0",
+      "tailwind-merge": "^3.5.0"
+    },
     "theme_files": [
       "src/styles.css"
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "1a0defc4d1e1ab51b0d8e408fd452b624b76adf3622e8831e96138cfbe5c0d42",
+      "#enrichment": "48a722eeb8ac1c2fff3db0f4cc7e4fe291a38f5f13a3a66d2904f081f8ccb241",
       ".gitignore": "6d9e901a692b46a83707c245fb03bc91",
+      ".lovable/meta.yaml": "fae61776219a6dc0f0005c14f7766d89",
       ".lovable/north-star/north-star.md": "303ac5de8264a0af509de13b3bec469f",
       ".lovable/plan/remove-game-cards-black-and-white-bigger-planet-2026-11-06.md": "702f973f9237f7b96d3c01e5653bd559",
       ".lovable/plan/tighter-homepage-bigger-background-pattern-login-button-2026-11-06.md": "dfaebd3014caa9b2524b8304db396964",
       ".lovable/project.json": "a1d4f29236670bffb69f27fc5eb4b3fd",
+      ".lovable/sources.yaml": "ee6247f6fe77fe1387244cd3c757e6a3",
       ".prettierignore": "7279a476f196a2da5f7edd18db568dc6",
       ".prettierrc": "185ef0234746ab738ac1ab6cec5e2bd9",
-      "AGENTS.md": "1320af546961576560963dcdef236af8",
+      "AGENTS.md": "77d3e7e21008a1506f06c87b5d08c059",
       "README.md": "15ccc2c959c0bff2136261ce044c418f",
       "bunfig.toml": "44f440fc23b426e3176ee72e92f8f9f0",
       "components.json": "30d3d035361ce807021f5c54620962e9",
@@ -36,6 +51,8 @@
       "drizzle/migrations/0009_independent_blooks.sql": "0d2be57626b822803a80233641df853a",
       "drizzle/migrations/0010_game_application_icons.sql": "a6e817d209b3c66c2b45566db5ff1589",
       "drizzle/migrations/0011_roles_badges_replies.sql": "21f71b8b8a5cd4675f542b9df8dbb686",
+      "drizzle/migrations/0012_profile_avatar_role_colors.sql": "416305a19530f7495d2619e550cdf2ab",
+      "drizzle/migrations/0013_player_directory_and_shared_stats.sql": "b2e5997ba9c8b3b840e214393167d2be",
       "drizzle/migrations/meta/0000_snapshot.json": "17f347111472f963fd68b1019bb6feb4",
       "drizzle/migrations/meta/0001_snapshot.json": "d0c6f33b5cb10e297b90c3100f307a18",
       "drizzle/migrations/meta/0002_snapshot.json": "bdfa3a0c167de15fcebc6873fb66e510",
@@ -48,18 +65,24 @@
       "drizzle/migrations/meta/0009_snapshot.json": "e6eafdf2570156e5aa3c08280d99bf25",
       "drizzle/migrations/meta/0010_snapshot.json": "a22df8c744e1b031d085d49db650009e",
       "drizzle/migrations/meta/0011_snapshot.json": "4eb4831fd6c3453353828f2048fd25e7",
-      "drizzle/migrations/meta/_journal.json": "9d7933be753ece190884c6b3a2e68523",
+      "drizzle/migrations/meta/0012_snapshot.json": "1fb5a8bb810c212e123b8f85523bce25",
+      "drizzle/migrations/meta/0013_snapshot.json": "bcce90339a79d9fb6f26bb72d4f9387f",
+      "drizzle/migrations/meta/_journal.json": "ff3b4164d8c9b51b259910a0c0de47ad",
       "drizzle/schema.ts": "a60267d05d7dd11572f02686241f37c6",
       "eslint.config.js": "345bdd57e188e0e4525edcd00e5003f5",
       "package.json": "f37aca57e7534eb307005500442597d7",
       "public/favicon.svg": "16160ce59347e20b68dcd9ebb4f6e3fe",
       "public/robots.txt": "f9dff89adf98833e676de2205921996a",
-      "roadmap.md": "646fd7d6cdcf449d068ad35900aeb832",
+      "roadmap.md": "89a3eaaf76338b1b4454c8e1d37d9a7d",
+      "src/assets/icons/stats-messages.png.asset.json": "8acc7df5ffb94d0b32574d30e4b6c745",
+      "src/assets/icons/stats-opened.png.asset.json": "407d91662886095c97a94d8a954b6abd",
+      "src/assets/icons/stats-tokens.png.asset.json": "aefee2152e6fad36dfadb5d134722546",
+      "src/assets/icons/stats-unlocked.png.asset.json": "5701c8f572c34d9aba2bf75b665cc5fd",
       "src/components/discord-icon.tsx": "d3ccd0f49083f7bf9e8058acf3435d95",
       "src/components/ghost-button.tsx": "188b76e7ad489399e63a716bb0b7c530",
       "src/components/planet-logo.tsx": "23b75a04bb4338e41737c48a6a533d45",
       "src/components/site-header.tsx": "9ef3570b3450ce9098c577c52830a7df",
-      "src/components/theme-toggle.tsx": "0bcde0934e580f489018c1d20e3f3139",
+      "src/components/theme-toggle.tsx": "a5e6b920e8ff1045a3fe02d474c2c617",
       "src/components/ui/accordion.tsx": "55f9dda62b4e3913c9b23e5015a86aef",
       "src/components/ui/alert-dialog.tsx": "96350e949e9b7b674545430a410ab89c",
       "src/components/ui/alert.tsx": "f993d7e96b1e25ce50e68ed97e11d2a8",
@@ -67,7 +90,7 @@
       "src/components/ui/avatar.tsx": "72989cd32f72c4122802540ef32525a5",
       "src/components/ui/badge.tsx": "81cade001fc4260f9943e18dcd79449b",
       "src/components/ui/breadcrumb.tsx": "bb9ac254f12662b20d5d50b84308bf3a",
-      "src/components/ui/button.tsx": "7d07d520f486b12bd47373d694ecd2ee",
+      "src/components/ui/button.tsx": "95ee4da453c9be5b75a0387e1f30fdaa",
       "src/components/ui/calendar.tsx": "d849cc610e2683271f3f1c47d093cf30",
       "src/components/ui/card.tsx": "d6c48ea36221b9cdc3576d305d12d5d5",
       "src/components/ui/carousel.tsx": "e324c68ae00cd5aed49317638abd429a",
@@ -76,7 +99,7 @@
       "src/components/ui/collapsible.tsx": "767631bbc344945c236f185f4078d71d",
       "src/components/ui/command.tsx": "014782599cc838b021ec68b07ad4ea02",
       "src/components/ui/context-menu.tsx": "3ba8244ea23df34a1dba92f3a1230dad",
-      "src/components/ui/dialog.tsx": "ef4fe8e7de8675730afe3d633b260e09",
+      "src/components/ui/dialog.tsx": "8e2fbcb263173fb2487a090c034b3987",
       "src/components/ui/drawer.tsx": "8be333e8fd8e42576b1b5f72f07f4337",
       "src/components/ui/dropdown-menu.tsx": "28d6e98d3c7811fc0514bfa69416f087",
       "src/components/ui/form.tsx": "1b0aa6302b9017ea2a1307c22a1d2983",
@@ -106,24 +129,27 @@
       "src/components/ui/toggle-group.tsx": "ac26383acf721d116ca8e3ab5c5355d5",
       "src/components/ui/toggle.tsx": "ee8c5adac74e7242b85b544db1a8fbad",
       "src/components/ui/tooltip.tsx": "67d71db5a1ab935695d1def497f5b8a6",
-      "src/features/account/auth-form.tsx": "92b500fcdbc93cc7f30392aad4e064f4",
-      "src/features/account/dashboard-shell.tsx": "1844e3824e2e48b8aa0ede22bf2390fa",
-      "src/features/account/password-form.tsx": "fead80d87f55a59b72c359e89709c754",
+      "src/features/account/auth-form.tsx": "2394279ff66d506c8dd3fa972d2abc9a",
+      "src/features/account/dashboard-shell.tsx": "84f81c7e2da7810d0e6a7cef4305b49c",
+      "src/features/account/password-form.tsx": "b1498d7a2bbb8d37004e8b586ea5a123",
       "src/features/account/profile.ts": "c370d7c4ffce54c886e780c1df2e77fb",
       "src/features/account/session.tsx": "8f1d64e74eb3762821ba59667ae88022",
       "src/features/admin/blooks-panel.tsx": "c8184bb16755ea31fcf996d478ccb0ff",
-      "src/features/admin/roles-panel.tsx": "d22e1f8f3459236415daf55e96e69b48",
+      "src/features/admin/roles-panel.tsx": "4c8aba6acaf7a1cb602c51192096bb86",
       "src/features/dashboard/appearance.ts": "9ecc0d824a094dd64529cdaad489a06c",
       "src/features/dashboard/blook-art.tsx": "425b88de6eb524e9f362385f4260a953",
       "src/features/dashboard/blook-catalog.ts": "254f1665ed7311a335ab34728b28fd48",
-      "src/features/dashboard/data.ts": "015cd74232e288d65fa68ed67340349c",
+      "src/features/dashboard/data.ts": "da3888f9e60ec1d82b89b4a69b0847ac",
       "src/features/dashboard/game-embed.ts": "082ffbda8b14a53ef2e6011188a14ed3",
-      "src/features/dashboard/image-picker.tsx": "36257e51b90ac87e78a33196133cb4f9",
-      "src/features/dashboard/pack-opener.tsx": "f96dc18834aa43772cf836417a1a5fdf",
-      "src/features/dashboard/page.tsx": "9ae4468edb80a51dc49dd0f8b6d3ec8b",
+      "src/features/dashboard/image-picker.tsx": "849242a3e173793ee9625eef317f5268",
+      "src/features/dashboard/pack-opener.tsx": "66d8478f2c2900b0b12dc1245764ab18",
+      "src/features/dashboard/page.tsx": "72423cc830d4cada5b0e8b2a2b6afca3",
+      "src/features/dashboard/player-identity.tsx": "d9addb74c221b5158da2f73c04faaa42",
+      "src/features/dashboard/player-profile.ts": "34829a365edbbaaf8f5d35801a37be3d",
       "src/features/dashboard/purchase.ts": "e541749ef66469222edbb2baf9c1739f",
-      "src/features/dashboard/roles.ts": "406e9916523d3c8e42692ddd732f4e38",
+      "src/features/dashboard/roles.ts": "0b62a0460d92563464dafcd798c206aa",
       "src/hooks/use-mobile.tsx": "c0a0bdd4638c391a1dd06ac82074e60b",
+      "src/index.ts": "221967ca78364fa2875c5b61bd983fe6",
       "src/integrations/lovable/index.ts": "e9cf6e6968dd0392b2222ee0745ecece",
       "src/integrations/supabase/auth-attacher.ts": "dad043cda134d909e52de0346c16625e",
       "src/integrations/supabase/auth-middleware.ts": "eabaf8c8ba32205717921ce5f255185e",
@@ -131,45 +157,48 @@
       "src/integrations/supabase/client.ts": "2e72a87ed578e0084537f2646f2d7e6a",
       "src/integrations/supabase/cron-auth.ts": "6c04781ff98ada5977945fae55d39385",
       "src/integrations/supabase/previewAuthStorage.ts": "315e4ae3473d92766e0d6d4d83945aef",
-      "src/integrations/supabase/types.ts": "bdea6d30aab195bba5962ab6ccb0af1c",
+      "src/integrations/supabase/types.ts": "091c30d8be00b31ff3b575fa7173016b",
       "src/lib/admin.functions.ts": "8c53e1d4487b07c508d27f7614a8f712",
       "src/lib/error-capture.ts": "f630d9686a9a989170f22eff4de7b30d",
       "src/lib/error-page.ts": "8da0ddd7569bac2676b9a5c8edff8a36",
       "src/lib/lovable-error-reporting.ts": "920280997099588d609de792663bcbf0",
+      "src/lib/theme.ts": "2eb282308e2957e597a58175eaa1f6fb",
       "src/lib/utils.ts": "d9837f38cc05303254571985e3164050",
       "src/routeTree.gen.ts": "dcc83e830d03eb02d6d353ed328dcd32",
       "src/router.tsx": "8f905e713b0eba7fa8148b7995a708c9",
       "src/routes/README.md": "b3a2f259b66fd1a11f54b6d5ac83bf57",
-      "src/routes/__root.tsx": "bd6d193f3c51c6ff6d9f29ebf2cd44bb",
+      "src/routes/__root.tsx": "686ff8302629fbb3de40580d90a75862",
       "src/routes/_authenticated/admin-blooks.tsx": "9d33ff1757f01f6a67b2b3cce989072b",
-      "src/routes/_authenticated/admin.tsx": "33211b7a0e4829e371fe20a2052726ed",
-      "src/routes/_authenticated/chat.tsx": "c3f4f8f45c3557b47a62004d3ed9ad4b",
-      "src/routes/_authenticated/dashboard.tsx": "ec6316ba707529a58574369f0390469e",
-      "src/routes/_authenticated/history.tsx": "7ec142c4bab49762f82519a03c3109a2",
-      "src/routes/_authenticated/inventory.tsx": "48c9b917624c3ebb99c428aa15054087",
-      "src/routes/_authenticated/missions.tsx": "73c0a437c747f9a94b2708be5b28f69e",
+      "src/routes/_authenticated/admin.tsx": "6b503ab0536d7b52d7b04fefe2e9d6e7",
+      "src/routes/_authenticated/chat.tsx": "2b9995414214cb63266754640c1a9bcf",
+      "src/routes/_authenticated/dashboard.tsx": "cba31648d004ee59963c6e598dc6ce9c",
+      "src/routes/_authenticated/history.tsx": "87c836d9797993fc576bfe3078c244a7",
+      "src/routes/_authenticated/inventory.tsx": "a9180bbde37665500823e114b02048e6",
+      "src/routes/_authenticated/missions.tsx": "c4e1d78dcd22b290eab3a2fd22b0ff89",
       "src/routes/_authenticated/route.tsx": "358f4970f3663f0e46fe9e92ded58d3b",
-      "src/routes/_authenticated/settings.tsx": "8ba7f233a7fb7f5bcc07e8828a96531f",
-      "src/routes/_authenticated/shop.tsx": "aacecf6bcc43ccc70e565d0e86e15046",
-      "src/routes/_authenticated/stats.tsx": "cd4cb8966ad9ee1f0f82ec9e6b80c549",
+      "src/routes/_authenticated/settings.tsx": "4b3eee670d9713a76cd42c25fc82ea50",
+      "src/routes/_authenticated/shop.tsx": "0a7dc6dc0dec7130f67634841b3e30a0",
+      "src/routes/_authenticated/stats.tsx": "ba358f8efe34ffeb26adb627a6cf4202",
       "src/routes/auth.tsx": "7cdbd6bf82895ab5cb03727dede09535",
       "src/routes/forgot-password.tsx": "b5d335c7a0e80069685a6ddf72809ece",
-      "src/routes/index.tsx": "80a11a4222876cb683010a7689fee32e",
+      "src/routes/index.tsx": "9fdb42dfb9878b9818aff400b21b1861",
       "src/routes/login.tsx": "a5c2cde89ed14074f26b711233b86eb9",
       "src/routes/register.tsx": "d5559d9cbb0f55d13066dfdfcd4900b6",
       "src/routes/reset-password.tsx": "75f71dd16e1ab0c397cdabc2561e790c",
-      "src/routes/terms.tsx": "1884671027d03d3172373d6cc9f0f9e4",
+      "src/routes/terms.tsx": "3d5fc64d4c2c4a4e6a4872900ca2c155",
       "src/server.ts": "c7bbc49bb70e318af618d92775ee0f27",
       "src/start.ts": "d77c1c12904be5077c6955d9b30071af",
-      "src/styles.css": "61d7bcc78aa17201c1e0635c20912c41",
+      "src/styles.css": "b41130dcffea6e7206e12ffa3195ea6d",
       "src/test/app-routing.test.tsx": "8eb1cfad1e614d4195714f1ad04770ea",
       "src/test/blook-catalog.test.ts": "5fe28507bcc66392de31c1a0d02ec6af",
       "src/test/game-embed.test.ts": "bdb1a92877200a339248c8cb5392e0a8",
       "src/test/market-appearance.test.ts": "0e91e0668d0ba9b9bc9d1c34e1602d4f",
-      "src/test/pack-opening.test.tsx": "bed2daa150bae3153ed6c7e178415075",
+      "src/test/pack-opening.test.tsx": "82c1c4bcdb0113edcb9a5c9ac5dffe8c",
       "src/test/pack-purchase.test.ts": "ff8d70255a4fd6cc294b2a41916d5b1e",
-      "src/test/role-gradient.test.ts": "c0bc42fcf35e847b52807680cfc0e4f1",
+      "src/test/player-profile.test.ts": "f329693cf04deac1c85f59623b4e5350",
+      "src/test/role-gradient.test.ts": "a5929e815b1fed61395ebc877033217c",
       "src/test/setup.ts": "ef5807c07db57482ab718e40246688a2",
+      "src/test/theme.test.ts": "8fa1436ddfe6226320c0f035743e243b",
       "supabase/config.toml": "01604472eadbc418c9ee3a608eec6086",
       "tsconfig.json": "3d34aff71739a382bec105bad1c6948f",
       "vite.config.ts": "d67e8217e5f31b87c276b6357c9aedcf",
@@ -179,6 +208,16 @@
   },
   "tokens": {
     "color": [
+      {
+        "name": "--stats-action",
+        "raw": "oklch(.62 .15 50)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--stats-action-foreground",
+        "raw": "oklch(.98 0 0)",
+        "source": "src/styles.css"
+      },
       {
         "name": "--background",
         "raw": "oklch(0.27 0 0)",
@@ -345,6 +384,36 @@
         "source": "src/styles.css"
       },
       {
+        "name": "--layout-edge",
+        "raw": "oklch(0.12 0 0)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--layout-highlight",
+        "raw": "oklch(1 0 0 / .08)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--layout-header",
+        "raw": "oklch(0.22 0 0 / .96)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--overlay-background",
+        "raw": "oklch(0 0 0 / .75)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--overlay-foreground",
+        "raw": "oklch(.99 0 0)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--layout-accent",
+        "raw": "oklch(.46 .11 190)",
+        "source": "src/styles.css"
+      },
+      {
         "name": "--google-background",
         "raw": "#131314",
         "source": "src/styles.css"
@@ -390,10 +459,27 @@
         "source": "src/styles.css"
       }
     ],
+    "spacing": [
+      {
+        "name": "--pack-dialog-padding",
+        "raw": "24px",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--pack-dialog-gap",
+        "raw": "24px",
+        "source": "src/styles.css"
+      }
+    ],
     "typography": [
       {
         "name": "--font-display",
         "raw": "\"Titan One\", \"Fredoka\", system-ui, sans-serif",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--font-nav",
+        "raw": "\"Nunito\", system-ui, sans-serif",
         "source": "src/styles.css"
       },
       {
@@ -441,6 +527,11 @@
         "source": "src/styles.css"
       },
       {
+        "name": "--layout-shadow",
+        "raw": "0 4px 0 var(--layout-edge), inset 0 1px 0 var(--layout-highlight)",
+        "source": "src/styles.css"
+      },
+      {
         "name": "--market-shadow",
         "raw": "0 5px 0 #1672a64d",
         "source": "src/styles.css",
@@ -461,6 +552,26 @@
       {
         "name": "--market-picture-size",
         "raw": "75.6%",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--pack-dialog-width",
+        "raw": "720px",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--pack-preview-height",
+        "raw": "320px",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--pack-dialog-frame",
+        "raw": "5px",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--pack-step-size",
+        "raw": "32px",
         "source": "src/styles.css"
       }
     ]
@@ -489,7 +600,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "<ThemeToggle />"
+          "code": "\u003cThemeToggle /\u003e"
         }
       ],
       "antipatterns": [
@@ -535,7 +646,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "<Button onClick={saveProfile}>Save profile</Button>"
+          "code": "\u003cButton onClick={saveProfile}\u003eSave profile\u003c/Button\u003e"
         }
       ],
       "antipatterns": [
@@ -575,7 +686,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "<Dialog open={open} onOpenChange={setOpen}><DialogContent aria-describedby={undefined}><DialogTitle>Choose a blook</DialogTitle></DialogContent></Dialog>"
+          "code": "\u003cDialog open={open} onOpenChange={setOpen}\u003e\u003cDialogContent aria-describedby={undefined}\u003e\u003cDialogTitle\u003eChoose a blook\u003c/DialogTitle\u003e\u003c/DialogContent\u003e\u003c/Dialog\u003e"
         }
       ],
       "antipatterns": [
@@ -610,7 +721,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "<AuthForm register />"
+          "code": "\u003cAuthForm register /\u003e"
         }
       ],
       "antipatterns": [
@@ -625,7 +736,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "<DashboardShell bare><PageTitle kicker=\"Your universe\" title=\"Games\" /></DashboardShell>"
+          "code": "\u003cDashboardShell bare\u003e\u003cPageTitle kicker=\"Your universe\" title=\"Games\" /\u003e\u003c/DashboardShell\u003e"
         }
       ],
       "antipatterns": [
@@ -640,7 +751,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "<PasswordForm recovery />"
+          "code": "\u003cPasswordForm recovery /\u003e"
         }
       ],
       "antipatterns": [
@@ -713,7 +824,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "<ImagePicker label=\"Pack image\" value={image} onChange={setImage} />"
+          "code": "\u003cImagePicker label=\"Pack image\" value={image} onChange={setImage} /\u003e"
         }
       ],
       "antipatterns": [
@@ -724,9 +835,6 @@
       "name": "PackOpener",
       "file": "src/features/dashboard/pack-opener",
       "import_path": "",
-      "usage": "Use for pack selection with interchangeable artwork and drop rates, quantity shortcuts, and sequential purchased reveals.",
-      "examples": [{ "label": "Purchase a catalog pack", "code": "<PackOpener pack={selectedPack} tokens={wallet.tokens} onClose={() => setSelectedPack(null)} />" }],
-      "antipatterns": ["Do not add a frame or gradient container around the purchased pack artwork.", "Do not charge again when advancing through purchased pulls."],
       "props": [
         {
           "name": "pack",
@@ -743,6 +851,17 @@
           "type": "function",
           "required": true
         }
+      ],
+      "usage": "Use for pack selection with interchangeable artwork and drop rates, quantity shortcuts, and sequential purchased reveals.",
+      "examples": [
+        {
+          "label": "Purchase a catalog pack",
+          "code": "\u003cPackOpener pack={selectedPack} tokens={wallet.tokens} onClose={() =\u003e setSelectedPack(null)} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Do not add a frame or gradient container around the purchased pack artwork.",
+        "Do not charge again when advancing through purchased pulls."
       ]
     },
     {
@@ -753,7 +872,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "<PageTitle kicker=\"Recently played\" title=\"History\" />"
+          "code": "\u003cPageTitle kicker=\"Recently played\" title=\"History\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -768,7 +887,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "<PageError error={error} />"
+          "code": "\u003cPageError error={error} /\u003e"
         }
       ],
       "antipatterns": [
@@ -783,7 +902,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "<Empty>No games match your search.</Empty>"
+          "code": "\u003cEmpty\u003eNo games match your search.\u003c/Empty\u003e"
         }
       ],
       "antipatterns": [
@@ -791,9 +910,82 @@
       ]
     },
     {
+      "name": "PlayerAvatar",
+      "file": "src/features/dashboard/player-identity",
+      "import_path": "",
+      "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "identity",
+          "type": "any"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "inline-flex flex-wrap items-center gap-1"
+        }
+      ]
+    },
+    {
+      "name": "BadgeList",
+      "file": "src/features/dashboard/player-identity",
+      "import_path": ""
+    },
+    {
+      "name": "PlayerName",
+      "file": "src/features/dashboard/player-identity",
+      "import_path": "",
+      "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "identity",
+          "type": "any"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "inline-flex flex-wrap items-center gap-1"
+        }
+      ]
+    },
+    {
       "name": "Constants",
       "file": "src/integrations/supabase/types",
       "import_path": ""
+    }
+  ],
+  "assets": [
+    {
+      "file": "src/assets/icons/stats-messages.png.asset.json",
+      "kind": "icon",
+      "format": "png",
+      "pointer": true
+    },
+    {
+      "file": "src/assets/icons/stats-opened.png.asset.json",
+      "kind": "icon",
+      "format": "png",
+      "pointer": true
+    },
+    {
+      "file": "src/assets/icons/stats-tokens.png.asset.json",
+      "kind": "icon",
+      "format": "png",
+      "pointer": true
+    },
+    {
+      "file": "src/assets/icons/stats-unlocked.png.asset.json",
+      "kind": "icon",
+      "format": "png",
+      "pointer": true
     }
   ]
 }
