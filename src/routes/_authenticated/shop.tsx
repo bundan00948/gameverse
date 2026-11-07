@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { BlookArt } from '@/features/dashboard/blook-art';
 import { useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { PackOpener } from '@/features/dashboard/pack-opener';
@@ -28,7 +29,7 @@ function Shop() {
         <div className={`${bg[p.color] ?? 'bg-tile-a'} relative grid aspect-square place-items-center overflow-hidden p-2.5 text-tile-fg`}>
           <div className="relative w-full -rotate-3 rounded-sm bg-white/85 px-2 pb-3 pt-3 text-center shadow-lg transition group-hover:rotate-0 [mask:radial-gradient(6px_at_50%_0,#0000_96%,#000)_50%_0/12px_51%_repeat-x,radial-gradient(6px_at_50%_100%,#0000_96%,#000)_50%_100%/12px_51%_repeat-x]">
             <p className="font-display text-base leading-tight text-[oklch(0.25_0.05_260)] sm:text-lg">{p.name}</p>
-            <div className="mt-1 text-4xl">{p.emoji}</div>
+            <BlookArt src={p.image_url} emoji={p.emoji} alt={p.name} className="mx-auto mt-1 size-20 text-6xl" />
             <p className="mt-1 text-sm tracking-wider">{p.blooks.map(b => b.emoji).join(' ')}</p>
           </div>
         </div>

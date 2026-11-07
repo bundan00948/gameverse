@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { isAdminOptions } from '@/features/dashboard/data';
 import { PageError, PageTitle, meta } from '@/features/dashboard/page';
+import { BlookArt } from '@/features/dashboard/blook-art';
 import { listUsers, updateUser, deleteUser } from '@/lib/admin.functions';
 
 export const Route = createFileRoute('/_authenticated/admin')({
@@ -81,12 +82,13 @@ function Table({ table, fields, blank, filter, title }: { table: TableName; fiel
 }
 function EditRow({ table, row, fields, onDone }: { table: TableName; row: Row; fields: string[]; onDone: () => void }) {
   const [f, setF] = useState(row);
-  const save = useMutation({ mutationFn: async () => { const patch = Object.fromEntries(fields.map(k => [k, f[k]])); const { error } = await supabase.from(table).update(patch as never).eq('id', row.id); if (error) throw error; }, onSuccess: onDone });
+  const save = useMutation({ mutationFn: async () => { const patch = Object.fromEntries([...fields, ...('image_url' in row ? ['image_url'] : [])].map(k => [k, f[k]])); const { error } = await supabase.from(table).update(patch as never).eq('id', row.id); if (error) throw error; }, onSuccess: onDone });
   const del = useMutation({ mutationFn: async () => { const { error } = await supabase.from(table).delete().eq('id', row.id); if (error) throw error; }, onSuccess: onDone });
   return <div className="rounded-lg bg-glass-hover p-2">
     <div className="flex flex-wrap items-end gap-2">
       {fields.map(k => <label key={k} className={`text-xs capitalize ${k === 'emoji' ? 'w-16' : typeof row[k] === 'number' ? 'w-20' : 'min-w-32 flex-1'}`}>{k.replace('_', ' ')}
         <input className={input} type={typeof row[k] === 'number' ? 'number' : 'text'} value={f[k] ?? ''} onChange={e => setF({ ...f, [k]: typeof row[k] === 'number' ? Number(e.target.value) : e.target.value })} /></label>)}
+      {'image_url' in row && <ImagePicker value={(f['image_url'] as string | null) ?? null} emoji={f['emoji'] as string} onChange={url => setF({ ...f, image_url: url as string })} />}
       <button type="button" onClick={() => save.mutate()} className={`${btn} bg-primary`}><Save className="size-3.5" />Save</button>
       <button type="button" onClick={() => confirm('Delete this?') && del.mutate()} className={`${btn} bg-destructive`} aria-label="Delete"><Trash2 className="size-3.5" /></button>
     </div>
@@ -104,5 +106,28 @@ function Shop() {
       <label className="text-sm font-bold">Blooks in pack <select className={`${input} mt-1 max-w-xs`} value={pack} onChange={e => setPack(e.target.value)}><option value="">Choose a pack…</option>{packs?.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
       {pack && <div className="mt-2"><Table key={pack} table="blooks" fields={['emoji', 'name', 'rarity', 'weight']} blank={{ emoji: '⭐', name: 'New blook', rarity: 'common', weight: 10 }} filter={{ col: 'pack_id', val: pack }} /></div>}
     </div>
+  </div>;
+}
+
+/** Uploads a picture to storage and returns a long-lived link. Pictures show in a square, blook-sized frame. */
+function ImagePicker({ value, emoji, onChange }: { value: string | null; emoji: string; onChange: (url: string | null) => void }) {
+  const [busy, setBusy] = useState(false); const [err, setErr] = useState('');
+  const upload = async (file: File) => {
+    setBusy(true); setErr('');
+    try {
+      const path = `${crypto.randomUUID()}.${file.name.split('.').pop() || 'png'}`;
+      const up = await supabase.storage.from('art').upload(path, file, { contentType: file.type });
+      if (up.error) throw up.error;
+      const signed = await supabase.storage.from('art').createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+      if (signed.error) throw signed.error;
+      onChange(signed.data.signedUrl);
+    } catch (e) { setErr(e instanceof Error ? e.message : 'Upload failed'); } finally { setBusy(false); }
+  };
+  return <div className="flex items-end gap-1.5 text-xs">
+    <BlookArt src={value} emoji={emoji} alt="Picture preview" className="size-10 rounded-md bg-surface text-2xl" />
+    <label className={`${btn} cursor-pointer bg-tile-b`}>{busy ? 'Uploading…' : value ? 'Change picture' : 'Upload picture'}
+      <input type="file" accept="image/*" className="sr-only" disabled={busy} onChange={e => { const file = e.target.files?.[0]; if (file) upload(file); e.target.value = ''; }} /></label>
+    {value && <button type="button" onClick={() => onChange(null)} className="underline">Remove</button>}
+    {err && <span className="text-destructive">{err}</span>}
   </div>;
 }

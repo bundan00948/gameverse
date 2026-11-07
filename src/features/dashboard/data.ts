@@ -32,17 +32,17 @@ export const historyOptions = () => queryOptions({ queryKey: ['history'], queryF
   return ok(await supabase.from('game_plays').select('id, played_at, games(title, emoji)').eq('user_id', id).order('played_at', { ascending: false }).limit(50));
 } });
 
-export const shopOptions = () => queryOptions({ queryKey: ['shop'], staleTime: 60_000, queryFn: async () => ok(await supabase.from('packs').select('id, name, emoji, color, price, blooks(id, name, emoji, rarity, weight)').order('sort')) });
+export const shopOptions = () => queryOptions({ queryKey: ['shop'], staleTime: 60_000, queryFn: async () => ok(await supabase.from('packs').select('id, name, emoji, image_url, color, price, blooks(id, name, emoji, image_url, rarity, weight)').order('sort')) });
 
 export const inventoryOptions = () => queryOptions({ queryKey: ['inventory'], queryFn: async () => {
   const id = await uid();
-  return ok(await supabase.from('user_blooks').select('quantity, blooks(id, name, emoji, rarity, packs(name))').eq('user_id', id));
+  return ok(await supabase.from('user_blooks').select('quantity, blooks(id, name, emoji, image_url, rarity, packs(name))').eq('user_id', id));
 } });
 
 export const collectionOptions = () => queryOptions({ queryKey: ['collection'], queryFn: async () => {
   const id = await uid();
   const [packs, mine] = await Promise.all([
-    supabase.from('packs').select('id, name, emoji, blooks(id, name, emoji, rarity, weight)').order('sort'),
+    supabase.from('packs').select('id, name, emoji, image_url, blooks(id, name, emoji, image_url, rarity, weight)').order('sort'),
     supabase.from('user_blooks').select('blook_id, quantity').eq('user_id', id),
   ]);
   const own = new Map(ok(mine).map(m => [m.blook_id, m.quantity]));
