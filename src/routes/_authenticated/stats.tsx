@@ -50,7 +50,7 @@ function Stats() {
     { label: 'Messages Sent', value: data.messages, icon: messagesIcon.url, curved: false },
   ];
   return <DashboardShell bare>
-    <div className="flex flex-col gap-4">
+    <div className="flex w-full max-w-2xl flex-col gap-4">
       <div className="flex flex-col items-center gap-4 sm:flex-row">
         <Button variant="ghost" type="button" disabled={!own} onClick={() => setPicking(true)} aria-label={own ? "Change profile picture" : `${name} profile picture`} className="group relative grid size-28 shrink-0 place-items-center rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
           <PlayerAvatar name={name} identity={me} className="size-28 rounded-2xl text-4xl" />
