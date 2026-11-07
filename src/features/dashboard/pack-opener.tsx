@@ -85,7 +85,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
         {(stage === 'drop' || stage === 'reveal') && <div key={`confetti-${pullIndex}`} aria-hidden className="pack-confetti">{Array.from({ length: 64 }, (_, i) => <span key={i} style={{ '--confetti-x': `${(i * 37) % 100}%`, '--confetti-delay': `${(i % 12) * 0.08}s`, '--confetti-duration': `${2.4 + (i % 5) * 0.25}s`, '--confetti-drift': `${(i % 2 ? 1 : -1) * (40 + i % 70)}px`, '--confetti-turn': `${(i % 2 ? 1 : -1) * (360 + i * 13)}deg` } as CSSProperties} />)}</div>}
         {stage !== 'reveal' && <div className="pack-ready">
           <div key={`unbox-${pullIndex}`} className={`pack-unbox ${stage !== 'ready' ? 'torn pack-unbox-peek' : ''} ${stage === 'drop' ? 'pack-unbox-cover-drop' : ''}`}>
-            {pull && <BlookArt src={pull.image_url ?? null} alt="" className="pack-unbox-blook" />}
+            {pull && <BlookArt src={pull.image_url ?? null} alt="" className="pack-unbox-blook" style={{ width: "72%", height: "72%", left: "14%", top: "14%" }} />}
             {(['top', 'bot'] as const).map(h => <div key={h} aria-hidden className={`pack-unbox-half pack-unbox-half-${h}`}><BlookArt src={pack.image_url} alt="" className="size-full" />{!pack.image_url && <span className="font-display text-3xl">{pack.name}</span>}</div>)}
             <button type="button" id="pack-unbox-click-layer" className="pack-unbox-click-layer" onClick={crack} disabled={stage !== 'ready'} aria-label={`Open ${pack.name}`} />
           </div>
