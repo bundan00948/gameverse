@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Match the pack selection popup to the reference using GameVerse colors and verify quantity and drop-rate controls
+- [x] Match the pack selection popup to the reference using GameVerse colors and verify quantity and drop-rate controls
 
 - [x] Replace emoji artwork and redesign Market to match the supplied pack reference
 - [x] Add admin picture, gradient, opening background, pattern, and rarity color controls
