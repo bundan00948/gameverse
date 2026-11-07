@@ -1,12 +1,12 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
-import { Gamepad2, BarChart3, History, Store, Backpack, Target, MessageCircle, Settings, LogOut, ShieldCheck } from 'lucide-react';
+import { Coins, Gamepad2, BarChart3, History, Store, Backpack, Target, MessageCircle, Settings, LogOut, ShieldCheck } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { PlanetLogo } from '@/components/planet-logo';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { usePlayer } from './session';
-import { isAdminOptions } from '@/features/dashboard/data';
+import { isAdminOptions, walletOptions } from '@/features/dashboard/data';
 import { cn } from '@/lib/utils';
 
 const nav = [
@@ -21,11 +21,11 @@ const nav = [
 ] as const;
 
 const navClass =
-  'group flex items-center gap-3 rounded-lg px-3 py-2 text-[15px] font-bold text-muted-foreground transition-colors hover:bg-glass-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
-const activeClass = 'bg-primary !text-primary-foreground shadow-[0_3px_0_rgb(0_0_0/0.3)] hover:bg-primary';
+  'group flex items-center gap-2.5 rounded-md px-3 py-1.5 text-[15px] font-bold text-muted-foreground transition-colors hover:bg-glass-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
+const activeClass = 'bg-foreground !text-background hover:bg-foreground';
 
 export function DashboardShell({ children, bare = false }: { children: ReactNode; bare?: boolean }) {
-  const cache = useQueryClient(); const navigate = useNavigate(); const user = usePlayer(); const { data: isAdmin } = useQuery(isAdminOptions());
+  const cache = useQueryClient(); const navigate = useNavigate(); const user = usePlayer(); const { data: isAdmin } = useQuery(isAdminOptions()); const { data: wallet } = useQuery(walletOptions());
   const [busy, setBusy] = useState(false); const [error, setError] = useState('');
   async function logout() {
     setBusy(true); await cache.cancelQueries(); cache.clear();
@@ -58,7 +58,11 @@ export function DashboardShell({ children, bare = false }: { children: ReactNode
         </button>
         {error && <p role="alert" className="px-3 pb-2 text-xs text-destructive">{error}</p>}
       </aside>
-      <div className="mx-auto max-w-6xl p-4 sm:p-6">{bare ? children : <section className="rounded-xl border border-surface-border bg-surface p-5 shadow-tile">{children}</section>}</div>
+      <div className="flex justify-end gap-2 px-4 pt-4 sm:px-6">
+        <span className="flex items-center gap-2 rounded-lg bg-surface px-3 py-1.5 font-display text-lg shadow-tile"><Coins className="size-5 text-tile-d" />{wallet?.tokens ?? '–'}</span>
+        <span className="flex items-center gap-2 rounded-lg bg-surface px-3 py-1.5 text-sm font-bold shadow-tile"><span className="grid size-6 place-items-center rounded bg-primary font-display text-primary-foreground">{name[0]?.toUpperCase()}</span>{name}</span>
+      </div>
+      <div className="mx-auto max-w-6xl p-4 pt-2 sm:p-6 sm:pt-2">{bare ? children : <section className="rounded-xl border border-surface-border bg-surface p-5 shadow-tile">{children}</section>}</div>
     </main>
   );
 }
