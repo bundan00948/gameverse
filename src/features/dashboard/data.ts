@@ -77,7 +77,7 @@ export const missionsOptions = () => queryOptions({ queryKey: ['missions'], quer
 } });
 
 export const chatOptions = () => queryOptions({ queryKey: ['chat'], refetchInterval: 4000, queryFn: async () => {
-  const rows = ok(await supabase.from('chat_messages').select('id, username, body, created_at, user_id').order('created_at', { ascending: false }).limit(60));
+  const rows = ok(await supabase.from('chat_messages').select('id, username, body, created_at, user_id, reply_to').order('created_at', { ascending: false }).limit(60));
   return rows.reverse();
 } });
 
