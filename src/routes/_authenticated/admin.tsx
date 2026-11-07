@@ -14,7 +14,10 @@ import { listUsers, updateUser, deleteUser } from '@/lib/admin.functions';
 import { BlooksPanel } from '@/features/admin/blooks-panel';
 
 export const Route = createFileRoute('/_authenticated/admin')({
-  validateSearch: (search: Record<string, unknown>): { tab?: (typeof tabs)[number] } => ({ tab: tabs.find(tab => tab === search['tab']) }),
+  validateSearch: (search: Record<string, unknown>): { tab?: (typeof tabs)[number] } => {
+    const tab = tabs.find(tab => tab === search['tab']);
+    return tab ? { tab } : {};
+  },
   head: () => meta('Admin Panel', 'Staff controls for GameVerse.'),
   component: Admin, errorComponent: PageError, notFoundComponent: () => <p>Not found.</p>,
 });
