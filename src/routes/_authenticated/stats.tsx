@@ -55,8 +55,8 @@ function Stats() {
         <PlayerAvatar name={name} identity={me} className="size-28 rounded-2xl text-5xl" />
         <span className="absolute bottom-1 right-1 grid size-7 place-items-center rounded-full bg-surface opacity-0 shadow transition group-hover:opacity-100 group-focus-visible:opacity-100"><Pencil className="size-3.5" /></span>
       </Button>
-      <div className="w-full max-w-md">
-        <div className={`${box} px-5 py-1 text-center`}>
+      <div className="w-full max-w-[22rem]">
+        <div className={`${box} px-5 py-2.5 text-center`}>
           <h1 className="truncate font-display text-3xl leading-tight"><PlayerName name={name} identity={me} className="font-normal" /></h1>
           <p className="text-xs text-muted-foreground" style={roleTextStyle(me?.role?.colors)}>{me?.role?.name ?? 'Player'}</p>
           {me?.badges.length ? <div className="mt-1.5 flex justify-center"><BadgeList identity={me} size="lg" /></div> : null}
@@ -77,8 +77,8 @@ function Stats() {
 
     <section className="mt-10">
       <h2 className={tab}>Stats</h2>
-      <div className={`${box} grid grid-cols-2 gap-3 rounded-tl-none p-4 lg:grid-cols-4`}>{items.map(i => (
-        <div key={i.label} className="relative flex items-center gap-2 rounded-xl border border-white/10 bg-glass-hover px-3 py-1 shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_4px_0_rgb(0_0_0/0.25)]">
+      <div className={`${box} grid grid-cols-2 gap-6 rounded-tl-none p-6 lg:grid-cols-4`}>{items.map(i => (
+        <div key={i.label} className="relative flex items-center gap-2 rounded-xl border border-white/10 bg-glass-hover px-3 py-2.5 shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_4px_0_rgb(0_0_0/0.25)]">
           <img src={i.icon} alt="" className={`size-12 shrink-0 object-contain object-center ${i.curved ? 'rotate-[8deg] rounded-[var(--market-radius)]' : ''}`} />
           <div className="min-w-0 flex-1 text-center"><p className="text-sm text-muted-foreground">{i.label}</p><p className="font-display text-3xl leading-none">{i.value.toLocaleString()}</p></div>
         </div>))}</div>
