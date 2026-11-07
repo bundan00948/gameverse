@@ -1,4 +1,4 @@
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun } from '@/lib/icons';
 import { useEffect, useState } from "react";
 import { Button } from '@/components/ui/button';
 import { applyTheme } from '@/lib/theme';

@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Optimize initial-load assets and repeated auth requests; compare cold-load measurements (preview cold load ~0.85–0.88s; 0.5s target not reached).
+
 - [x] Reduce navigation reloads and repeated shared-data requests; verify signed-in page switching.
 
 - [x] Match purchase popup reference, unify currency pictures, and remove purchased-pack containers; verify purchase and reveal.

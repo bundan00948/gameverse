@@ -1,7 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
-import { Gamepad2, BarChart3, History, Store, Backpack, Target, MessageCircle, Settings, LogOut, ShieldCheck } from 'lucide-react';
+import { Gamepad2, BarChart3, History, Store, Backpack, Target, MessageCircle, Settings, LogOut, ShieldCheck } from '@/lib/icons';
 import { supabase } from '@/integrations/supabase/client';
 import { PlanetLogo } from '@/components/planet-logo';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import { usePlayer } from './session';
 import { walletOptions } from '@/features/dashboard/data';
 import { notificationsOptions, permissionsOptions } from '@/features/dashboard/roles';
 import { cn } from '@/lib/utils';
-import tokensIcon from '@/assets/icons/stats-tokens.png.asset.json';
+import tokensIcon from '@/assets/icons/gameverse-token.webp.asset.json';
 import { identitiesOptions } from '@/features/dashboard/roles';
 import { PlayerAvatar, PlayerName } from '@/features/dashboard/player-identity';
 import { playerName } from '@/features/dashboard/player-profile';

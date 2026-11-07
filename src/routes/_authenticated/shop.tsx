@@ -1,14 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { BlookArt } from '@/features/dashboard/blook-art';
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { PackOpener } from '@/features/dashboard/pack-opener';
-import tokenIcon from '@/assets/icons/stats-tokens.png.asset.json';
+import tokenIcon from '@/assets/icons/gameverse-token.webp.asset.json';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { shopOptions, walletOptions } from '@/features/dashboard/data';
 import { PageError, meta } from '@/features/dashboard/page';
 import { Button } from '@/components/ui/button';
 import { safeColor } from '@/features/dashboard/appearance';
+
+const PackOpener = lazy(() => import('@/features/dashboard/pack-opener').then(module => ({ default: module.PackOpener })));
 
 export const Route = createFileRoute('/_authenticated/shop')({
   loader: ({ context }) => Promise.all([context.queryClient.ensureQueryData(shopOptions()), context.queryClient.ensureQueryData(walletOptions())]),
@@ -33,6 +34,6 @@ function Shop() {
         </span>
         <span className="market-pack-price"><img src={tokenIcon.url} alt="" className="size-5 object-contain" />{p.price}</span>
       </Button>))}</div></div>
-    {pack && <PackOpener pack={pack} tokens={wallet.tokens} onClose={() => setChosen(null)} />}
+    {pack && <Suspense fallback={null}><PackOpener pack={pack} tokens={wallet.tokens} onClose={() => setChosen(null)} /></Suspense>}
   </DashboardShell>;
 }

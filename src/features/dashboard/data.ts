@@ -2,12 +2,8 @@ import { queryOptions, type QueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { rarityColors } from './appearance';
 import { groupCollection } from './blook-catalog';
+import { playerId as uid } from '@/features/account/auth-user';
 
-async function uid() {
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data.user) throw new Error('Please sign in again.');
-  return data.user.id;
-}
 function ok<T>(r: { data: T | null; error: { message: string } | null }): T {
   if (r.error) throw new Error(r.error.message);
   return r.data as T;

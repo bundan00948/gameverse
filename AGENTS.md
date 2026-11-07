@@ -34,6 +34,7 @@ use the editor.
 - All signed-in pages share the unframed GameVerse shell and semantic main landmark; appearance is persisted locally through the shared theme utility and selected in Settings, keeping page data loaders independent.
 - Signed-in pages live under the client-only `_authenticated` gate; public login remains `/login` with `/auth` redirect compatibility, because browser sessions cannot be read during SSR.
 - Auth identity is subscribed once in the root and shared through SessionContext; profile reads and writes use the browser Cloud client with owner-only RLS.
+- Initial loading uses self-hosted WOFF2 brand fonts, a resized WebP currency derivative, and typed per-icon imports in src/lib/icons.ts; browser query IDs and display identity come from the session while remote user validation remains in the authenticated gate and server/RLS authorization is unchanged. Load the pack-opening dialog only after pack selection.
 - Dashboard destinations use client-side navigation with preloading disabled and automatic route code splitting, keeping shared Query cache alive while fetching only the opened page; balance mutations invalidate wallet/stats and shared wallet reads reuse the same query.
 - Store Market appearance on pack rows and rarity colors in the admin-protected market_settings table; validate saved colors before using them as CSS variables.
 - Quantity purchases use one authenticated atomic database function with a wallet row lock; purchased results are revealed sequentially without additional charges.
