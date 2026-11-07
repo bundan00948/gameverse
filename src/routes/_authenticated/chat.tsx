@@ -7,8 +7,8 @@ import { DashboardShell } from '@/features/account/dashboard-shell';
 import { usePlayer } from '@/features/account/session';
 import { chatOptions } from '@/features/dashboard/data';
 import { PageError, PageTitle, meta } from '@/features/dashboard/page';
-import { identitiesOptions, notificationsOptions, permissionsOptions, roleTextStyle, type Identity }
-import { BadgeList, PlayerAvatar, PlayerName } from '@/features/dashboard/player-identity'; from '@/features/dashboard/roles';
+import { identitiesOptions, notificationsOptions, permissionsOptions, roleTextStyle, type Identity } from '@/features/dashboard/roles';
+import { BadgeList, PlayerAvatar, PlayerName } from '@/features/dashboard/player-identity';
 
 export const Route = createFileRoute('/_authenticated/chat')({
   loader: ({ context }) => Promise.all([context.queryClient.ensureQueryData(chatOptions()), context.queryClient.ensureQueryData(identitiesOptions())]),
