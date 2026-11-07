@@ -17,7 +17,7 @@ export const Route = createFileRoute('/_authenticated/chat')({
 
 type Msg = { id: string; username: string; body: string; user_id: string; reply_to: string | null; created_at: string };
 
-function Name({ name, identity }: { name: string; identity?: Identity }) {
+function Name({ name, identity }: { name: string; identity?: Identity | undefined }) {
   const paint = roleGradient(identity?.role?.colors);
   const style = paint ? { backgroundImage: paint.startsWith('#') ? undefined : paint, color: paint.startsWith('#') ? paint : 'transparent', backgroundClip: 'text', WebkitBackgroundClip: 'text' } : undefined;
   return <span className="inline-flex flex-wrap items-center gap-1.5">
