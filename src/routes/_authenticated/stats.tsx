@@ -56,13 +56,13 @@ function Stats() {
           <PlayerAvatar name={name} identity={me} className="size-28 rounded-2xl text-4xl" />
           <span className="absolute bottom-1 right-1 grid size-7 place-items-center rounded-full bg-surface opacity-0 shadow transition group-hover:opacity-100 group-focus-visible:opacity-100"><Pencil className="size-3.5" /></span>
         </Button>
-        <div className={`${box} w-full flex-1 px-5 py-2.5 text-center sm:max-w-[70%]`}>
+        <div className={`${box} w-full flex-1 px-5 py-2.5 text-center sm:max-w-[50%]`}>
           <h1 className="truncate font-display text-3xl leading-tight"><PlayerName name={name} identity={me} className="font-normal" /></h1>
           <p className="text-xs text-muted-foreground" style={roleTextStyle(me?.role?.colors)}>{me?.role?.name ?? 'Player'}</p>
         </div>
         {me?.badges.length ? <div className={`${box} flex min-h-20 w-full items-center justify-center gap-2 px-5 py-2.5 sm:w-auto sm:flex-1`}><BadgeList identity={me} size="lg" /></div> : null}
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center sm:max-w-[50%]">
         <span className="relative z-10 -mr-2.5 grid size-12 shrink-0 place-items-center"><Star className="absolute size-12 fill-tile-b text-tile-b drop-shadow" /><span className="relative font-display text-base text-white">{level}</span></span>
         <div className="h-3 flex-1 overflow-hidden rounded-r-full bg-black/40" title={`${5 - (data.plays % 5)} games to next level`}><div className="h-full bg-tile-b transition-all" style={{ width: `${xp}%` }} /></div>
       </div>
