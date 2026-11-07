@@ -45,7 +45,7 @@ function Stats() {
   const claim = useMutation({ mutationFn: async () => { const { error } = await supabase.rpc('claim_daily'); if (error) throw error; }, onSuccess: () => cache.invalidateQueries() });
   const items = [
     { label: 'Tokens', value: data.tokens, icon: tokensIcon.url, curved: false },
-    { label: 'Blooks Unlocked', value: data.blooks, icon: unlockedIcon.url, curved: false },
+    { label: 'Blooks Unlocked', value: `${data.blooks} / ${data.totalBlooks}`, icon: unlockedIcon.url, curved: false },
     { label: 'Packs Opened', value: data.packsOpened, icon: openedIcon.url, curved: true },
     { label: 'Messages Sent', value: data.messages, icon: messagesIcon.url, curved: false },
   ];

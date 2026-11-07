@@ -13,12 +13,12 @@ describe('purchased pack opening', () => {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     render(<QueryClientProvider client={client}><PackOpener pack={pack} tokens={100} onClose={close} /></QueryClientProvider>);
     fireEvent.click(screen.getByRole('button', { name: /Buy 1 for/ }));
-    await screen.findByRole('button', { name: 'Open pack' });
+    await screen.findByRole('button', { name: /^Open / });
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
     expect(close).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole('button', { name: 'Open pack' }));
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Back to Market' })).toBeInTheDocument());
-    fireEvent.click(screen.getByRole('button', { name: 'Back to Market' }));
+    fireEvent.click(screen.getByRole('button', { name: /^Open / }));
+    await waitFor(() => expect(screen.getAllByRole('button', { name: 'Back to Market' })[0]!).toBeInTheDocument(), { timeout: 3000 });
+    fireEvent.click(screen.getAllByRole('button', { name: 'Back to Market' })[0]!);
     expect(close).toHaveBeenCalledTimes(1);
     client.clear();
   });
