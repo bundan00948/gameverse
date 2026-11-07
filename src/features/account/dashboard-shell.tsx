@@ -47,7 +47,6 @@ export function DashboardShell({ children, bare = false, market = false }: { chi
             </Link>
           ))}
           {isAdmin && <Link to="/admin" preload={false} reloadDocument className={cn(navClass, 'text-tile-d')} activeProps={{ className: activeClass }}><ShieldCheck className="size-5 shrink-0" />Admin Panel</Link>}
-          {isAdmin && <Link to="/admin-blooks" preload={false} reloadDocument className={cn(navClass, 'text-tile-d')} activeProps={{ className: activeClass }}><Backpack className="size-5 shrink-0" />Blooks</Link>}
         </nav>
         <div className="hidden items-center gap-2 border-t border-surface-border p-3 md:flex">
           <span className="font-display grid size-9 shrink-0 place-items-center rounded-lg bg-primary text-lg text-primary-foreground">{name[0]?.toUpperCase()}</span>
