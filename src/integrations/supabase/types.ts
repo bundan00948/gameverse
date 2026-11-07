@@ -20,7 +20,7 @@ export type Database = {
           id: string
           image_url: string | null
           name: string
-          pack_id: string
+          pack_id: string | null
           rarity: string
           weight: number
         }
@@ -29,7 +29,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           name: string
-          pack_id: string
+          pack_id?: string | null
           rarity?: string
           weight?: number
         }
@@ -38,7 +38,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           name?: string
-          pack_id?: string
+          pack_id?: string | null
           rarity?: string
           weight?: number
         }

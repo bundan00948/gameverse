@@ -64,6 +64,13 @@
       "when": 1794014549162,
       "tag": "0008_pack_quantity_atomic_lock",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1794015894346,
+      "tag": "0009_independent_blooks",
+      "breakpoints": true
     }
   ]
 }

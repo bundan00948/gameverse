@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
 import { useState } from 'react';
@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { isAdminOptions } from '@/features/dashboard/data';
 import { PageError, PageTitle, meta } from '@/features/dashboard/page';
-import { BlookArt } from '@/features/dashboard/blook-art';
+import { ImagePicker } from '@/features/dashboard/image-picker';
 import { Button } from '@/components/ui/button';
 import { rarityColors, rarityDefaults } from '@/features/dashboard/appearance';
 import { listUsers, updateUser, deleteUser } from '@/lib/admin.functions';
@@ -28,6 +28,7 @@ function Admin() {
   if (!isAdmin) return <DashboardShell><PageTitle kicker="Staff" title="Admin Panel" /><p className="mt-4 text-muted-foreground">This page is for staff only.</p></DashboardShell>;
   return <DashboardShell>
     <PageTitle kicker="Staff" title="Admin Panel" />
+    <Link to="/admin-blooks" preload={false} reloadDocument className="mt-3 inline-block text-sm font-bold text-primary underline">Blooks</Link>
     <div className="mt-4 flex gap-1 border-b border-surface-border">{tabs.map(t => <Button key={t} type="button" onClick={() => setTab(t)} className={`rounded-t-md px-4 py-2 text-sm font-bold ${tab === t ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}>{t}</Button>)}</div>
     <div className="mt-4">{tab === 'Users' ? <Users /> : tab === 'Shop' ? <Shop /> : tab === 'Games' ? <Table table="games" fields={['title', 'description', 'play_url']} blank={{ emoji: '', title: 'New game', description: '', play_url: '' }} /> : <Table table="missions" fields={['title', 'kind', 'goal', 'reward']} blank={{ title: 'New mission', kind: 'plays', goal: 5, reward: 10 }} />}</div>
   </DashboardShell>;
@@ -73,7 +74,7 @@ function Table({ table, fields, blank, filter, title }: { table: TableName; fiel
     if (filter) q = q.eq(filter.col, filter.val);
     const r = await q; if (r.error) throw r.error; return r.data as unknown as Row[];
   } });
-  const done = () => { cache.invalidateQueries({ queryKey: ['admin', table] }); cache.invalidateQueries({ queryKey: ['shop'] }); };
+  const done = () => { ['admin', 'admin-blooks', 'shop', 'collection', 'inventory'].forEach(key => cache.invalidateQueries({ queryKey: [key] })); };
   const add = useMutation({ mutationFn: async () => { const { error } = await supabase.from(table).insert({ ...blank, ...(filter ? { [filter.col]: filter.val } : {}) } as never); if (error) throw error; }, onSuccess: done });
   return <div className="space-y-2">
     <div className="flex items-center justify-between">{title ? <h3 className="font-bold">{title}</h3> : <span />}<Button type="button" onClick={() => add.mutate()} className={`${btn} bg-[oklch(0.6_0.16_150)]`}><Plus className="size-3.5" />Add</Button></div>
@@ -92,7 +93,7 @@ function EditRow({ table, row, fields, onDone }: { table: TableName; row: Row; f
         <input className={input} type={k.startsWith('gradient_') ? 'color' : typeof row[k] === 'number' ? 'number' : 'text'} value={f[k] ?? ''} onChange={e => setF({ ...f, [k]: typeof row[k] === 'number' ? Number(e.target.value) : e.target.value })} /></label>)}
       {Object.keys(row).filter(k => k.endsWith('image_url')).map(k => <ImagePicker key={k} label={k === 'image_url' ? table === 'packs' ? 'Pack image' : 'Blook image' : k === 'open_image_url' ? 'Pack open container image' : 'Bottom-right pattern image'} value={(f[k] as string | null) ?? null} onChange={url => setF({ ...f, [k]: url as string })} />)}
       <Button type="button" disabled={save.isPending} onClick={() => save.mutate()}><Save className="size-3.5" />Save</Button>
-      <Button type="button" onClick={() => confirm('Delete this?') && del.mutate()} className={`${btn} bg-destructive`} aria-label="Delete"><Trash2 className="size-3.5" /></Button>
+      <Button type="button" onClick={() => confirm(table === 'packs' ? 'Delete this pack? Its blooks and owned copies will be kept and unassigned.' : 'Delete this?') && del.mutate()} className={`${btn} bg-destructive`} aria-label="Delete"><Trash2 className="size-3.5" /></Button>
     </div>
     {(save.error || del.error) && <p className="mt-1 text-xs text-destructive">{(save.error ?? del.error)?.message}</p>}
     {save.isSuccess && <p className="mt-1 text-xs">Saved.</p>}
@@ -100,38 +101,10 @@ function EditRow({ table, row, fields, onDone }: { table: TableName; row: Row; f
 }
 
 function Shop() {
-  const { data: packs } = useQuery({ queryKey: ['admin', 'packs', 'selector'], queryFn: async () => { const r = await supabase.from('packs').select('id, name').order('sort'); if (r.error) throw r.error; return r.data; } });
-  const [pack, setPack] = useState('');
   return <div className="space-y-6">
     <RarityEditor />
     <Table table="packs" title="Packs" fields={['name', 'gradient_start', 'gradient_end', 'price', 'sort']} blank={{ emoji: '', name: 'New pack', gradient_start: '#17b9cc', gradient_end: '#308ee5', price: 20, sort: 99 }} />
-    <div>
-      <label className="text-sm font-bold">Blooks in pack <select className={`${input} mt-1 max-w-xs`} value={pack} onChange={e => setPack(e.target.value)}><option value="">Choose a pack…</option>{packs?.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
-      {pack && <div className="mt-2"><Table key={pack} table="blooks" fields={['name', 'rarity', 'weight']} blank={{ emoji: '', name: 'New blook', rarity: 'common', weight: 10 }} filter={{ col: 'pack_id', val: pack }} /></div>}
-    </div>
-  </div>;
-}
-
-/** Uploads a picture to storage and returns a long-lived link. Pictures show in a square, blook-sized frame. */
-function ImagePicker({ value, label, onChange }: { value: string | null; label: string; onChange: (url: string | null) => void }) {
-  const [busy, setBusy] = useState(false); const [err, setErr] = useState('');
-  const upload = async (file: File) => {
-    setBusy(true); setErr('');
-    try {
-      const path = `${crypto.randomUUID()}.${file.name.split('.').pop() || 'png'}`;
-      const up = await supabase.storage.from('art').upload(path, file, { contentType: file.type });
-      if (up.error) throw up.error;
-      const signed = await supabase.storage.from('art').createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-      if (signed.error) throw signed.error;
-      onChange(signed.data.signedUrl);
-    } catch (e) { setErr(e instanceof Error ? e.message : 'Upload failed'); } finally { setBusy(false); }
-  };
-  return <div className="flex flex-wrap items-end gap-1.5 text-xs"><span className="w-full font-bold">{label}</span>
-    <BlookArt src={value} alt="Picture preview" className="size-10 rounded-md bg-surface text-2xl" />
-    <label className={`${btn} cursor-pointer bg-tile-b`}>{busy ? 'Uploading…' : value ? 'Change picture' : 'Upload picture'}
-      <input type="file" aria-label={label} accept="image/png,image/jpeg,image/webp,image/gif" className="sr-only" disabled={busy} onChange={e => { const file = e.target.files?.[0]; if (file) upload(file); e.target.value = ''; }} /></label>
-    {value && <Button type="button" onClick={() => onChange(null)} className="underline">Remove</Button>}
-    {err && <span className="text-destructive">{err}</span>}
+    <Link to="/admin-blooks" preload={false} reloadDocument className="inline-block text-sm font-bold text-primary underline">Manage blooks</Link>
   </div>;
 }
 
