@@ -88,7 +88,7 @@ function EditRow({ table, row, fields, onDone }: { table: TableName; row: Row; f
     <div className="flex flex-wrap items-end gap-2">
       {fields.map(k => <label key={k} className={`text-xs capitalize ${k === 'emoji' ? 'w-16' : typeof row[k] === 'number' ? 'w-20' : 'min-w-32 flex-1'}`}>{k.replace('_', ' ')}
         <input className={input} type={typeof row[k] === 'number' ? 'number' : 'text'} value={f[k] ?? ''} onChange={e => setF({ ...f, [k]: typeof row[k] === 'number' ? Number(e.target.value) : e.target.value })} /></label>)}
-      {'image_url' in row && <ImagePicker value={(f.image_url as string | null) ?? null} emoji={f.emoji as string} onChange={url => setF({ ...f, image_url: url })} />}
+      {'image_url' in row && <ImagePicker value={(f['image_url'] as string | null) ?? null} emoji={f['emoji'] as string} onChange={url => setF({ ...f, image_url: url as string })} />}
       <button type="button" onClick={() => save.mutate()} className={`${btn} bg-primary`}><Save className="size-3.5" />Save</button>
       <button type="button" onClick={() => confirm('Delete this?') && del.mutate()} className={`${btn} bg-destructive`} aria-label="Delete"><Trash2 className="size-3.5" /></button>
     </div>
