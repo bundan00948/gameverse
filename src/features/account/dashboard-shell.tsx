@@ -6,7 +6,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { PlanetLogo } from '@/components/planet-logo';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { usePlayer } from './session';
-import { isAdminOptions, walletOptions } from '@/features/dashboard/data';
+import { walletOptions } from '@/features/dashboard/data';
+import { notificationsOptions, permissionsOptions } from '@/features/dashboard/roles';
 import { cn } from '@/lib/utils';
 
 const nav = [
@@ -25,7 +26,7 @@ const navClass =
 const activeClass = 'bg-foreground !text-background hover:bg-foreground';
 
 export function DashboardShell({ children, bare = false, market = false }: { children: ReactNode; bare?: boolean; market?: boolean }) {
-  const cache = useQueryClient(); const navigate = useNavigate(); const user = usePlayer(); const { data: isAdmin } = useQuery(isAdminOptions()); const { data: wallet } = useQuery(walletOptions());
+  const cache = useQueryClient(); const navigate = useNavigate(); const user = usePlayer(); const { data: perms = [] } = useQuery(permissionsOptions()); const isAdmin = perms.length > 0; const { data: notes = [] } = useQuery(notificationsOptions()); const unread = notes.filter(n => !n.read).length; const { data: wallet } = useQuery(walletOptions());
   const [busy, setBusy] = useState(false); const [error, setError] = useState('');
   async function logout() {
     setBusy(true); await cache.cancelQueries(); cache.clear();
@@ -43,7 +44,7 @@ export function DashboardShell({ children, bare = false, market = false }: { chi
         <nav className="flex flex-wrap gap-1 px-2 pb-2 md:flex-1 md:flex-col md:flex-nowrap md:overflow-y-auto">
           {nav.map(({ to, label, icon: Icon }) => (
             <Link key={to} to={to} preload={false} reloadDocument className={navClass} activeProps={{ className: activeClass }}>
-              <Icon className="size-5 shrink-0" />{label}
+              <Icon className="size-5 shrink-0" />{label}{to === '/chat' && unread > 0 && <span aria-label={`${unread} new replies`} className="ml-auto rounded-full bg-destructive px-1.5 text-xs text-white">{unread}</span>}
             </Link>
           ))}
           {isAdmin && <Link to="/admin" preload={false} reloadDocument className={cn(navClass, 'text-tile-d')} activeProps={{ className: activeClass }}><ShieldCheck className="size-5 shrink-0" />Admin Panel</Link>}
