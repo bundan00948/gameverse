@@ -13,7 +13,7 @@ function ok<T>(r: { data: T | null; error: { message: string } | null }): T {
   return r.data as T;
 }
 
-export const gamesOptions = () => queryOptions({ queryKey: ['games'], staleTime: 60_000, queryFn: async () => ok(await supabase.from('games').select('id, title, description, emoji, play_url').order('title')) });
+export const gamesOptions = () => queryOptions({ queryKey: ['games'], staleTime: 60_000, queryFn: async () => ok(await supabase.from('games').select('id, title, description, image_url, play_url').order('title')) });
 
 export const walletOptions = () => queryOptions({ queryKey: ['wallet'], queryFn: async () => ok(await supabase.rpc('ensure_wallet')) });
 

@@ -111,6 +111,7 @@ export type Database = {
           description: string
           emoji: string
           id: string
+          image_url: string | null
           play_url: string
           title: string
         }
@@ -119,6 +120,7 @@ export type Database = {
           description?: string
           emoji?: string
           id?: string
+          image_url?: string | null
           play_url?: string
           title: string
         }
@@ -127,6 +129,7 @@ export type Database = {
           description?: string
           emoji?: string
           id?: string
+          image_url?: string | null
           play_url?: string
           title?: string
         }

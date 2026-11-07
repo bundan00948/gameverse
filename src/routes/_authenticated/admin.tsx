@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { rarityColors, rarityDefaults } from '@/features/dashboard/appearance';
 import { listUsers, updateUser, deleteUser } from '@/lib/admin.functions';
 import { BlooksPanel } from '@/features/admin/blooks-panel';
+import { gameEmbedUrl } from '@/features/dashboard/game-embed';
 
 export const Route = createFileRoute('/_authenticated/admin')({
   validateSearch: (search: Record<string, unknown>): { tab?: (typeof tabs)[number] } => {
@@ -80,7 +81,7 @@ function Table({ table, fields, blank, filter, title }: { table: TableName; fiel
     if (filter) q = q.eq(filter.col, filter.val);
     const r = await q; if (r.error) throw r.error; return r.data as unknown as Row[];
   } });
-  const done = () => { ['admin', 'admin-blooks', 'shop', 'collection', 'inventory'].forEach(key => cache.invalidateQueries({ queryKey: [key] })); };
+  const done = () => { ['admin', 'admin-blooks', 'games', 'shop', 'collection', 'inventory'].forEach(key => cache.invalidateQueries({ queryKey: [key] })); };
   const add = useMutation({ mutationFn: async () => { const { error } = await supabase.from(table).insert({ ...blank, ...(filter ? { [filter.col]: filter.val } : {}) } as never); if (error) throw error; }, onSuccess: done });
   return <div className="space-y-4">
     <div className="flex items-center justify-between">{title ? <h3 className="font-bold">{title}</h3> : <span />}<Button type="button" onClick={() => add.mutate()} disabled={add.isPending} className={btn}><Plus className="size-3.5" />Add</Button></div>
@@ -91,13 +92,13 @@ function Table({ table, fields, blank, filter, title }: { table: TableName; fiel
 }
 function EditRow({ table, row, fields, onDone }: { table: TableName; row: Row; fields: string[]; onDone: () => void }) {
   const [f, setF] = useState(row);
-  const save = useMutation({ mutationFn: async () => { const patch = Object.fromEntries([...fields, ...Object.keys(row).filter(k => k.endsWith('image_url'))].map(k => [k, f[k]])); const { error } = await supabase.from(table).update(patch as never).eq('id', row.id); if (error) throw error; }, onSuccess: onDone });
+  const save = useMutation({ mutationFn: async () => { if (table === 'games' && f['play_url'] && !gameEmbedUrl(String(f['play_url']))) throw new Error('Enter a valid HTTPS embed link.'); const patch = Object.fromEntries([...fields, ...Object.keys(row).filter(k => k.endsWith('image_url'))].map(k => [k, f[k]])); const { error } = await supabase.from(table).update(patch as never).eq('id', row.id); if (error) throw error; }, onSuccess: onDone });
   const del = useMutation({ mutationFn: async () => { const { error } = await supabase.from(table).delete().eq('id', row.id); if (error) throw error; }, onSuccess: onDone });
   return <div className="rounded-lg border border-surface-border bg-surface p-4">
     <div className="grid min-w-0 grid-cols-1 items-end gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      {fields.map(k => <label key={k} className="min-w-0 text-xs font-bold capitalize">{k.replaceAll('_', ' ')}
+      {fields.map(k => <label key={k} className="min-w-0 text-xs font-bold capitalize">{k === 'play_url' ? 'Embed link' : k.replaceAll('_', ' ')}
         <input className={input} type={k.startsWith('gradient_') ? 'color' : typeof row[k] === 'number' ? 'number' : 'text'} value={f[k] ?? ''} onChange={e => setF({ ...f, [k]: typeof row[k] === 'number' ? Number(e.target.value) : e.target.value })} /></label>)}
-      {Object.keys(row).filter(k => k.endsWith('image_url')).map(k => <ImagePicker key={k} label={k === 'image_url' ? table === 'packs' ? 'Pack image' : 'Blook image' : k === 'open_image_url' ? 'Pack open container image' : 'Bottom-right pattern image'} value={(f[k] as string | null) ?? null} onChange={url => setF({ ...f, [k]: url as string })} />)}
+      {Object.keys(row).filter(k => k.endsWith('image_url')).map(k => <ImagePicker key={k} label={k === 'image_url' ? table === 'packs' ? 'Pack image' : table === 'games' ? 'Application icon' : 'Blook image' : k === 'open_image_url' ? 'Pack open container image' : 'Bottom-right pattern image'} value={(f[k] as string | null) ?? null} onChange={url => setF({ ...f, [k]: url as string })} />)}
       <Button type="button" disabled={save.isPending} onClick={() => save.mutate()}><Save className="size-3.5" />Save</Button>
       <Button type="button" onClick={() => confirm(table === 'packs' ? 'Delete this pack? Its blooks and owned copies will be kept and unassigned.' : 'Delete this?') && del.mutate()} variant="destructive" className={btn} aria-label="Delete"><Trash2 className="size-3.5" /></Button>
     </div>
