@@ -30,3 +30,4 @@
 - [x] Tighten background spacing: ~2.3x more squares on screen
 - [x] Make the Stats page, sidebar and other dashboard pages more compact so each fits the screen
 - [x] Fix lag: make the drifting background GPU-composited and drop per-frame blur passes
+- Roles (permissions, gradient chat colors) & Badges; chat replies with notifications [done]

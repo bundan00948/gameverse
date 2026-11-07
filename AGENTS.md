@@ -39,3 +39,4 @@ use the editor.
 - Blooks use nullable pack assignments with ON DELETE SET NULL; query the full catalog for admin and inventory so unassigned blooks and owned copies remain visible.
 - Admin sections use validated tab search state and mount only the selected panel; the legacy Blooks URL redirects to its integrated admin tab.
 - Games use admin-uploaded icons and validated HTTPS embed URLs; mount a sandboxed iframe only for the selected game and record play history separately.
+- Staff permissions come from admin-defined roles (staff_roles) checked by has_permission in RLS and server functions; the app_role 'admin' remains the full-access super role.
