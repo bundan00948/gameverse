@@ -88,7 +88,7 @@ function AvatarPicker({ userId, onClose }: { userId: string; onClose: () => void
       {isLoading && <p className="mt-4">Loading your blooks…</p>}
       {error && <p role="alert" className="mt-4 text-destructive">{error.message}</p>}
       {!isLoading && owned.length === 0 && <p className="mt-4 text-muted-foreground">Open packs in the Market to unlock blooks.</p>}
-      <div className="mt-4 grid max-h-[55vh] grid-cols-4 gap-3 overflow-y-auto sm:grid-cols-6">{owned.map(b => <button key={b.id} type="button" title={b.name} aria-label={b.name} disabled={save.isPending} onClick={() => save.mutate(b.id)} className="aspect-square rounded-lg p-1 transition hover:scale-110 hover:bg-glass-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><BlookArt src={b.image_url} name={b.name} className="size-full" /></button>)}</div>
+      <div className="mt-4 grid max-h-[55vh] grid-cols-4 gap-3 overflow-y-auto sm:grid-cols-6">{owned.map(b => <button key={b.id} type="button" title={b.name} aria-label={b.name} disabled={save.isPending} onClick={() => save.mutate(b.id)} className="aspect-square rounded-lg p-1 transition hover:scale-110 hover:bg-glass-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><BlookArt src={b.image_url} alt={b.name} className="size-full" /></button>)}</div>
       <button type="button" onClick={() => save.mutate(null)} className="mt-4 text-sm font-bold underline">Use my initial instead</button>
       {save.error && <p role="alert" className="mt-2 text-destructive">{save.error.message}</p>}
     </div>
