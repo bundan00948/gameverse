@@ -20,5 +20,5 @@ export function BadgeList({ identity, size = 'sm' }: BadgeRowProps) {
 export interface PlayerNameProps { name: string; identity?: Identity | undefined; className?: string }
 /** Name painted in the player's highest role colors. */
 export function PlayerName({ name, identity, className }: PlayerNameProps) {
-  return <span className={cn('font-bold', className)} style={roleTextStyle(identity?.role?.colors)}>{name}</span>;
+  return <span className={cn('font-display', className)} style={roleTextStyle(identity?.role?.colors)}>{name}</span>;
 }
