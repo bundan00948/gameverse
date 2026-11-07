@@ -66,7 +66,7 @@ function Stats() {
           <div className="h-5 flex-1 overflow-hidden rounded-r-full bg-black/40" title={`${5 - (data.plays % 5)} games to next level`}><div className="h-full bg-tile-b transition-all" style={{ width: `${xp}%` }} /></div>
         </div>
         <div className="mt-4 flex flex-wrap gap-3">
-          <Button type="button" variant="ghost" onClick={() => setBrowsing(true)} className={`${btn} bg-market-coin text-tile-fg`}><Search className="size-4" />View Stats</Button>
+          <Button type="button" variant="ghost" onClick={() => setBrowsing(true)} className={`${btn} bg-stats-action text-stats-action-foreground`}><Search className="size-4" />View Stats</Button>
           {!own && <Button asChild variant="outline"><Link to="/stats" search={{}} reloadDocument>My Stats</Link></Button>}
           {own && <Button type="button" variant="ghost" disabled={claim.isPending} onClick={() => claim.mutate()} className={`${btn} bg-[oklch(0.6_0.17_145)]`}><Star className="size-4 fill-current" />Claim Tokens</Button>}
         </div>
