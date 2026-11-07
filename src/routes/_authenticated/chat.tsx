@@ -15,7 +15,7 @@ export const Route = createFileRoute('/_authenticated/chat')({
   component: Chat, errorComponent: PageError, notFoundComponent: () => <p>Not found.</p>,
 });
 
-type Msg = ReturnType<typeof chatOptions> extends { queryFn?: infer F } ? F extends (...a: never[]) => Promise<infer R> ? R extends (infer M)[] ? M : never : never : never;
+type Msg = { id: string; username: string; body: string; user_id: string; reply_to: string | null; created_at: string };
 
 function Name({ name, identity }: { name: string; identity?: Identity }) {
   const paint = roleGradient(identity?.role?.colors);
