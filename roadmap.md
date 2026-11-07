@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Reduce navigation reloads and repeated shared-data requests; verify signed-in page switching.
+
 - [x] Match purchase popup reference, unify currency pictures, and remove purchased-pack containers; verify purchase and reveal.
 
 - [x] Add orange View Stats player search and other-player stats
