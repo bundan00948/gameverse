@@ -36,10 +36,10 @@ const sections = [
 
 function Terms() {
   return (
-    <main className="bg-tiles min-h-screen pb-16">
+    <main className="bg-tiles min-h-dvh pb-16">
       <SiteHeader />
       <div className="px-4 pt-4">
-      <article className="mx-auto max-w-2xl rounded-xl border border-surface-border bg-surface p-8 shadow-2xl sm:p-12">
+      <article className="mx-auto max-w-2xl px-4 py-8 sm:px-8 sm:py-12">
         <Link to="/" className="font-display text-5xl">
           GameVerse
         </Link>
