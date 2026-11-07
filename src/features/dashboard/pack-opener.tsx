@@ -44,7 +44,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   function crack() { if (stage !== 'ready') return; setStage('burst'); timer.current = setTimeout(() => setStage('reveal'), 650); }
 
   return <Dialog open onOpenChange={open => { if (!open && !buy.isPending && stage === 'confirm') onClose(); }}>
-    <DialogContent ref={scene} aria-describedby={undefined} className={stage === 'confirm' ? 'pack-confirm' : 'pack-stage'} style={variables}
+    <DialogContent ref={scene} aria-describedby={undefined} className={stage === 'confirm' ? 'pack-confirm' : 'pack-stage translate-x-0 translate-y-0'} style={variables}
       onPointerDownOutside={e => { if (buy.isPending || stage !== 'confirm') e.preventDefault(); }}
       onEscapeKeyDown={e => { if (buy.isPending || stage !== 'confirm') e.preventDefault(); }}
       onPointerMove={e => { if (stage === 'confirm') return; const rect = e.currentTarget.getBoundingClientRect(); scene.current?.style.setProperty('--scene-x', `${((e.clientX - rect.left) / rect.width) * 100}%`); scene.current?.style.setProperty('--scene-y', `${((e.clientY - rect.top) / rect.height) * 100}%`); }}>
