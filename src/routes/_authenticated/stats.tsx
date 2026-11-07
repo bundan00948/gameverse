@@ -62,7 +62,7 @@ function Stats() {
         </div>
         {me?.badges.length ? <div className={`${box} flex min-h-20 w-full items-center justify-center gap-2 px-5 py-2.5 sm:w-auto sm:flex-1`}><BadgeList identity={me} size="lg" /></div> : null}
       </div>
-      <div className="flex items-center sm:max-w-[50%]">
+      <div className="flex items-center sm:max-w-[65%]">
         <span className="relative z-10 -mr-2.5 grid size-12 shrink-0 place-items-center"><Star className="absolute size-12 fill-tile-b text-tile-b drop-shadow" /><span className="relative font-display text-base text-white">{level}</span></span>
         <div className="h-3 flex-1 overflow-hidden rounded-r-full bg-black/40" title={`${5 - (data.plays % 5)} games to next level`}><div className="h-full bg-tile-b transition-all" style={{ width: `${xp}%` }} /></div>
       </div>
