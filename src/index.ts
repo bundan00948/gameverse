@@ -1,3 +1,5 @@
+import "./styles.css"
+
 export { DiscordIcon } from "./components/discord-icon"
 export { PlanetLogo } from "./components/planet-logo"
 export { SiteHeader } from "./components/site-header"

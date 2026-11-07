@@ -15,6 +15,7 @@ import { rarityColors, rarityDefaults } from '@/features/dashboard/appearance';
 import { listUsers, updateUser, deleteUser } from '@/lib/admin.functions';
 import { BlooksPanel } from '@/features/admin/blooks-panel';
 import { gameEmbedUrl } from '@/features/dashboard/game-embed';
+import { invalidatePlayerProfiles } from '@/features/dashboard/player-profile';
 
 export const Route = createFileRoute('/_authenticated/admin')({
   validateSearch: (search: Record<string, unknown>): { tab?: (typeof tabs)[number] } => {
@@ -58,8 +59,8 @@ function Users({ canGrantStaff }: { canGrantStaff: boolean }) {
 function UserRow({ u, canGrantStaff }: { u: U; canGrantStaff: boolean }) {
   const cache = useQueryClient(); const save = useServerFn(updateUser); const del = useServerFn(deleteUser);
   const [f, setF] = useState({ username: u.username, displayName: u.displayName, tokens: u.tokens, password: '', admin: u.admin });
-  const m = useMutation({ mutationFn: () => save({ data: { id: u.id, ...f, password: f.password || undefined } }), onSuccess: () => { setF(s => ({ ...s, password: '' })); cache.invalidateQueries({ queryKey: ['admin-users'] }); } });
-  const d = useMutation({ mutationFn: () => del({ data: { id: u.id } }), onSuccess: () => cache.invalidateQueries({ queryKey: ['admin-users'] }) });
+  const m = useMutation({ mutationFn: () => save({ data: { id: u.id, ...f, password: f.password || undefined } }), onSuccess: () => { setF(s => ({ ...s, password: '' })); invalidatePlayerProfiles(cache); } });
+  const d = useMutation({ mutationFn: () => del({ data: { id: u.id } }), onSuccess: () => invalidatePlayerProfiles(cache) });
   return <div className="rounded-lg border border-surface-border bg-surface p-4">
     <p className="mb-4 break-words border-b border-surface-border pb-3 text-sm text-muted-foreground">{u.email} · joined {new Date(u.created).toLocaleDateString()}</p>
     <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-4">

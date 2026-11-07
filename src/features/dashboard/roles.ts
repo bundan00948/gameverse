@@ -23,7 +23,7 @@ export function parseColorList(text: string): string[] {
 export function roleGradient(colors: readonly string[] | null | undefined): string | null {
   const safe = (colors ?? []).filter(c => hex.test(c)).slice(0, maxRoleColors);
   if (safe.length === 0) return null;
-  if (safe.length === 1) return safe[0]!;
+  if (safe.length === 1) return safe[0] ?? null;
   const step = 100 / (safe.length - 1);
   return `linear-gradient(90deg in oklab, ${safe.map((c, i) => `${c} ${(i * step).toFixed(1)}%`).join(', ')})`;
 }
@@ -41,21 +41,22 @@ export const permissionsOptions = () => queryOptions({ queryKey: ['my-permission
   return (r.data ?? []) as Permission[];
 } });
 
-export type Identity = { role: { name: string; colors: string[] } | null; badges: { id: string; name: string; image_url: string | null }[]; avatar: string | null };
+export type Identity = { username: string; displayName: string; role: { name: string; colors: string[] } | null; badges: { id: string; name: string; image_url: string | null }[]; avatar: string | null };
 /** Top role (lowest sort) and badges for every player who has any. */
-export const identitiesOptions = () => queryOptions({ queryKey: ['identities'], staleTime: 30_000, queryFn: async () => {
+export const identitiesOptions = () => queryOptions({ queryKey: ['identities'], staleTime: 15_000, refetchInterval: 15_000, queryFn: async () => {
   const [roles, badges, avatars] = await Promise.all([
     supabase.from('user_staff_roles').select('user_id, staff_roles(name, colors, sort)'),
     supabase.from('user_badges').select('user_id, badges(id, name, image_url, sort)'),
-    supabase.rpc('player_avatars'),
+    supabase.rpc('player_directory'),
   ]);
   if (roles.error) throw new Error(roles.error.message);
   if (badges.error) throw new Error(badges.error.message);
+  if (avatars.error) throw new Error(avatars.error.message);
   const map = new Map<string, Identity & { sort: number }>();
-  const get = (id: string) => { let v = map.get(id); if (!v) { v = { role: null, badges: [], avatar: null, sort: Infinity }; map.set(id, v); } return v; };
+  const get = (id: string) => { let v = map.get(id); if (!v) { v = { username: '', displayName: '', role: null, badges: [], avatar: null, sort: Infinity }; map.set(id, v); } return v; };
   for (const r of roles.data) { const role = r.staff_roles; if (!role) continue; const v = get(r.user_id); if (role.sort < v.sort) { v.sort = role.sort; v.role = { name: role.name, colors: role.colors }; } }
   for (const b of badges.data) if (b.badges) get(b.user_id).badges.push(b.badges);
-  for (const a of avatars.data ?? []) get(a.user_id).avatar = a.image_url;
+  for (const a of avatars.data ?? []) Object.assign(get(a.user_id), { avatar: a.image_url, username: a.username, displayName: a.display_name });
   for (const v of map.values()) v.badges.sort((a, b) => a.name.localeCompare(b.name));
   return map as Map<string, Identity>;
 } });

@@ -132,13 +132,15 @@ function RootComponent() {
     let active = true;
     const refresh = () => { void supabase.auth.getUser().then(({ data }) => { if (active) setUser(data.user); }); };
     refresh();
+    const profileChanged = (event: StorageEvent) => { if (event.key === 'gameverse-profile-updated') void queryClient.invalidateQueries({ queryKey: ['identities'] }); };
+    window.addEventListener('storage', profileChanged);
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event !== 'SIGNED_IN' && event !== 'SIGNED_OUT' && event !== 'USER_UPDATED') return;
       if (event === 'SIGNED_OUT') setUser(null); else refresh();
       void router.invalidate();
       if (event !== 'SIGNED_OUT') void queryClient.invalidateQueries();
     });
-    return () => { active = false; subscription.unsubscribe(); };
+    return () => { active = false; subscription.unsubscribe(); window.removeEventListener('storage', profileChanged); };
   }, [router, queryClient]);
 
   return (
