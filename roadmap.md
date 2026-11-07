@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Match purchase popup reference, unify currency pictures, and remove purchased-pack containers; verify purchase and reveal.
+- [x] Match purchase popup reference, unify currency pictures, and remove purchased-pack containers; verify purchase and reveal.
 
 - [x] Add orange View Stats player search and other-player stats
 - [x] Synchronize saved names, pictures, roles and badges across player displays
