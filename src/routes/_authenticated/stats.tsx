@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Star, Users, UserPlus, X, Pencil } from 'lucide-react';
+import { Star, Users, UserPlus, X, Pencil, Search } from 'lucide-react';
 import tokensIcon from '@/assets/icons/stats-tokens.png.asset.json';
 import unlockedIcon from '@/assets/icons/stats-unlocked.png.asset.json';
 import openedIcon from '@/assets/icons/stats-opened.png.asset.json';
@@ -14,9 +14,14 @@ import { PageError, meta } from '@/features/dashboard/page';
 import { identitiesOptions, roleTextStyle } from '@/features/dashboard/roles';
 import { BadgeList, PlayerAvatar, PlayerName } from '@/features/dashboard/player-identity';
 import { BlookArt } from '@/features/dashboard/blook-art';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { playerName, statsSearch, invalidatePlayerProfiles } from '@/features/dashboard/player-profile';
 
 export const Route = createFileRoute('/_authenticated/stats')({
-  loader: ({ context }) => Promise.all([context.queryClient.ensureQueryData(statsOptions()), context.queryClient.ensureQueryData(identitiesOptions())]),
+  validateSearch: statsSearch,
+  loaderDeps: ({ search }) => ({ player: search.player }),
+  loader: ({ context, deps }) => Promise.all([context.queryClient.ensureQueryData(statsOptions(deps.player)), context.queryClient.ensureQueryData(identitiesOptions())]),
   head: () => meta('Stats', 'Your GameVerse tokens, blooks and play stats.'),
   component: Stats, errorComponent: PageError, notFoundComponent: () => <p>Not found.</p>,
 });
@@ -26,10 +31,16 @@ const tab = 'inline-block rounded-t-xl border border-b-0 border-white/10 bg-surf
 const btn = 'flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-bold text-white shadow-[0_4px_0_rgb(0_0_0/0.35)] transition hover:-translate-y-0.5 hover:brightness-110 active:translate-y-1 active:shadow-none disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 
 function Stats() {
-  const { data } = useSuspenseQuery(statsOptions()); const { data: ids } = useSuspenseQuery(identitiesOptions());
+  const { player } = Route.useSearch();
+  const { data } = useSuspenseQuery(statsOptions(player)); const { data: ids } = useSuspenseQuery(identitiesOptions());
   const cache = useQueryClient(); const user = usePlayer(); const [picking, setPicking] = useState(false);
-  const me = user ? ids.get(user.id) : undefined;
-  const name = (user?.user_metadata?.['username'] as string | undefined) || user?.email?.split('@')[0] || 'Player';
+  const target = player ?? user?.id;
+  const own = !player || player === user?.id;
+  const me = target ? ids.get(target) : undefined;
+  const name = playerName(me);
+  const [browsing, setBrowsing] = useState(false);
+  const [search, setSearch] = useState('');
+  const players = [...ids].filter(([, identity]) => `${identity.username} ${identity.displayName}`.toLowerCase().includes(search.trim().toLowerCase())).sort((a, b) => playerName(a[1]).localeCompare(playerName(b[1])));
   const level = Math.floor(data.plays / 5); const xp = (data.plays % 5) * 20;
   const claim = useMutation({ mutationFn: async () => { const { error } = await supabase.rpc('claim_daily'); if (error) throw error; }, onSuccess: () => cache.invalidateQueries() });
   const items = [
@@ -40,10 +51,10 @@ function Stats() {
   ];
   return <DashboardShell bare>
     <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-      <button type="button" onClick={() => setPicking(true)} aria-label="Change profile picture" className="group relative grid size-28 shrink-0 place-items-center rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+      <Button variant="ghost" type="button" disabled={!own} onClick={() => setPicking(true)} aria-label={own ? "Change profile picture" : `${name} profile picture`} className="group relative grid size-28 shrink-0 place-items-center rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
         <PlayerAvatar name={name} identity={me} className="size-28 rounded-2xl text-5xl" />
         <span className="absolute bottom-1 right-1 grid size-7 place-items-center rounded-full bg-surface opacity-0 shadow transition group-hover:opacity-100 group-focus-visible:opacity-100"><Pencil className="size-3.5" /></span>
-      </button>
+      </Button>
       <div className="w-full max-w-md">
         <div className={`${box} px-6 py-3 text-center`}>
           <h1 className="truncate font-display text-4xl leading-tight"><PlayerName name={name} identity={me} className="font-normal" /></h1>
@@ -55,7 +66,9 @@ function Stats() {
           <div className="h-5 flex-1 overflow-hidden rounded-r-full bg-black/40" title={`${5 - (data.plays % 5)} games to next level`}><div className="h-full bg-tile-b transition-all" style={{ width: `${xp}%` }} /></div>
         </div>
         <div className="mt-4 flex flex-wrap gap-3">
-          <button type="button" disabled={claim.isPending} onClick={() => claim.mutate()} className={`${btn} bg-[oklch(0.6_0.17_145)]`}><Star className="size-4 fill-current" />Claim Tokens</button>
+          <Button type="button" variant="ghost" onClick={() => setBrowsing(true)} className={`${btn} bg-market-coin text-tile-fg`}><Search className="size-4" />View Stats</Button>
+          {!own && <Button asChild variant="outline"><Link to="/stats" search={{}} reloadDocument>My Stats</Link></Button>}
+          {own && <Button type="button" variant="ghost" disabled={claim.isPending} onClick={() => claim.mutate()} className={`${btn} bg-[oklch(0.6_0.17_145)]`}><Star className="size-4 fill-current" />Claim Tokens</Button>}
         </div>
         {claim.error && <p role="alert" className="mt-2 text-xs text-destructive">{claim.error.message}</p>}
         {claim.isSuccess && <p role="status" className="mt-2 text-xs font-bold">+50 tokens claimed!</p>}
@@ -78,14 +91,28 @@ function Stats() {
         <p className="flex items-center gap-2 text-sm text-muted-foreground md:justify-end"><UserPlus className="size-4" />No friend requests.</p>
       </div>
     </section>
-    {picking && user && <AvatarPicker userId={user.id} onClose={() => setPicking(false)} />}
+    <Dialog open={browsing} onOpenChange={setBrowsing}>
+      <DialogContent className="max-h-[85dvh] w-[calc(100%-2rem)] overflow-hidden border-surface-border bg-surface">
+        <DialogTitle className="font-display text-2xl">View Stats</DialogTitle>
+        <DialogDescription className="sr-only">Find a player and open their profile.</DialogDescription>
+        <label className="sr-only" htmlFor="player-search">Search players</label>
+        <input id="player-search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search players…" className="h-11 rounded-md border border-input bg-background px-3" />
+        <div className="grid max-h-[55dvh] gap-2 overflow-y-auto">
+          {players.map(([id, identity]) => <Button key={id} asChild variant="ghost" className="h-auto justify-start whitespace-normal border border-surface-border p-3">
+            <Link to="/stats" search={{ player: id }} preload={false} reloadDocument onClick={() => setBrowsing(false)}><PlayerAvatar name={playerName(identity)} identity={identity} /><span className="min-w-0 flex-1"><PlayerName name={playerName(identity)} identity={identity} className="block break-words" /><span className="block text-xs text-muted-foreground">{identity.role?.name ?? 'Player'} · @{identity.username}</span></span><BadgeList identity={identity} /></Link>
+          </Button>)}
+          {!players.length && <p role="status" className="py-4 text-muted-foreground">No players found.</p>}
+        </div>
+      </DialogContent>
+    </Dialog>
+    {own && picking && user && <AvatarPicker userId={user.id} onClose={() => setPicking(false)} />}
   </DashboardShell>;
 }
 
 function AvatarPicker({ userId, onClose }: { userId: string; onClose: () => void }) {
   const cache = useQueryClient(); const { data, isLoading, error } = useQuery(inventoryOptions());
   const owned = (data ?? []).flatMap(r => r.blooks ? [r.blooks] : []).sort((a, b) => a.name.localeCompare(b.name));
-  const save = useMutation({ mutationFn: async (blook: string | null) => { const { error } = await supabase.from('profiles').update({ avatar_blook_id: blook }).eq('id', userId); if (error) throw error; }, onSuccess: () => { cache.invalidateQueries({ queryKey: ['identities'] }); onClose(); } });
+  const save = useMutation({ mutationFn: async (blook: string | null) => { const { error } = await supabase.from('profiles').update({ avatar_blook_id: blook }).eq('id', userId); if (error) throw error; }, onSuccess: () => { invalidatePlayerProfiles(cache); onClose(); } });
   return <div role="dialog" aria-modal="true" aria-label="Choose profile picture" className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" onClick={onClose} onKeyDown={e => e.key === 'Escape' && onClose()}>
     <div className={`${box} w-full max-w-xl p-5`} onClick={e => e.stopPropagation()}>
       <div className="flex items-center justify-between"><h2 className="font-display text-2xl">Choose a blook</h2><button type="button" aria-label="Close" onClick={onClose}><X /></button></div>
