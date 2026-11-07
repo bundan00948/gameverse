@@ -153,9 +153,12 @@ function RootComponent() {
     const onError = (event: ErrorEvent) => recover(event.error ?? event.message);
     window.addEventListener("unhandledrejection", onRejection);
     window.addEventListener("error", onError);
+    // The page loaded fine, so allow a future deploy to trigger one reload again.
+    const clearFlag = window.setTimeout(() => sessionStorage.removeItem(CHUNK_RELOAD_KEY), 10_000);
     return () => {
       window.removeEventListener("unhandledrejection", onRejection);
       window.removeEventListener("error", onError);
+      window.clearTimeout(clearFlag);
     };
   }, []);
   useEffect(() => {
