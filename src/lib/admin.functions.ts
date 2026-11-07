@@ -45,7 +45,7 @@ export const updateUser = createServerFn({ method: 'POST' })
     const admin = await assertAdmin(context as unknown as Ctx);
     const ctx = context as unknown as Ctx;
     const { data: isFull } = await (ctx.supabase.rpc as unknown as (f: 'has_role', a: { _user_id: string; _role: 'admin' }) => PromiseLike<{ data: boolean | null }>)('has_role', { _user_id: ctx.userId, _role: 'admin' });
-    if (data.id === ctx.userId && !data.admin) throw new Error("You can't remove your own staff access");
+    if (isFull && data.id === ctx.userId && !data.admin) throw new Error("You can't remove your own staff access");
     const auth = await admin.auth.admin.updateUserById(data.id, { ...(data.password ? { password: data.password } : {}), user_metadata: { username: data.username } });
     if (auth.error) throw new Error(auth.error.message);
     await admin.from('profiles').update({ username: data.username, display_name: data.displayName }).eq('id', data.id);
