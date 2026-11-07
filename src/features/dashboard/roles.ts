@@ -19,7 +19,10 @@ export function roleGradient(colors: readonly string[] | null | undefined): stri
   const safe = (colors ?? []).filter(c => hex.test(c)).slice(0, 5);
   if (safe.length === 0) return null;
   if (safe.length === 1) return safe[0]!;
-  return `linear-gradient(90deg, ${safe.join(', ')})`;
+  // Each color gets its own solid band with a short blend, so later colors stay clearly visible.
+  const band = 100 / safe.length; const blend = band * 0.2;
+  const stops = safe.map((c, i) => `${c} ${Math.max(0, i * band + blend).toFixed(1)}%, ${c} ${Math.min(100, (i + 1) * band - blend).toFixed(1)}%`);
+  return `linear-gradient(90deg, ${stops.join(', ')})`;
 }
 
 export const permissionsOptions = () => queryOptions({ queryKey: ['my-permissions'], staleTime: 300_000, queryFn: async () => {
