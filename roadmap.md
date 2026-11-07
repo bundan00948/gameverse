@@ -1,7 +1,7 @@
 # Roadmap
 
-- [ ] Integrate icon-only Blooks into the Admin Panel and polish admin layouts
-- [ ] Verify admin sections and icon editing on desktop and mobile
+- [x] Integrate icon-only Blooks into the Admin Panel and polish admin layouts
+- [x] Verify admin sections and icon editing on desktop and mobile
 
 - [x] Add alphabetical Blooks admin grid with editable pack assignments
 - [x] Preserve blooks and owned inventory when a pack is deleted; verify the flow
