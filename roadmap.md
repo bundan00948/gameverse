@@ -1,5 +1,8 @@
 # Roadmap
 
+- [ ] Add game icon uploads and admin embed links
+- [ ] Redesign Games and verify embedded play, history, and phone layout
+
 - [x] Integrate icon-only Blooks into the Admin Panel and polish admin layouts
 - [x] Verify admin sections and icon editing on desktop and mobile
 

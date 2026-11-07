@@ -71,6 +71,13 @@
       "when": 1794015894346,
       "tag": "0009_independent_blooks",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1794017179196,
+      "tag": "0010_game_application_icons",
+      "breakpoints": true
     }
   ]
 }
