@@ -317,24 +317,35 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_blook_id: string | null
           created_at: string
           display_name: string
           id: string
           username: string
         }
         Insert: {
+          avatar_blook_id?: string | null
           created_at?: string
           display_name?: string
           id: string
           username?: string
         }
         Update: {
+          avatar_blook_id?: string | null
           created_at?: string
           display_name?: string
           id?: string
           username?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_avatar_blook_id_fkey"
+            columns: ["avatar_blook_id"]
+            isOneToOne: false
+            referencedRelation: "blooks"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       staff_roles: {
         Row: {
@@ -511,6 +522,13 @@ export type Database = {
       my_permissions: { Args: never; Returns: string[] }
       open_pack: { Args: { _pack: string }; Returns: Json }
       open_packs: { Args: { _pack: string; _quantity: number }; Returns: Json }
+      player_avatars: {
+        Args: never
+        Returns: {
+          image_url: string
+          user_id: string
+        }[]
+      }
       record_play: { Args: { _game: string }; Returns: undefined }
       sell_blook: { Args: { _blook: string }; Returns: number }
     }
