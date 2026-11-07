@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import tokensIcon from '@/assets/icons/stats-tokens.png.asset.json';
 import { identitiesOptions } from '@/features/dashboard/roles';
 import { PlayerAvatar, PlayerName } from '@/features/dashboard/player-identity';
+import { playerName } from '@/features/dashboard/player-profile';
 
 const nav = [
   { to: '/stats', label: 'Stats', icon: BarChart3 },
@@ -37,7 +38,7 @@ export function DashboardShell({ children, bare = false, market = false }: { chi
     if (error) { setError(error.message); setBusy(false); return; }
     await navigate({ to: '/login', replace: true });
   }
-  const name = (user?.user_metadata?.['username'] as string | undefined) || user?.email?.split('@')[0] || 'Player';
+  const name = playerName(me);
   return (
     <div className={cn(market ? 'market-background' : 'bg-tiles', 'gv-shell relative min-h-dvh md:pl-56')}>
       <a href="#page-content" className="gv-skip-link">Skip to content</a>
@@ -54,8 +55,8 @@ export function DashboardShell({ children, bare = false, market = false }: { chi
           {isAdmin && <Link to="/admin" preload={false} reloadDocument className={cn(navClass, 'text-tile-d')} activeProps={{ className: activeClass }}><ShieldCheck className="size-5 shrink-0" />Admin Panel</Link>}
         </nav>
         <div className="hidden items-center gap-2 border-t border-surface-border p-3 md:flex">
-          <span className="font-display grid size-9 shrink-0 place-items-center rounded-lg bg-primary text-lg text-primary-foreground">{name[0]?.toUpperCase()}</span>
-          <p className="min-w-0 flex-1 truncate text-sm font-bold">{name}</p>
+          <PlayerAvatar name={name} identity={me} />
+          <p className="min-w-0 flex-1 truncate text-sm font-bold"><PlayerName name={name} identity={me} /></p>
           <Link to="/settings" preload={false} reloadDocument aria-label="Account settings" className="grid size-11 shrink-0 place-items-center rounded-md hover:bg-glass-hover"><Settings className="size-5" /></Link>
         </div>
         <Button variant="ghost" type="button" disabled={busy} onClick={logout} className={cn(navClass, 'mx-3 mb-3 justify-start hover:text-destructive disabled:opacity-60')}>

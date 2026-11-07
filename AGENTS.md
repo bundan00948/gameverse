@@ -41,3 +41,4 @@ use the editor.
 - Admin sections use validated tab search state and mount only the selected panel; the legacy Blooks URL redirects to its integrated admin tab.
 - Games use admin-uploaded icons and validated HTTPS embed URLs; mount a sandboxed iframe only for the selected game and record play history separately.
 - Staff permissions come from admin-defined roles (staff_roles) checked by has_permission in RLS and server functions; the app_role 'admin' remains the full-access super role.
+- Player displays use the shared profile-backed identity directory; invalidate shared identity caches after edits and refresh across tabs so names, roles, badges and pictures agree. Other-player stats use authenticated, narrowly projected database functions without opening private base-table policies.

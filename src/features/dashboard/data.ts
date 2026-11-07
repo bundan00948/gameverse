@@ -17,7 +17,13 @@ export const gamesOptions = () => queryOptions({ queryKey: ['games'], staleTime:
 
 export const walletOptions = () => queryOptions({ queryKey: ['wallet'], queryFn: async () => ok(await supabase.rpc('ensure_wallet')) });
 
-export const statsOptions = () => queryOptions({ queryKey: ['stats'], queryFn: async () => {
+export const statsOptions = (player?: string) => queryOptions({ queryKey: ['stats', player ?? 'me'], queryFn: async () => {
+  if (player) {
+    const rows = ok(await supabase.rpc('player_stats', { _player: player }));
+    const row = rows[0];
+    if (!row) throw new Error('Player not found.');
+    return { tokens: row.tokens, packsOpened: row.packs_opened, blooks: row.blooks, plays: row.plays, messages: row.messages };
+  }
   const id = await uid();
   const [wallet, blooks, plays, msgs] = await Promise.all([
     supabase.rpc('ensure_wallet'),
