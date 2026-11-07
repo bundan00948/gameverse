@@ -124,10 +124,40 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+const CHUNK_RELOAD_KEY = "gameverse-chunk-reload";
+
+function isStaleChunkError(reason: unknown): boolean {
+  const message = reason instanceof Error ? reason.message : String(reason ?? "");
+  return (
+    message.includes("Importing a module script failed") ||
+    message.includes("Failed to fetch dynamically imported module") ||
+    message.includes("error loading dynamically imported module")
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    // A new deploy replaces hashed JS chunks; an open tab holding the old
+    // bundle fails its next lazy import with a blank screen. Reload once so
+    // the tab picks up the fresh build instead of staying broken.
+    const recover = (reason: unknown) => {
+      if (!isStaleChunkError(reason)) return;
+      if (sessionStorage.getItem(CHUNK_RELOAD_KEY)) return;
+      sessionStorage.setItem(CHUNK_RELOAD_KEY, "1");
+      window.location.reload();
+    };
+    const onRejection = (event: PromiseRejectionEvent) => recover(event.reason);
+    const onError = (event: ErrorEvent) => recover(event.error ?? event.message);
+    window.addEventListener("unhandledrejection", onRejection);
+    window.addEventListener("error", onError);
+    return () => {
+      window.removeEventListener("unhandledrejection", onRejection);
+      window.removeEventListener("error", onError);
+    };
+  }, []);
   useEffect(() => {
     let active = true;
     const refresh = () => { void supabase.auth.getUser().then(({ data }) => { if (active) setUser(data.user); }); };
