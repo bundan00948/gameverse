@@ -50,7 +50,7 @@ function Stats() {
     { label: 'Messages Sent', value: data.messages, icon: messagesIcon.url, curved: false },
   ];
   return <DashboardShell bare>
-    <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+    <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
       <Button variant="ghost" type="button" disabled={!own} onClick={() => setPicking(true)} aria-label={own ? "Change profile picture" : `${name} profile picture`} className="group relative grid size-28 shrink-0 place-items-center rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
         <PlayerAvatar name={name} identity={me} className="size-28 rounded-2xl text-5xl" />
         <span className="absolute bottom-1 right-1 grid size-7 place-items-center rounded-full bg-surface opacity-0 shadow transition group-hover:opacity-100 group-focus-visible:opacity-100"><Pencil className="size-3.5" /></span>
@@ -75,7 +75,7 @@ function Stats() {
       </div>
     </div>
 
-    <section className="mt-10 lg:mx-auto lg:max-w-[88%]">
+    <section className="mt-10 lg:max-w-[88%]">
       <h2 className={tab}>Stats</h2>
       <div className={`${box} grid grid-cols-2 gap-6 rounded-tl-none p-6 lg:grid-cols-4`}>{items.map(i => (
         <div key={i.label} className="relative flex items-center gap-2 rounded-xl border border-white/10 bg-glass-hover px-3 py-2.5 shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_4px_0_rgb(0_0_0/0.25)]">
