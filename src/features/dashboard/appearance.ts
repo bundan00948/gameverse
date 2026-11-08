@@ -7,5 +7,19 @@ export function safeColor(value: unknown, fallback: string): string {
 }
 export function rarityColors(value: unknown): Record<string, string> {
   const colors = value && typeof value === 'object' ? value as Record<string, unknown> : {};
-  return Object.fromEntries(Object.entries(rarityDefaults).map(([key, fallback]) => [key, safeColor(colors[key], fallback)]));
+  return Object.fromEntries(Object.entries(rarityDefaults).map(([key, fallback]) => [key, rarityColorValue(colors[key], fallback)]));
+}
+/** Saved rarity values are one to nine comma-separated hex colors, never arbitrary CSS. */
+export function rarityColorValue(value: unknown, fallback: string): string {
+  if (typeof value !== 'string') return fallback;
+  const parts = value.split(',').map(c => c.trim());
+  return parts.length <= 9 && parts.every(c => /^#[0-9a-f]{6}$/i.test(c)) ? parts.join(', ') : fallback;
+}
+export function rarityPaint(value: unknown, fallback: string): string {
+  const colors = rarityColorValue(value, fallback).split(', ');
+  return colors.length > 1 ? `linear-gradient(90deg in oklab, ${colors.join(', ')})` : colors[0] ?? fallback;
+}
+export function rarityEndpoints(value: unknown, fallback: string): [string, string] {
+  const colors = rarityColorValue(value, fallback).split(', ');
+  return [colors[0] ?? fallback, colors.at(-1) ?? fallback];
 }

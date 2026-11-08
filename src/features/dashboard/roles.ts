@@ -32,7 +32,7 @@ export function roleTextStyle(colors: readonly string[] | null | undefined): Rec
   const paint = roleGradient(colors);
   if (!paint) return undefined;
   if (paint.startsWith('#')) return { color: paint };
-  return { backgroundImage: paint, color: 'transparent', backgroundClip: 'text', WebkitBackgroundClip: 'text' };
+  return { backgroundImage: paint, color: 'transparent', backgroundClip: 'text', WebkitBackgroundClip: 'text', '--role-motion': 'running', backgroundSize: '200% 100%', animation: 'var(--role-gradient-motion)' };
 }
 
 export const permissionsOptions = () => queryOptions({ queryKey: ['my-permissions'], staleTime: 300_000, queryFn: async () => {

@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { BlookArt } from './blook-art';
 import { appearanceOptions } from './data';
-import { rarityDefaults, safeColor } from './appearance';
+import { rarityDefaults, rarityPaint, rarityEndpoints, safeColor } from './appearance';
+import { raritySortedBlooks } from './blook-catalog';
 import { purchaseTotal, validQuantity } from './purchase';
 
 type Blook = { id: string; name: string; image_url: string | null; rarity: string; weight: number };
@@ -39,9 +40,12 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   });
   const result = buy.data?.[pullIndex];
   const pull = result ? { ...result, ...pack.blooks.find(b => b.id === result.id) } : undefined;
-  const glow = stage === 'ready' || stage === 'torn' ? safeColor(pack.gradient_start, 'var(--market-start)') : colors?.[pull?.rarity ?? 'common'] ?? rarityDefaults[pull?.rarity ?? 'common'] ?? 'var(--muted)';
+  const rarity = pull?.rarity ?? 'common';
+  const fallback = rarityDefaults[rarity] ?? 'var(--muted)';
+  const [rarityStart, rarityEnd] = rarityEndpoints(colors?.[rarity], fallback);
+  const glow = stage === 'ready' || stage === 'torn' ? safeColor(pack.gradient_start, 'var(--market-start)') : rarityStart;
   const total = pack.blooks.reduce((s, b) => s + b.weight, 0) || 1;
-  const variables = { '--glow': glow, '--pack-start': safeColor(pack.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(pack.gradient_end, 'var(--market-end)') } as CSSProperties;
+  const variables = { '--glow': glow, '--glow-end': rarityEnd, '--rarity-paint': rarityPaint(colors?.[rarity], fallback), '--pack-start': safeColor(pack.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(pack.gradient_end, 'var(--market-end)') } as CSSProperties;
   function crack() {
     if (stage !== 'ready') return;
     setStage('torn');
@@ -55,10 +59,10 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
       <DialogTitle className="sr-only">{stage === 'confirm' ? pack.name : `Opening ${pack.name}`}</DialogTitle>
       {stage === 'confirm' ? <>
         <div className="pack-preview market-pack-art">
-          {rates ? <ul id="pack-drop-rates" className="pack-drop-rates">{[...pack.blooks].sort((a, b) => b.weight - a.weight).map(b => <li key={b.id}>
+          {rates ? <ul id="pack-drop-rates" className="pack-drop-rates">{raritySortedBlooks(pack.blooks).map(b => <li key={b.id}>
             <BlookArt src={b.image_url} alt="" className="size-9 shrink-0" />
             <span className="pack-drop-name" title={b.name}>{b.name}</span>
-            <span className="rarity-label" style={{ '--glow': colors?.[b.rarity] ?? rarityDefaults[b.rarity] } as CSSProperties}>{b.rarity}</span>
+            <span className="rarity-label" style={{ '--rarity-paint': rarityPaint(colors?.[b.rarity], rarityDefaults[b.rarity] ?? 'var(--muted)') } as CSSProperties}>{b.rarity}</span>
             <span className="pack-drop-chance">{Number(((b.weight / total) * 100).toFixed(2))}%</span>
           </li>)}</ul> : <>
             {pack.pattern_image_url && <img src={pack.pattern_image_url} alt="" className="market-pack-pattern" />}
