@@ -6,7 +6,7 @@ import { Lock, Search } from '@/lib/icons';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { appearanceOptions, collectionOptions, rarityBadgesOptions } from '@/features/dashboard/data';
 import { PageError, meta } from '@/features/dashboard/page';
-import { rarityPaint, rarityDefaults } from '@/features/dashboard/appearance';
+import { rarityPaint, rarityDefaults, safeColor } from '@/features/dashboard/appearance';
 
 export const Route = createFileRoute('/_authenticated/inventory')({
   loader: ({ context }) => context.queryClient.ensureQueryData(collectionOptions()),
