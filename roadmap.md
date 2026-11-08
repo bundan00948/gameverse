@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Fix purchase-stage shaking and verify stationary pack before opening
+- [ ] Refine peel/reveal animation against accessible Blooket reference
+- [ ] Blend vertical pack colors into thin frames; move price into translucent bottom-right badge and remove Market blue defaults
+
 - [x] Optimize initial-load assets and repeated auth requests; compare cold-load measurements (preview cold load ~0.85–0.88s; 0.5s target not reached).
 
 - [x] Reduce navigation reloads and repeated shared-data requests; verify signed-in page switching.
