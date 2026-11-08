@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { BlookArt } from '@/features/dashboard/blook-art';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type CSSProperties } from 'react';
 import { Lock, Search } from '@/lib/icons';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { appearanceOptions, collectionOptions, rarityBadgesOptions } from '@/features/dashboard/data';
