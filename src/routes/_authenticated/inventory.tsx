@@ -50,10 +50,10 @@ function Inventory() {
           <h2 className="font-display text-2xl"><BlookArt src={p.image_url} alt="" className="mr-2 size-9 align-middle text-3xl" />{p.name}</h2>
           <div className="flex items-center gap-2 text-sm font-bold"><div className="h-2 w-28 overflow-hidden rounded-full bg-surface"><div className="h-full bg-tile-c" style={{ width: `${(got / totalInPack.length) * 100}%` }} /></div>{got} / {totalInPack.length}</div>
         </div>
-        <div className="mt-3 flex flex-wrap gap-3">{p.blooks.map(b => (
+        <div className="mt-3 flex flex-wrap gap-1">{p.blooks.map(b => (
           <Button variant="ghost" key={b.id} type="button" onClick={() => setOpen({ ...b, pack: p.name, total: p.blooks.reduce((s, x) => s + x.weight, 0) })} aria-label={b.owned ? b.name : `Locked blook`}
-            className="relative grid size-20 place-items-center rounded-none border-0 bg-transparent p-0 text-4xl shadow-none transition-transform hover:-translate-y-1 hover:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            {b.owned ? <BlookArt src={b.image_url} alt={b.name} className="size-16 text-5xl" /> : <Lock className="size-6 text-muted-foreground" />}
+            className="relative grid size-24 place-items-center rounded-none border-0 bg-transparent p-0 text-4xl shadow-none transition-transform hover:-translate-y-1 hover:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            {b.owned ? <BlookArt src={b.image_url} alt={b.name} className="size-20 text-5xl" /> : <Lock className="size-6 text-muted-foreground" />}
             {b.owned > 0 && <span aria-label={`${b.owned} owned, ${b.rarity}`} title={`${b.rarity} · ${b.owned} owned`} className="absolute bottom-0 right-0 isolate grid min-h-7 min-w-7 place-items-center px-1 text-xs font-bold text-white">{badges?.[b.rarity] ? <img aria-hidden="true" src={badges[b.rarity] ?? undefined} alt="" className="absolute inset-0 -z-10 size-full object-contain" /> : <span aria-hidden="true" className="absolute inset-0 -z-10 [clip-path:polygon(50%_0%,63%_12%,80%_7%,85%_25%,100%_35%,92%_50%,100%_65%,85%_75%,80%_93%,63%_88%,50%_100%,37%_88%,20%_93%,15%_75%,0%_65%,8%_50%,0%_35%,15%_25%,20%_7%,37%_12%)]" style={{ background: rarityPaint(colors?.[b.rarity], rarityDefaults[b.rarity] ?? 'var(--secondary)') }} />}<span className="[text-shadow:0_1px_2px_var(--background),0_0_3px_var(--background)]">{b.owned.toLocaleString()}</span></span>}
           </Button>))}</div>
       </section>; })}
