@@ -439,6 +439,10 @@
 @keyframes packTornShake { 0%,100% { transform: none; } 30% { transform: translateX(-2%) rotate(-1.5deg); } 65% { transform: translateX(1.5%) rotate(1deg); } }
 .pack-unbox-cover-drop.torn .pack-unbox-half-bot { animation: packCoverFallAway .62s ease-in forwards; }
 
+/* Locked blooks: the blook's own shape, darkened, with the lock centred on top */
+.blook-silhouette { filter: brightness(0) invert(var(--blook-silhouette-invert, 1)); opacity: var(--blook-silhouette-opacity, .3); }
+.bright { --blook-silhouette-invert: 0; --blook-silhouette-opacity: .22; }
+
 /* Profile-banner cards retain the reference's wide art and rarity footer in GameVerse colors. */
 :root { --banner-card-frame: calc(var(--spacing) * 1.5); --banner-art-ratio: 4.5; --banner-card-ratio: 1.72; --banner-card-min: calc(var(--spacing) * 95); --banner-card-max: calc(var(--spacing) * 103); --banner-price-height: calc(var(--spacing) * 15); --banner-label-offset: 0px; }
 .gv-banner-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(min(100%,var(--banner-card-min)),1fr)); gap: calc(var(--spacing) * 6); }
