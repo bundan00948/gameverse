@@ -58,7 +58,7 @@ function Inventory() {
           </Button>))}</div>
       </section>; })}
 
-    {open && <Dialog open onOpenChange={value => { if (!value) setOpen(null); }}><DialogContent aria-describedby={undefined} className="w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-md bg-surface p-8 text-center" style={{ '--pack-start': safeColor(open.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(open.gradient_end, 'var(--market-end)'), border: '6px solid color-mix(in srgb, var(--pack-start) 65%, var(--foreground))', boxShadow: 'var(--market-shadow)' } as CSSProperties}>
+    {open && <Dialog open onOpenChange={value => { if (!value) setOpen(null); }}><DialogContent aria-describedby={undefined} className="w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-md bg-surface p-8 text-center" style={{ '--pack-start': safeColor(open.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(open.gradient_end, 'var(--market-end)'), border: '6px solid color-mix(in srgb, var(--pack-start) 55%, transparent)', boxShadow: 'var(--market-shadow)' } as CSSProperties}>
         <div aria-hidden className="pack-scene-gradient rounded-md" />
         {open.open_image_url && <img aria-hidden src={open.open_image_url} alt="" className="pack-stage-background rounded-md" />}
         {open.pattern_image_url && <img aria-hidden src={open.pattern_image_url} alt="" className="market-pack-pattern" />}
@@ -67,12 +67,12 @@ function Inventory() {
         <DialogTitle className="mt-5 font-display text-4xl">{open.owned ? open.name : 'Locked blook'}</DialogTitle>
         <p className="mt-3 flex items-center justify-center gap-2.5">
           {badges?.[open.rarity] ? <img aria-hidden="true" src={badges[open.rarity] ?? undefined} alt="" className="ml-2 size-8 object-contain" /> : <span aria-hidden="true" className="ml-2 size-8 [clip-path:polygon(50%_0%,63%_12%,80%_7%,85%_25%,100%_35%,92%_50%,100%_65%,85%_75%,80%_93%,63%_88%,50%_100%,37%_88%,20%_93%,15%_75%,0%_65%,8%_50%,0%_35%,15%_25%,20%_7%,37%_12%)]" style={{ background: rarityPaint(colors?.[open.rarity], rarityDefaults[open.rarity] ?? 'var(--secondary)') }} />}
-          <span className="rounded-full border-2 border-white/50 px-4 py-1.5 text-sm font-bold uppercase tracking-wide text-white shadow-tile" style={{ background: rarityPaint(colors?.[open.rarity], rarityDefaults[open.rarity] ?? 'var(--foreground)') }}>{open.rarity}</span>
+          <span className="rounded-full border-2 border-white/50 px-4 py-1.5 font-display text-xs uppercase tracking-wide text-white shadow-tile" style={{ background: rarityPaint(colors?.[open.rarity], rarityDefaults[open.rarity] ?? 'var(--foreground)') }}>{open.rarity}</span>
         </p>
-        <dl className="mt-5 grid grid-cols-3 gap-2.5 text-sm">
-          <div className="rounded-lg bg-glass-hover p-2.5"><dt className="text-xs text-muted-foreground">Pack</dt><dd className="font-bold">{open.pack}</dd></div>
-          <div className="rounded-lg bg-glass-hover p-2.5"><dt className="text-xs text-muted-foreground">Owned</dt><dd className="font-bold">{open.owned}</dd></div>
-          <div className="rounded-lg bg-glass-hover p-2.5"><dt className="text-xs text-muted-foreground">Chance</dt><dd className="font-bold">{open.pack === 'Unassigned' ? '—' : `${((open.weight / open.total) * 100).toFixed(2)}%`}</dd></div>
+        <dl className="mt-5 grid grid-cols-3 gap-3 text-base">
+          <div className="rounded-lg border border-white/25 bg-background/70 p-3.5 shadow-tile"><dt className="text-sm text-muted-foreground">Pack</dt><dd className="text-lg font-bold">{open.pack}</dd></div>
+          <div className="rounded-lg border border-white/25 bg-background/70 p-3.5 shadow-tile"><dt className="text-sm text-muted-foreground">Owned</dt><dd className="text-lg font-bold">{open.owned}</dd></div>
+          <div className="rounded-lg border border-white/25 bg-background/70 p-3.5 shadow-tile"><dt className="text-sm text-muted-foreground">Chance</dt><dd className="text-lg font-bold">{open.pack === 'Unassigned' ? '—' : `${((open.weight / open.total) * 100).toFixed(2)}%`}</dd></div>
         </dl>
         {!open.owned && open.pack !== 'Unassigned' && <Link to="/shop" className="mt-5 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">Find it in the Market</Link>}
         </div>
