@@ -55,7 +55,7 @@ export function DashboardShell({ children, bare = false, market = false }: { chi
           {isAdmin && <Link to="/admin" preload={false} className={cn(navClass, 'text-tile-d')} activeProps={{ className: activeClass }}><ShieldCheck className="size-5 shrink-0" />Admin Panel</Link>}
         </nav>
         <div className="hidden items-center gap-2 border-t border-surface-border p-3 md:flex">
-          <PlayerAvatar name={name} identity={me} />
+          <PlayerAvatar name={name} identity={me} className="size-6" />
           <p className="min-w-0 flex-1 truncate text-sm font-bold"><PlayerName name={name} identity={me} /></p>
           <Link to="/settings" preload={false} aria-label="Account settings" className="grid size-11 shrink-0 place-items-center rounded-md hover:bg-glass-hover"><Settings className="size-5" /></Link>
         </div>
@@ -67,7 +67,7 @@ export function DashboardShell({ children, bare = false, market = false }: { chi
       <header className="gv-topbar pointer-events-none absolute right-4 top-4 z-10 flex justify-end sm:right-8">
         <div className="pointer-events-auto flex min-w-0 items-stretch gap-2">
           <span aria-label={`${wallet?.tokens ?? 0} tokens`} className="flex shrink-0 items-center gap-1.5 rounded-xl border border-white/10 bg-black/70 px-3 py-1.5 font-display text-lg shadow-[0_4px_0_rgb(0_0_0/0.3)] backdrop-blur-sm"><img src={tokensIcon.url} alt="" className="size-6 object-contain" />{wallet?.tokens ?? '–'}</span>
-          <Link to="/stats" preload={false} className="flex min-h-10 min-w-0 items-center gap-2 rounded-xl border border-white/10 bg-black/70 px-3 py-1.5 text-sm font-bold shadow-[0_4px_0_rgb(0_0_0/0.3)] backdrop-blur-sm transition-colors hover:bg-black/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><PlayerAvatar name={name} identity={me} className="size-7 rounded text-sm" /><PlayerName name={name} identity={me} className="max-w-32 truncate" /></Link>
+          <Link to="/stats" preload={false} className="flex min-h-10 min-w-0 items-center gap-2 rounded-xl border border-white/10 bg-black/70 px-3 py-1.5 text-sm font-bold shadow-[0_4px_0_rgb(0_0_0/0.3)] backdrop-blur-sm transition-colors hover:bg-black/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><PlayerAvatar name={name} identity={me} className="size-5 rounded text-sm" /><PlayerName name={name} identity={me} className="max-w-32 truncate" /></Link>
         </div>
       </header>
       <main id="page-content" tabIndex={-1} className={cn('gv-content mx-auto w-full max-w-7xl p-4 pt-20 sm:p-8 sm:pt-20', !bare && 'gv-standard-page')}>{children}</main>
