@@ -443,7 +443,7 @@
 .gv-banner-choice:hover { background:transparent; }
 .gv-banner-card { position:relative; display:grid; grid-template-rows:auto minmax(0,1fr) auto; aspect-ratio:var(--banner-card-ratio); width:100%; min-width:0; overflow:hidden; border:var(--banner-card-frame) solid var(--surface-border); border-radius:var(--market-radius); background:linear-gradient(to bottom in oklab,var(--secondary),var(--surface)); color:var(--foreground); box-shadow:var(--market-shadow); }
 .gv-banner-title { padding:calc(var(--spacing) * 3); font-family:var(--font-display); font-size:var(--text-xl); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.gv-banner-art { display:grid; align-items:center; padding:var(--spacing) calc(var(--spacing) * 4) calc(var(--spacing) * 10); min-height:0; }
+.gv-banner-art { display:grid; align-items:center; padding:var(--spacing) calc(var(--spacing) * 4) calc(var(--spacing) * 6); min-height:0; }
 .gv-banner-art img { width:100%; height:100%; min-height:0; object-fit:contain; }
 .gv-banner-footer { position:relative; display:grid; place-items:end center; padding-bottom:var(--spacing); min-height:var(--banner-price-height); border-top:var(--market-frame-width) solid var(--market-foreground); background:var(--banner-rarity); color:var(--market-foreground); }
 .gv-banner-rarity { position:absolute; top:var(--banner-label-offset); left:50%; transform:translate(-50%,-50%); padding:calc(var(--spacing) * 0.75) calc(var(--spacing) * 4); border:var(--market-frame-width) solid var(--market-foreground); border-radius:calc(var(--spacing) * 10); background:var(--banner-rarity); font-family:var(--font-display); font-size:var(--text-base); text-transform:capitalize; text-shadow:0 var(--spacing) var(--spacing) var(--pedestal); }
