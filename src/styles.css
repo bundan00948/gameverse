@@ -437,7 +437,7 @@
 .pack-unbox-cover-drop.torn .pack-unbox-half-bot { animation: packCoverFallAway .62s ease-in forwards; }
 
 /* Profile-banner cards retain the reference's wide art and rarity footer in GameVerse colors. */
-:root { --banner-card-frame: calc(var(--spacing) * 1.5); --banner-art-ratio: 4.5; --banner-card-ratio: 1.72; --banner-card-min: calc(var(--spacing) * 65); --banner-price-height: calc(var(--spacing) * 15); --banner-label-offset: 0px; }
+:root { --banner-card-frame: calc(var(--spacing) * 1.5); --banner-art-ratio: 4.5; --banner-card-ratio: 1.72; --banner-card-min: calc(var(--spacing) * 95); --banner-price-height: calc(var(--spacing) * 15); --banner-label-offset: 0px; }
 .gv-banner-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(min(100%,var(--banner-card-min)),1fr)); gap: calc(var(--spacing) * 6); }
 .gv-banner-choice { display:block; height:auto; min-width:0; padding:0; border-radius:var(--market-radius); white-space:normal; text-align:center; background:transparent; }
 .gv-banner-choice:hover { background:transparent; }
