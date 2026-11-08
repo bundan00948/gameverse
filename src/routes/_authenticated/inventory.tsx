@@ -58,7 +58,10 @@ function Inventory() {
           </Button>))}</div>
       </section>; })}
 
-    {open && <Dialog open onOpenChange={value => { if (!value) setOpen(null); }}><DialogContent aria-describedby={undefined} className="w-[calc(100%-2rem)] max-w-sm rounded-md border-surface-border bg-surface p-6 text-center">
+    {open && <Dialog open onOpenChange={value => { if (!value) setOpen(null); }}><DialogContent aria-describedby={undefined} className="w-[calc(100%-2rem)] max-w-sm overflow-hidden rounded-md border-surface-border bg-surface p-6 text-center" style={{ '--pack-start': safeColor(open.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(open.gradient_end, 'var(--market-end)') } as CSSProperties}>
+        <div aria-hidden className="pack-scene-gradient rounded-md" />
+        {open.pattern_image_url && <img aria-hidden src={open.pattern_image_url} alt="" className="market-pack-pattern" />}
+        <div className="relative">
         <div className="mx-auto grid size-28 place-items-center text-6xl">{open.owned ? <BlookArt src={open.image_url} alt={open.name} className="size-24 text-7xl" /> : <span className="relative grid size-24 place-items-center">{open.image_url && <BlookArt src={open.image_url} alt="" aria-hidden className="blook-silhouette size-full" />}<Lock className="absolute size-10 text-foreground/85" /></span>}</div>
         <DialogTitle className="mt-4 font-display text-3xl">{open.owned ? open.name : 'Locked blook'}</DialogTitle>
         <p className="text-sm font-bold uppercase" style={{ background: rarityPaint(colors?.[open.rarity], rarityDefaults[open.rarity] ?? 'var(--foreground)'), backgroundClip: 'text', color: 'transparent' }}>{open.rarity}</p>
@@ -68,6 +71,7 @@ function Inventory() {
           <div className="rounded-lg bg-glass-hover p-2"><dt className="text-xs text-muted-foreground">Chance</dt><dd className="font-bold">{open.pack === 'Unassigned' ? '—' : `${((open.weight / open.total) * 100).toFixed(2)}%`}</dd></div>
         </dl>
         {!open.owned && open.pack !== 'Unassigned' && <Link to="/shop" className="mt-4 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">Find it in the Market</Link>}
+        </div>
     </DialogContent></Dialog>}
   </DashboardShell>;
 }
