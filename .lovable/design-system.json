@@ -600,7 +600,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "\u003cThemeToggle /\u003e"
+          "code": "<ThemeToggle />"
         }
       ],
       "antipatterns": [
@@ -646,7 +646,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "\u003cButton onClick={saveProfile}\u003eSave profile\u003c/Button\u003e"
+          "code": "<Button onClick={saveProfile}>Save profile</Button>"
         }
       ],
       "antipatterns": [
@@ -686,7 +686,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "\u003cDialog open={open} onOpenChange={setOpen}\u003e\u003cDialogContent aria-describedby={undefined}\u003e\u003cDialogTitle\u003eChoose a blook\u003c/DialogTitle\u003e\u003c/DialogContent\u003e\u003c/Dialog\u003e"
+          "code": "<Dialog open={open} onOpenChange={setOpen}><DialogContent aria-describedby={undefined}><DialogTitle>Choose a blook</DialogTitle></DialogContent></Dialog>"
         }
       ],
       "antipatterns": [
@@ -721,7 +721,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "\u003cAuthForm register /\u003e"
+          "code": "<AuthForm register />"
         }
       ],
       "antipatterns": [
@@ -736,7 +736,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "\u003cDashboardShell bare\u003e\u003cPageTitle kicker=\"Your universe\" title=\"Games\" /\u003e\u003c/DashboardShell\u003e"
+          "code": "<DashboardShell bare><PageTitle kicker=\"Your universe\" title=\"Games\" /></DashboardShell>"
         }
       ],
       "antipatterns": [
@@ -751,7 +751,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "\u003cPasswordForm recovery /\u003e"
+          "code": "<PasswordForm recovery />"
         }
       ],
       "antipatterns": [
@@ -771,17 +771,47 @@
     {
       "name": "BlooksPanel",
       "file": "src/features/admin/blooks-panel",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Use for the alphabetical icon catalog and focused blook editing with a live result.",
+      "examples": [
+        {
+          "label": "Admin editing",
+          "code": "<BlooksPanel />"
+        }
+      ],
+      "antipatterns": [
+        "Do not add labels or frames around catalog icons."
+      ]
     },
     {
       "name": "RolesPanel",
       "file": "src/features/admin/roles-panel",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Use for permission-gated role editing with folded entries and draft name-color previews.",
+      "examples": [
+        {
+          "label": "Admin editing",
+          "code": "<RolesPanel />"
+        }
+      ],
+      "antipatterns": [
+        "Do not replace server-enforced permissions with preview state."
+      ]
     },
     {
       "name": "BadgesPanel",
       "file": "src/features/admin/roles-panel",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Use for folded badge editing with live artwork and description previews.",
+      "examples": [
+        {
+          "label": "Admin editing",
+          "code": "<BadgesPanel />"
+        }
+      ],
+      "antipatterns": [
+        "Do not treat an unsaved preview as an assigned badge."
+      ]
     },
     {
       "name": "BlookArt",
@@ -824,7 +854,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "\u003cImagePicker label=\"Pack image\" value={image} onChange={setImage} /\u003e"
+          "code": "<ImagePicker label=\"Pack image\" value={image} onChange={setImage} />"
         }
       ],
       "antipatterns": [
@@ -856,7 +886,7 @@
       "examples": [
         {
           "label": "Purchase a catalog pack",
-          "code": "\u003cPackOpener pack={selectedPack} tokens={wallet.tokens} onClose={() =\u003e setSelectedPack(null)} /\u003e"
+          "code": "<PackOpener pack={selectedPack} tokens={wallet.tokens} onClose={() => setSelectedPack(null)} />"
         }
       ],
       "antipatterns": [
@@ -872,7 +902,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "\u003cPageTitle kicker=\"Recently played\" title=\"History\" /\u003e"
+          "code": "<PageTitle kicker=\"Recently played\" title=\"History\" />"
         }
       ],
       "antipatterns": [
@@ -887,7 +917,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "\u003cPageError error={error} /\u003e"
+          "code": "<PageError error={error} />"
         }
       ],
       "antipatterns": [
@@ -902,7 +932,7 @@
       "examples": [
         {
           "label": "Typical usage",
-          "code": "\u003cEmpty\u003eNo games match your search.\u003c/Empty\u003e"
+          "code": "<Empty>No games match your search.</Empty>"
         }
       ],
       "antipatterns": [
@@ -960,6 +990,36 @@
       "name": "Constants",
       "file": "src/integrations/supabase/types",
       "import_path": ""
+    },
+    {
+      "name": "EditorSection",
+      "file": "src/features/admin/editor-section",
+      "import_path": "",
+      "usage": "Use to fold unopened admin item editors while keeping drafts in the parent.",
+      "examples": [
+        {
+          "label": "Admin editing",
+          "code": "<EditorSection title=\"Space Pack\" summary=\"25 tokens\"><PackFields /></EditorSection>"
+        }
+      ],
+      "antipatterns": [
+        "Do not place upload, save or delete controls inside the disclosure trigger."
+      ]
+    },
+    {
+      "name": "ResultPreview",
+      "file": "src/features/admin/result-preview",
+      "import_path": "",
+      "usage": "Show the current unsaved pack or artwork appearance without purchasing, saving or launching games.",
+      "examples": [
+        {
+          "label": "Admin editing",
+          "code": "<ResultPreview variant=\"pack\" name={draft.name} image={draft.image_url} start={draft.gradient_start} end={draft.gradient_end} price={draft.price} />"
+        }
+      ],
+      "antipatterns": [
+        "Do not use PackOpener for an admin preview or crop artwork."
+      ]
     }
   ],
   "assets": [

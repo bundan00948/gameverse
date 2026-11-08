@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { forwardRef, useState, type HTMLAttributes } from 'react';
+import { cn } from '@/lib/utils';
+import { ResultPreview } from './result-preview';
 import { Plus, Save, Search, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import type { Tables } from '@/integrations/supabase/types';
@@ -12,7 +14,8 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/compone
 type Blook = Tables<'blooks'>;
 type Pack = Pick<Tables<'packs'>, 'id' | 'name'>;
 const field = 'w-full rounded-md border border-surface-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
-export function BlooksPanel() {
+export interface BlooksPanelProps extends HTMLAttributes<HTMLDivElement> {}
+export const BlooksPanel = forwardRef<HTMLDivElement, BlooksPanelProps>(function BlooksPanel({ className, ...props }, ref) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<Blook | 'new' | null>(null);
   const { data, error, isLoading } = useQuery({ queryKey: ['admin-blooks'], queryFn: async () => {
@@ -22,7 +25,7 @@ export function BlooksPanel() {
     return { blooks: alphabeticalBlooks(blooks.data), packs: packs.data };
   } });
   const visible = data?.blooks.filter(b => b.name.toLowerCase().includes(search.toLowerCase())) ?? [];
-  return <>
+  return <div ref={ref} {...props} className={cn("min-w-0", className)}>
     <div className="flex flex-wrap items-center gap-3 border-b border-surface-border pb-4">
       <label className="relative min-w-0 flex-1"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><input aria-label="Search blooks" placeholder="Search blooks…" className={`${field} bg-surface pl-9`} value={search} onChange={e => setSearch(e.target.value)} /></label>
       <span className="text-sm font-bold text-muted-foreground">{data?.blooks.length ?? 0} blooks</span><Button onClick={() => setSelected('new')} disabled={!data}><Plus />Add blook</Button>
@@ -31,8 +34,8 @@ export function BlooksPanel() {
     {!isLoading && !error && !visible.length && <p className="mt-8 text-muted-foreground">{search ? 'No blooks match your search.' : 'No blooks yet.'}</p>}
     <div className="mt-6 grid grid-cols-[repeat(auto-fill,minmax(5rem,1fr))] gap-4 sm:gap-6">{visible.map(b => <Button key={b.id} variant="ghost" title={b.name} onClick={() => setSelected(b)} aria-label={`Edit ${b.name}`} className="aspect-square h-auto w-full rounded-none border-0 bg-transparent p-1 shadow-none transition-transform hover:scale-105 hover:bg-transparent focus-visible:ring-2"><BlookArt src={b.image_url} alt={b.name} className="h-auto w-full max-w-20" /></Button>)}</div>
     <Dialog open={selected !== null} onOpenChange={open => { if (!open) setSelected(null); }}>{selected && data && <BlookEditor key={typeof selected === 'string' ? selected : selected.id} blook={selected === 'new' ? null : selected} packs={data.packs} onClose={() => setSelected(null)} />}</Dialog>
-  </>;
-}
+  </div>;
+});
 interface BlookEditorProps { blook: Blook | null; packs: Pack[]; onClose: () => void; }
 function BlookEditor({ blook, packs, onClose }: BlookEditorProps) {
   const cache = useQueryClient();
@@ -47,6 +50,7 @@ function BlookEditor({ blook, packs, onClose }: BlookEditorProps) {
   }, onSuccess: done });
   const del = useMutation({ mutationFn: async () => { if (!blook) return; const result = await supabase.from('blooks').delete().eq('id', blook.id); if (result.error) throw result.error; }, onSuccess: done });
   return <DialogContent className="max-h-[90dvh] overflow-y-auto border-surface-border bg-surface"><DialogTitle>{blook ? 'Edit blook' : 'Add blook'}</DialogTitle><DialogDescription>{blook?.name ?? 'New blook'}</DialogDescription>
+    <ResultPreview name={form.name || 'New blook'} image={form.image_url}><p className="text-center text-sm capitalize">{form.rarity} · {packs.find(p => p.id === form.pack_id)?.name ?? 'Unassigned'}</p></ResultPreview>
     <form className="space-y-4" onSubmit={e => { e.preventDefault(); save.mutate(); }}>
       <ImagePicker label="Blook image" value={form.image_url} onChange={image_url => setForm({ ...form, image_url })} />
       <label className="block space-y-1 text-sm font-bold"><span>Name</span><input required className={field} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></label>
