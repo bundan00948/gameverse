@@ -15,6 +15,7 @@ import { ImagePicker } from '@/features/dashboard/image-picker';
 import { Button } from '@/components/ui/button';
 import { rarityColors, rarityDefaults } from '@/features/dashboard/appearance';
 import { listUsers, updateUser, deleteUser } from '@/lib/admin.functions';
+import { BannersPanel } from '@/features/admin/banners-panel';
 import { BlooksPanel } from '@/features/admin/blooks-panel';
 import { gameEmbedUrl } from '@/features/dashboard/game-embed';
 import { invalidatePlayerProfiles } from '@/features/dashboard/player-profile';
@@ -30,9 +31,9 @@ export const Route = createFileRoute('/_authenticated/admin')({
 
 const input = 'mt-1 w-full min-w-0 rounded-md border border-surface-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const btn = 'inline-flex items-center gap-2 rounded-md px-3 py-2 text-xs font-bold disabled:opacity-50';
-const tabs = ['Users', 'Roles', 'Badges', 'Shop', 'Blooks', 'Games', 'Missions'] as const;
-const tabIcons = { Users: UsersIcon, Roles: Crown, Badges: Award, Shop: Store, Blooks: Backpack, Games: Gamepad2, Missions: Target };
-const tabPerm = { Users: 'users', Roles: 'roles', Badges: 'badges', Shop: 'shop', Blooks: 'blooks', Games: 'games', Missions: 'missions' } as const;
+const tabs = ['Users', 'Roles', 'Badges', 'Shop', 'Banners', 'Blooks', 'Games', 'Missions'] as const;
+const tabIcons = { Users: UsersIcon, Roles: Crown, Badges: Award, Shop: Store, Banners: Store, Blooks: Backpack, Games: Gamepad2, Missions: Target };
+const tabPerm = { Users: 'users', Roles: 'roles', Badges: 'badges', Shop: 'shop', Banners: 'shop', Blooks: 'blooks', Games: 'games', Missions: 'missions' } as const;
 
 function Admin() {
   const { data: perms = [], isLoading } = useQuery(permissionsOptions());
@@ -46,7 +47,7 @@ function Admin() {
   return <DashboardShell bare><div className="staff-workspace">
     <PageTitle kicker="Staff" title="Admin Panel" />
     <nav aria-label="Admin sections" className="staff-tabs">{allowed.map(t => { const Icon = tabIcons[t]; return <Button key={t} type="button" variant={tab === t ? 'default' : 'ghost'} aria-pressed={tab === t} onClick={() => navigate({ search: { tab: t }, replace: true })} className="gap-2 font-bold"><Icon />{t}</Button>; })}</nav>
-    <div className="mt-6">{tab === 'Blooks' ? <BlooksPanel /> : tab === 'Users' ? <Users canGrantStaff={isFullAdmin} /> : tab === 'Roles' ? <RolesPanel /> : tab === 'Badges' ? <BadgesPanel /> : tab === 'Shop' ? <Shop /> : tab === 'Games' ? <Table title="Games" table="games" fields={['title', 'description', 'play_url']} blank={{ emoji: '', title: 'New game', description: '', play_url: '' }} /> : <Table title="Missions" table="missions" fields={['title', 'kind', 'goal', 'reward']} blank={{ title: 'New mission', kind: 'plays', goal: 5, reward: 10 }} />}</div>
+    <div className="mt-6">{tab === 'Banners' ? <BannersPanel /> : tab === 'Blooks' ? <BlooksPanel /> : tab === 'Users' ? <Users canGrantStaff={isFullAdmin} /> : tab === 'Roles' ? <RolesPanel /> : tab === 'Badges' ? <BadgesPanel /> : tab === 'Shop' ? <Shop /> : tab === 'Games' ? <Table title="Games" table="games" fields={['title', 'description', 'play_url']} blank={{ emoji: '', title: 'New game', description: '', play_url: '' }} /> : <Table title="Missions" table="missions" fields={['title', 'kind', 'goal', 'reward']} blank={{ title: 'New mission', kind: 'plays', goal: 5, reward: 10 }} />}</div>
   </div></DashboardShell>;
 }
 

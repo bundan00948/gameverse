@@ -16,6 +16,7 @@ import { BadgeList, PlayerAvatar, PlayerName } from '@/features/dashboard/player
 import { BlookArt } from '@/features/dashboard/blook-art';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { BannerPicker } from '@/features/dashboard/banner-picker';
 import { playerName, statsSearch, invalidatePlayerProfiles } from '@/features/dashboard/player-profile';
 
 export const Route = createFileRoute('/_authenticated/stats')({
@@ -39,6 +40,7 @@ function Stats() {
   const me = target ? ids.get(target) : undefined;
   const name = playerName(me);
   const [browsing, setBrowsing] = useState(false);
+  const [bannerPicking, setBannerPicking] = useState(false);
   const [search, setSearch] = useState('');
   const players = [...ids].filter(([, identity]) => `${identity.username} ${identity.displayName}`.toLowerCase().includes(search.trim().toLowerCase())).sort((a, b) => playerName(a[1]).localeCompare(playerName(b[1])));
   const level = Math.floor(data.plays / 5); const xp = (data.plays % 5) * 20;
@@ -56,9 +58,11 @@ function Stats() {
           <PlayerAvatar name={name} identity={me} className="size-28 rounded-2xl text-4xl" />
           <span className="absolute bottom-1 right-1 grid size-7 place-items-center rounded-full bg-surface opacity-0 shadow transition group-hover:opacity-100 group-focus-visible:opacity-100"><Pencil className="size-3.5" /></span>
         </Button>
-        <div className={`${box} w-full flex-1 px-5 py-2.5 text-center sm:max-w-[50%]`}>
-          <h1 className="truncate font-display text-3xl leading-tight"><PlayerName name={name} identity={me} className="font-normal" /></h1>
-          <p className="text-xs text-muted-foreground" style={roleTextStyle(me?.role?.colors)}>{me?.role?.name ?? 'Player'}</p>
+        <div className={`${box} gv-nameplate relative w-full flex-1 overflow-hidden text-center sm:max-w-[50%]`}>
+          {me?.bannerImage && <img src={me.bannerImage} alt="" className="gv-nameplate-background" />}
+          <h1 className="relative truncate px-5 pt-2.5 font-display text-3xl leading-tight"><PlayerName name={name} identity={me} className="font-normal" /></h1>
+          <p className="relative pb-2.5 text-xs text-muted-foreground" style={roleTextStyle(me?.role?.colors)}>{me?.role?.name ?? 'Player'}</p>
+          {own && <Button variant="ghost" aria-label="Change nameplate background" className="gv-nameplate-trigger" onClick={() => setBannerPicking(true)} />}
         </div>
         {me?.badges.length ? <div className={`${box} flex min-h-20 w-full items-center justify-center gap-2 px-5 py-2.5 sm:w-auto sm:flex-1`}><BadgeList identity={me} size="lg" /></div> : null}
       </div>
@@ -105,6 +109,7 @@ function Stats() {
         </div>
       </DialogContent>
     </Dialog>
+    <Dialog open={bannerPicking} onOpenChange={setBannerPicking}><DialogContent className="border-surface-border bg-surface"><DialogTitle className="font-display text-2xl">Choose a banner</DialogTitle><DialogDescription>Choose your nameplate background.</DialogDescription>{user && <BannerPicker userId={user.id} selected={me?.bannerId} onSelected={() => setBannerPicking(false)} />}</DialogContent></Dialog>
     {own && picking && user && <AvatarPicker userId={user.id} onClose={() => setPicking(false)} />}
   </DashboardShell>;
 }

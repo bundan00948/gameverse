@@ -1020,6 +1020,66 @@
       "antipatterns": [
         "Do not use PackOpener for an admin preview or crop artwork."
       ]
+    },
+    {
+      "name": "BannerCard",
+      "file": "src/features/dashboard/banner-card",
+      "import_path": "",
+      "usage": "Use for wide banner artwork with a rarity-colored token footer.",
+      "examples": [
+        {
+          "label": "Typical usage",
+          "code": "<BannerCard banner={banner} colors={rarityColors} />"
+        }
+      ],
+      "antipatterns": [
+        "Do not crop banner art or choose footer colors independently of rarity."
+      ]
+    },
+    {
+      "name": "BannerPicker",
+      "file": "src/features/dashboard/banner-picker",
+      "import_path": "",
+      "usage": "Use inside a dialog to select owned nameplate backgrounds.",
+      "examples": [
+        {
+          "label": "Typical usage",
+          "code": "<BannerPicker userId={user.id} selected={bannerId} onSelected={closePicker} />"
+        }
+      ],
+      "antipatterns": [
+        "Do not show unowned backgrounds as selectable."
+      ]
+    },
+    {
+      "name": "MarketBanners",
+      "file": "src/features/dashboard/market-banners",
+      "import_path": "",
+      "usage": "Place below Market packs to display listed banners and confirm purchases.",
+      "examples": [
+        {
+          "label": "Typical usage",
+          "code": "<MarketBanners />"
+        }
+      ],
+      "antipatterns": [
+        "Do not charge tokens from browser state."
+      ]
+    },
+    {
+      "name": "BannersPanel",
+      "file": "src/features/admin/banners-panel",
+      "import_path": "",
+      "usage": "Use for folded admin banner editors with live previews and sale controls.",
+      "examples": [
+        {
+          "label": "Typical usage",
+          "code": "<BannersPanel />"
+        }
+      ],
+      "antipatterns": [
+        "Do not equate unlisting with deleting owned banners."
+      ]
     }
   ],
   "assets": [
