@@ -4,7 +4,7 @@
 
 The design system exports these components — import them from `@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf` and compose them before building anything from scratch:
 
-`AuthForm`, `BadgeList`, `BadgesPanel`, `BlookArt`, `BlooksPanel`, `Button`, `Constants`, `DashboardShell`, `DialogClose`, `DialogContent`, `DialogDescription`, `DialogFooter`, `DialogHeader`, `DialogOverlay`, `DialogPortal`, `DialogTitle`, `DialogTrigger`, `Dialog`, `DiscordIcon`, `Empty`, `ImagePicker`, `PackOpener`, `PageError`, `PageTitle`, `PasswordForm`, `PlanetLogo`, `PlayerAvatar`, `PlayerName`, `RolesPanel`, `SessionContext`, `SessionProvider`, `SiteHeader`, `ThemeToggle`
+`AuthForm`, `BadgeList`, `BadgesPanel`, `BannerCard`, `BannerPicker`, `BannersPanel`, `BlookArt`, `BlooksPanel`, `Button`, `Constants`, `DashboardShell`, `DialogClose`, `DialogContent`, `DialogDescription`, `DialogFooter`, `DialogHeader`, `DialogOverlay`, `DialogPortal`, `DialogTitle`, `DialogTrigger`, `Dialog`, `DiscordIcon`, `EditorSection`, `Empty`, `ImagePicker`, `MarketBanners`, `PackOpener`, `PageError`, `PageTitle`, `PasswordForm`, `PlanetLogo`, `PlayerAvatar`, `PlayerName`, `ResultPreview`, `RolesPanel`, `SessionContext`, `SessionProvider`, `SiteHeader`, `ThemeToggle`
 
 Per-component details (import stanzas, props, variants, examples) live in `.lovable/rules/libraries/{slug}/components.md` — on disk, not auto-loaded. Read that file or the component source when the name alone isn't enough.
 

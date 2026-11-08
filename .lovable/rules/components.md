@@ -33,6 +33,94 @@ import { BadgeList } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218
 import { BadgesPanel } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf"
 ```
 
+Use for folded badge editing with live artwork and description previews.
+
+**Examples:**
+
+_Admin editing_
+```tsx
+<BadgesPanel />
+```
+
+**Avoid:**
+
+- Do not treat an unsaved preview as an assigned badge.
+
+### BannerCard
+
+```ts
+import { BannerCard } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf"
+```
+
+Use for wide banner artwork with a rarity-colored token footer. Pass validated solid or comma-separated rarity colors; the footer and seam label share the same blended paint.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `banner` | any | `—` |
+| `colors` | object | `—` |
+| `variant` | market · preview | `market` |
+| `size` | default · compact | `default` |
+
+**Examples:**
+
+_Typical usage_
+```tsx
+<BannerCard banner={banner} colors={rarityColors} />
+```
+
+**Avoid:**
+
+- Do not crop banner art or choose footer colors independently of rarity.
+- Do not pass arbitrary CSS as rarity colors; use one to nine comma-separated hex colors.
+
+### BannerPicker
+
+```ts
+import { BannerPicker } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf"
+```
+
+Use inside a dialog to select owned nameplate backgrounds.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `userId` | string | `—` |
+| `selected` | string | `—` |
+| `onSelected` | function | `—` |
+
+**Examples:**
+
+_Typical usage_
+```tsx
+<BannerPicker userId={user.id} selected={bannerId} onSelected={closePicker} />
+```
+
+**Avoid:**
+
+- Do not show unowned backgrounds as selectable.
+
+### BannersPanel
+
+```ts
+import { BannersPanel } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf"
+```
+
+Use for folded admin banner editors with live previews and sale controls.
+
+**Examples:**
+
+_Typical usage_
+```tsx
+<BannersPanel />
+```
+
+**Avoid:**
+
+- Do not equate unlisting with deleting owned banners.
+
 ### BlookArt
 
 ```ts
@@ -51,6 +139,19 @@ import { BlookArt } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218c
 ```ts
 import { BlooksPanel } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf"
 ```
+
+Use for the alphabetical icon catalog and focused blook editing with a live result.
+
+**Examples:**
+
+_Admin editing_
+```tsx
+<BlooksPanel />
+```
+
+**Avoid:**
+
+- Do not add labels or frames around catalog icons.
 
 ### Button
 
@@ -183,6 +284,33 @@ import { DialogTrigger } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-
 import { DiscordIcon } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf"
 ```
 
+### EditorSection
+
+```ts
+import { EditorSection } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf"
+```
+
+Use to fold unopened admin item editors while keeping drafts in the parent.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `title` | string | `—` |
+| `summary` | any | `—` |
+| `defaultOpen` | boolean | `false` |
+
+**Examples:**
+
+_Admin editing_
+```tsx
+<EditorSection title="Space Pack" summary="25 tokens"><PackFields /></EditorSection>
+```
+
+**Avoid:**
+
+- Do not place upload, save or delete controls inside the disclosure trigger.
+
 ### Empty
 
 ```ts
@@ -229,13 +357,32 @@ _Typical usage_
 
 - Do not crop uploaded art or replace it with emoji.
 
+### MarketBanners
+
+```ts
+import { MarketBanners } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf"
+```
+
+Place below Market packs to display listed banners and confirm purchases.
+
+**Examples:**
+
+_Typical usage_
+```tsx
+<MarketBanners />
+```
+
+**Avoid:**
+
+- Do not charge tokens from browser state.
+
 ### PackOpener
 
 ```ts
 import { PackOpener } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf"
 ```
 
-Use for pack selection with interchangeable artwork and drop rates, quantity shortcuts, and sequential purchased reveals.
+Use for pack selection with artwork and drop rates, quantity shortcuts, and sequential purchased reveals. Keep the purchased scene fixed with no centering transition; the pack stays still until clicked, then peels before its rarity-colored reveal.
 
 **Props:**
 
@@ -332,7 +479,7 @@ import { PlayerAvatar } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9
 |---|---|---|
 | `name` | string | `—` |
 | `identity` | any | `—` |
-| `className` | string | `inline-flex flex-wrap items-center gap-1` |
+| `className` | string | `size-3/5` |
 
 ### PlayerName
 
@@ -346,13 +493,57 @@ import { PlayerName } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-921
 |---|---|---|
 | `name` | string | `—` |
 | `identity` | any | `—` |
-| `className` | string | `inline-flex flex-wrap items-center gap-1` |
+| `className` | string | `size-3/5` |
+
+### ResultPreview
+
+```ts
+import { ResultPreview } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf"
+```
+
+Show the current unsaved pack or artwork appearance without purchasing, saving or launching games.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `variant` | pack · art | `art` |
+| `name` | string | `—` |
+| `image` | string | `—` |
+| `pattern` | string | `—` |
+| `start` | string | `—` |
+| `end` | string | `—` |
+| `price` | number | `—` |
+
+**Examples:**
+
+_Admin editing_
+```tsx
+<ResultPreview variant="pack" name={draft.name} image={draft.image_url} start={draft.gradient_start} end={draft.gradient_end} price={draft.price} />
+```
+
+**Avoid:**
+
+- Do not use PackOpener for an admin preview or crop artwork.
 
 ### RolesPanel
 
 ```ts
 import { RolesPanel } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf"
 ```
+
+Use for permission-gated role editing with folded entries and draft name-color previews.
+
+**Examples:**
+
+_Admin editing_
+```tsx
+<RolesPanel />
+```
+
+**Avoid:**
+
+- Do not replace server-enforced permissions with preview state.
 
 ### SessionContext
 

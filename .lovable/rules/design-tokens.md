@@ -52,12 +52,13 @@ Apply with any color utility: `bg-<name>`, `text-<name>`, `border-<name>`, `ring
 | `google-background` | `--google-background` |
 | `google-border` | `--google-border` |
 | `google-foreground` | `--google-foreground` |
-| `market-start` | `--market-start` |
-| `market-end` | `--market-end` |
-| `market-frame` | `--market-frame` |
-| `market-price` | `--market-price` |
 | `market-coin` | `--market-coin` |
 | `market-foreground` | `--market-foreground` |
+| `market-card-frame` | `--market-card-frame` |
+| `banner-card-frame` | `--banner-card-frame` |
+| `banner-card-ratio` | `--banner-card-ratio` |
+| `banner-card-min` | `--banner-card-min` |
+| `banner-card-max` | `--banner-card-max` |
 
 ## Typography
 
@@ -75,6 +76,7 @@ Apply with any spacing utility: `p-<name>`, `m-<name>`, `gap-<name>`, `space-<na
 
 | Name | CSS variable |
 |---|---|
+| — | `--market-price-inset` |
 | — | `--pack-dialog-padding` |
 | — | `--pack-dialog-gap` |
 
@@ -90,16 +92,16 @@ Border-radius classes:
 | `rounded-2xl` | `--radius-2xl` |
 | `rounded` | `--radius` |
 | — | `--market-radius` |
+| — | `--market-card-radius` |
 
 ## Shadows
 
 Box-shadow classes:
 
-| Class | CSS variable | Usage |
-|---|---|---|
-| `shadow-tile` | `--shadow-tile` | — |
-| — | `--layout-shadow` | — |
-| — | `--market-shadow` | Reach for this token on Market pack cards and purchase panels when you want the signature hard-edged drop shadow that gives shop elements their raised, game-like depth. |
+| Class | CSS variable |
+|---|---|
+| `shadow-tile` | `--shadow-tile` |
+| — | `--layout-shadow` |
 
 ## Other
 
@@ -109,9 +111,20 @@ Reference via `var(--name)` in inline styles or CSS.
 |---|
 | `--pedestal-arch` |
 | `--tiles-image` |
+| `--market-price` |
 | `--market-picture-size` |
+| `--market-frame-width` |
+| `--market-pattern-size` |
+| `--pack-art-size` |
+| `--market-token-size` |
+| `--role-gradient-motion` |
 | `--pack-dialog-width` |
 | `--pack-preview-height` |
 | `--pack-dialog-frame` |
 | `--pack-step-size` |
+| `--tw-translate-x` |
+| `--tw-translate-y` |
+| `--banner-art-ratio` |
+| `--banner-price-height` |
+| `--banner-label-offset` |
 

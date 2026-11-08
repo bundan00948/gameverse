@@ -12,8 +12,15 @@ The full machine-readable catalog lives in this library's `design-system.json` (
 
 ## Icons
 
+- `@/design-system/{slug}/assets/icons/gameverse-token.webp.asset.json` (webp, R2 pointer)
 - `@/design-system/{slug}/assets/icons/stats-messages.png.asset.json` (png, R2 pointer)
 - `@/design-system/{slug}/assets/icons/stats-opened.png.asset.json` (png, R2 pointer)
 - `@/design-system/{slug}/assets/icons/stats-tokens.png.asset.json` (png, R2 pointer)
 - `@/design-system/{slug}/assets/icons/stats-unlocked.png.asset.json` (png, R2 pointer)
+
+## Fonts
+
+- `@/design-system/{slug}/assets/fonts/nunito-latin.woff2` (woff2)
+- `@/design-system/{slug}/assets/fonts/quicksand-latin.woff2` (woff2)
+- `@/design-system/{slug}/assets/fonts/titan-one-latin.woff2` (woff2)
 
