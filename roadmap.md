@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Fold unopened admin editors and add live customization previews; verify keyboard and phone editing
+- [x] Fold unopened admin editors and add live customization previews; verified keyboard controls, retained drafts, role/blook previews and phone layout
 
 - [x] Match November 8 Market card reference and verify saved top-to-bottom color blending, pack selection, and phone layout
 
