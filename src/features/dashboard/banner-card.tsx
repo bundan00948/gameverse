@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import token from '@/assets/icons/gameverse-token.webp.asset.json';
 import { safeColor, rarityDefaults } from './appearance';
 import type { BannerDraft } from './banners';
-export interface BannerCardProps extends HTMLAttributes<HTMLDivElement> { banner: BannerDraft; colors?: Record<string,string>; variant?: 'market' | 'preview'; size?: 'default' | 'compact' }
+export interface BannerCardProps extends HTMLAttributes<HTMLDivElement> { banner: BannerDraft; colors?: Record<string,string> | undefined; variant?: 'market' | 'preview'; size?: 'default' | 'compact' }
 /** Wide banner art with a rarity label spanning the token-price footer seam. */
 export const BannerCard = forwardRef<HTMLDivElement, BannerCardProps>(function BannerCard({ banner, colors = rarityDefaults, variant = 'market', size = 'default', className, style, children, ...props }, ref) {
  const color = safeColor(colors[banner.rarity], rarityDefaults[banner.rarity] ?? 'var(--secondary)');

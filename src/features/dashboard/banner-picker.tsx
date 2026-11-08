@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ownedBannersOptions } from './banners';
 import { invalidatePlayerProfiles } from './player-profile';
 import { cn } from '@/lib/utils';
-export interface BannerPickerProps extends HTMLAttributes<HTMLDivElement> { userId: string; selected?: string | null; onSelected: () => void }
+export interface BannerPickerProps extends HTMLAttributes<HTMLDivElement> { userId: string; selected?: string | null | undefined; onSelected: () => void }
 /** Select owned backgrounds, even when no longer listed for sale. */
 export const BannerPicker = forwardRef<HTMLDivElement, BannerPickerProps>(function BannerPicker({ userId, selected, onSelected, className, ...props }, ref) {
  const cache = useQueryClient(); const { data, error, isPending } = useQuery(ownedBannersOptions());
