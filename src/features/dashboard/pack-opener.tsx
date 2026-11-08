@@ -39,9 +39,9 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   });
   const result = buy.data?.[pullIndex];
   const pull = result ? { ...result, ...pack.blooks.find(b => b.id === result.id) } : undefined;
-  const glow = stage === 'ready' || stage === 'torn' ? safeColor(pack.gradient_start, '#17b9cc') : colors?.[pull?.rarity ?? 'common'] ?? rarityDefaults[pull?.rarity ?? 'common'] ?? 'var(--muted)';
+  const glow = stage === 'ready' || stage === 'torn' ? safeColor(pack.gradient_start, 'var(--market-start)') : colors?.[pull?.rarity ?? 'common'] ?? rarityDefaults[pull?.rarity ?? 'common'] ?? 'var(--muted)';
   const total = pack.blooks.reduce((s, b) => s + b.weight, 0) || 1;
-  const variables = { '--glow': glow, '--pack-start': safeColor(pack.gradient_start, '#17b9cc'), '--pack-end': safeColor(pack.gradient_end, '#308ee5') } as CSSProperties;
+  const variables = { '--glow': glow, '--pack-start': safeColor(pack.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(pack.gradient_end, 'var(--market-end)') } as CSSProperties;
   function crack() {
     if (stage !== 'ready') return;
     setStage('torn');
@@ -49,7 +49,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   }
 
   return <Dialog open onOpenChange={open => { if (!open && !buy.isPending && stage === 'confirm') onClose(); }}>
-    <DialogContent ref={scene} aria-describedby={undefined} className={stage === 'confirm' ? 'pack-confirm' : 'pack-stage translate-x-0 translate-y-0'} style={variables}
+    <DialogContent ref={scene} aria-describedby={undefined} className={stage === 'confirm' ? 'pack-confirm' : `pack-stage ${stage === 'drop' || stage === 'reveal' ? 'pack-celebrating' : ''}`} style={variables}
       onPointerDownOutside={e => { if (buy.isPending || stage !== 'confirm') e.preventDefault(); }}
       onEscapeKeyDown={e => { if (buy.isPending || stage !== 'confirm') e.preventDefault(); }}>
       <DialogTitle className="sr-only">{stage === 'confirm' ? pack.name : `Opening ${pack.name}`}</DialogTitle>
@@ -92,13 +92,13 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
         {(stage === 'drop' || stage === 'reveal') && <div key={`confetti-${pullIndex}`} aria-hidden className="pack-confetti">{Array.from({ length: 64 }, (_, i) => <span key={i} style={{ '--confetti-x': `${(i * 37) % 100}%`, '--confetti-delay': `${(i % 12) * 0.08}s`, '--confetti-duration': `${2.4 + (i % 5) * 0.25}s`, '--confetti-drift': `${(i % 2 ? 1 : -1) * (40 + i % 70)}px`, '--confetti-turn': `${(i % 2 ? 1 : -1) * (360 + i * 13)}deg` } as CSSProperties} />)}</div>}
         {stage !== 'reveal' && <div className="pack-ready">
           <div key={`unbox-${pullIndex}`} className={`pack-unbox ${stage !== 'ready' ? 'torn pack-unbox-peek' : ''} ${stage === 'drop' ? 'pack-unbox-cover-drop' : ''}`}>
-            {pull && <BlookArt src={pull.image_url ?? null} alt="" className="pack-unbox-blook" style={{ width: "72%", height: "72%", left: "14%", top: "14%" }} />}
+            {pull && <BlookArt src={pull.image_url ?? null} alt="" className="pack-unbox-blook" />}
             {(['top', 'bot'] as const).map(h => <div key={h} aria-hidden className={`pack-unbox-half pack-unbox-half-${h}`}><BlookArt src={pack.image_url} alt="" className="size-full" />{!pack.image_url && <span className="font-display text-3xl">{pack.name}</span>}</div>)}
-            <button type="button" id="pack-unbox-click-layer" className="pack-unbox-click-layer" onClick={crack} disabled={stage !== 'ready'} aria-label={`Open ${pack.name}`} />
+            <Button variant="ghost" type="button" id="pack-unbox-click-layer" className="pack-unbox-click-layer" onClick={crack} disabled={stage !== 'ready'} aria-label={`Open ${pack.name}`} />
           </div>
           <span className={`text-sm font-bold ${stage === 'ready' ? '' : 'invisible'}`}><Sparkles className="mr-1 inline size-4" />Click the pack to open · {pullIndex + 1} / {buy.data?.length ?? 1}</span>
         </div>}
-        {stage === 'reveal' && <button type="button" id="pack-unbox-dismiss-layer" className="pack-unbox-dismiss-layer" aria-label={pullIndex + 1 < (buy.data?.length ?? 0) ? 'Next pack' : 'Back to Market'} onClick={() => { if (pullIndex + 1 < (buy.data?.length ?? 0)) { setPullIndex(i => i + 1); setSold(null); setStage('ready'); } else onClose(); }} />}
+        {stage === 'reveal' && <Button variant="ghost" type="button" id="pack-unbox-dismiss-layer" className="pack-unbox-dismiss-layer" aria-label={pullIndex + 1 < (buy.data?.length ?? 0) ? 'Next pack' : 'Back to Market'} onClick={() => { if (pullIndex + 1 < (buy.data?.length ?? 0)) { setPullIndex(i => i + 1); setSold(null); setStage('ready'); } else onClose(); }} />}
         {stage === 'reveal' && pull && <div key={`result-${pullIndex}`} className="pack-result pack-reveal-card" aria-live="polite">
           <BlookArt src={pull.image_url ?? null} alt={pull.name} className="pack-reveal size-56" />
           <h2 className="mt-6 font-display text-4xl">{pull.name}</h2><span className="rarity-label mt-2">{pull.rarity}</span>

@@ -26,7 +26,7 @@ function Shop() {
           </div>
     <div className="market-grid mt-5">{packs.map(p => (
       <Button key={p.id} variant="ghost" aria-label={`View ${p.name}, costs ${p.price} tokens`} onClick={() => setChosen(p.id)}
-        className="market-pack group" style={{ '--pack-start': safeColor(p.gradient_start, '#17b9cc'), '--pack-end': safeColor(p.gradient_end, '#308ee5') } as React.CSSProperties}>
+        className="market-pack group" style={{ '--pack-start': safeColor(p.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(p.gradient_end, 'var(--market-end)') } as React.CSSProperties}>
         <span className="market-pack-art">
           {p.pattern_image_url && <img src={p.pattern_image_url} alt="" className="market-pack-pattern" />}
           <BlookArt src={p.image_url} alt={p.name} className="market-pack-picture" />
