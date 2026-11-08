@@ -852,7 +852,7 @@
           "required": true
         }
       ],
-      "usage": "Use for pack selection with interchangeable artwork and drop rates, quantity shortcuts, and sequential purchased reveals.",
+      "usage": "Use for pack selection with artwork and drop rates, quantity shortcuts, and sequential purchased reveals. Keep the purchased scene fixed with no centering transition; the pack stays still until clicked, then peels before its rarity-colored reveal.",
       "examples": [
         {
           "label": "Purchase a catalog pack",
