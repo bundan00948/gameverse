@@ -202,14 +202,17 @@ export type Database = {
       }
       market_settings: {
         Row: {
+          badge_images: Json
           colors: Json
           id: string
         }
         Insert: {
+          badge_images?: Json
           colors?: Json
           id?: string
         }
         Update: {
+          badge_images?: Json
           colors?: Json
           id?: string
         }
