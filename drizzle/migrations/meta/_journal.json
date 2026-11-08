@@ -99,6 +99,13 @@
       "when": 1794048018017,
       "tag": "0013_player_directory_and_shared_stats",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1794109930750,
+      "tag": "0014_profile_banner_catalog_and_purchases",
+      "breakpoints": true
     }
   ]
 }

@@ -38,6 +38,36 @@ export type Database = {
         }
         Relationships: []
       }
+      banners: {
+        Row: {
+          id: string
+          image_url: string | null
+          listed: boolean
+          name: string
+          price: number
+          rarity: string
+          sort: number
+        }
+        Insert: {
+          id?: string
+          image_url?: string | null
+          listed?: boolean
+          name: string
+          price?: number
+          rarity?: string
+          sort?: number
+        }
+        Update: {
+          id?: string
+          image_url?: string | null
+          listed?: boolean
+          name?: string
+          price?: number
+          rarity?: string
+          sort?: number
+        }
+        Relationships: []
+      }
       blooks: {
         Row: {
           emoji: string
@@ -318,6 +348,7 @@ export type Database = {
       profiles: {
         Row: {
           avatar_blook_id: string | null
+          banner_id: string | null
           created_at: string
           display_name: string
           id: string
@@ -325,6 +356,7 @@ export type Database = {
         }
         Insert: {
           avatar_blook_id?: string | null
+          banner_id?: string | null
           created_at?: string
           display_name?: string
           id: string
@@ -332,6 +364,7 @@ export type Database = {
         }
         Update: {
           avatar_blook_id?: string | null
+          banner_id?: string | null
           created_at?: string
           display_name?: string
           id?: string
@@ -343,6 +376,13 @@ export type Database = {
             columns: ["avatar_blook_id"]
             isOneToOne: false
             referencedRelation: "blooks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_banner_id_fkey"
+            columns: ["banner_id"]
+            isOneToOne: false
+            referencedRelation: "banners"
             referencedColumns: ["id"]
           },
         ]
@@ -393,6 +433,32 @@ export type Database = {
             columns: ["badge_id"]
             isOneToOne: false
             referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_banners: {
+        Row: {
+          banner_id: string
+          purchased_at: string
+          user_id: string
+        }
+        Insert: {
+          banner_id: string
+          purchased_at?: string
+          user_id: string
+        }
+        Update: {
+          banner_id?: string
+          purchased_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_banners_banner_id_fkey"
+            columns: ["banner_id"]
+            isOneToOne: false
+            referencedRelation: "banners"
             referencedColumns: ["id"]
           },
         ]
@@ -529,6 +595,14 @@ export type Database = {
           user_id: string
         }[]
       }
+      player_banner_directory: {
+        Args: never
+        Returns: {
+          banner_id: string
+          image_url: string
+          user_id: string
+        }[]
+      }
       player_directory: {
         Args: never
         Returns: {
@@ -549,6 +623,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      purchase_banner: { Args: { _banner: string }; Returns: string }
       record_play: { Args: { _game: string }; Returns: undefined }
       sell_blook: { Args: { _blook: string }; Returns: number }
     }
