@@ -435,3 +435,25 @@
 .pack-confetti span { animation-iteration-count: infinite; }
 @keyframes packTornShake { 0%,100% { transform: none; } 30% { transform: translateX(-2%) rotate(-1.5deg); } 65% { transform: translateX(1.5%) rotate(1deg); } }
 .pack-unbox-cover-drop.torn .pack-unbox-half-bot { animation: packCoverFallAway .62s ease-in forwards; }
+
+/* Profile-banner cards retain the reference's wide art and rarity footer in GameVerse colors. */
+:root { --banner-card-frame: calc(var(--spacing) * 1.5); --banner-art-ratio: 4.5; --banner-card-ratio: 1.56; --banner-card-min: calc(var(--spacing) * 65); --banner-price-height: calc(var(--spacing) * 13); --banner-label-offset: calc(var(--spacing) * -4); }
+.gv-banner-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(min(100%,var(--banner-card-min)),1fr)); gap: calc(var(--spacing) * 6); }
+.gv-banner-choice { display:block; height:auto; min-width:0; padding:0; border-radius:var(--market-radius); white-space:normal; text-align:center; background:transparent; }
+.gv-banner-choice:hover { background:transparent; }
+.gv-banner-card { position:relative; display:grid; grid-template-rows:auto minmax(0,1fr) auto; aspect-ratio:var(--banner-card-ratio); width:100%; min-width:0; overflow:hidden; border:var(--banner-card-frame) solid var(--surface-border); border-radius:var(--market-radius); background:linear-gradient(to bottom in oklab,var(--secondary),var(--surface)); color:var(--foreground); box-shadow:var(--market-shadow); }
+.gv-banner-title { padding:calc(var(--spacing) * 3); font-family:var(--font-display); font-size:var(--text-xl); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.gv-banner-art { display:grid; align-items:center; padding:var(--spacing) calc(var(--spacing) * 4) calc(var(--spacing) * 7); min-height:0; }
+.gv-banner-art img { width:100%; aspect-ratio:var(--banner-art-ratio); object-fit:contain; }
+.gv-banner-footer { position:relative; display:grid; place-items:center; min-height:var(--banner-price-height); border-top:var(--market-frame-width) solid var(--market-foreground); background:var(--banner-rarity); color:var(--market-foreground); }
+.gv-banner-rarity { position:absolute; top:var(--banner-label-offset); left:50%; transform:translateX(-50%); padding:var(--spacing) calc(var(--spacing) * 4); border:var(--market-frame-width) solid var(--market-foreground); border-radius:calc(var(--spacing) * 10); background:var(--banner-rarity); font-family:var(--font-display); font-size:var(--text-lg); text-transform:capitalize; text-shadow:0 var(--spacing) var(--spacing) var(--pedestal); }
+.gv-banner-price { display:flex; align-items:center; gap:calc(var(--spacing) * 2); padding-top:calc(var(--spacing) * 2); font-family:var(--font-display); font-size:var(--text-2xl); text-shadow:0 var(--spacing) var(--spacing) var(--pedestal); }
+.gv-banner-price img { width:calc(var(--spacing) * 9); height:calc(var(--spacing) * 9); object-fit:contain; }
+.gv-banner-owned { position:absolute; right:calc(var(--spacing) * 2); top:calc(var(--spacing) * 2); padding:var(--spacing) calc(var(--spacing) * 2); border-radius:var(--radius); background:var(--market-price); color:var(--market-foreground); font-size:var(--text-xs); }
+.gv-banner-card[data-size=compact] .gv-banner-title { font-size:var(--text-lg); }
+.gv-nameplate-background { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.gv-nameplate:has(.gv-nameplate-background) { text-shadow:0 var(--spacing) calc(var(--spacing) * 2) var(--pedestal); }
+.gv-nameplate:has(.gv-nameplate-background)::after { content:""; position:absolute; inset:0; background:var(--overlay-background); opacity:.3; pointer-events:none; }
+.gv-nameplate h1, .gv-nameplate p { z-index:1; }
+.gv-nameplate-trigger { position:absolute; inset:0; z-index:2; width:100%; height:100%; border-radius:inherit; }
+.gv-nameplate-trigger:hover { background:var(--glass); }

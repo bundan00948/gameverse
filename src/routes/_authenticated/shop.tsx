@@ -7,12 +7,15 @@ import { DashboardShell } from '@/features/account/dashboard-shell';
 import { shopOptions, walletOptions } from '@/features/dashboard/data';
 import { PageError, meta } from '@/features/dashboard/page';
 import { Button } from '@/components/ui/button';
+import { MarketBanners } from '@/features/dashboard/market-banners';
+import { bannersOptions, ownedBannersOptions } from '@/features/dashboard/banners';
+import { appearanceOptions } from '@/features/dashboard/data';
 import { safeColor } from '@/features/dashboard/appearance';
 
 const PackOpener = lazy(() => import('@/features/dashboard/pack-opener').then(module => ({ default: module.PackOpener })));
 
 export const Route = createFileRoute('/_authenticated/shop')({
-  loader: ({ context }) => Promise.all([context.queryClient.ensureQueryData(shopOptions()), context.queryClient.ensureQueryData(walletOptions())]),
+  loader: ({ context }) => Promise.all([context.queryClient.ensureQueryData(shopOptions()), context.queryClient.ensureQueryData(walletOptions()), context.queryClient.ensureQueryData(bannersOptions()), context.queryClient.ensureQueryData(ownedBannersOptions()), context.queryClient.ensureQueryData(appearanceOptions())]),
   head: () => meta('Market', 'Spend tokens on packs and unlock blooks.'),
   component: Shop, errorComponent: PageError, notFoundComponent: () => <p>Not found.</p>,
 });
@@ -33,7 +36,7 @@ function Shop() {
           {!p.image_url && <span className="market-pack-name">{p.name}</span>}
         </span>
         <span className="market-pack-price"><img src={tokenIcon.url} alt="" className="size-[30px] object-contain" />{p.price}</span>
-      </Button>))}</div></div>
+      </Button>))}</div><MarketBanners /></div>
     {pack && <Suspense fallback={null}><PackOpener pack={pack} tokens={wallet.tokens} onClose={() => setChosen(null)} /></Suspense>}
   </DashboardShell>;
 }

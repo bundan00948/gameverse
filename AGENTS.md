@@ -46,3 +46,5 @@ use the editor.
 - Games use admin-uploaded icons and validated HTTPS embed URLs; mount a sandboxed iframe only for the selected game and record play history separately.
 - Staff permissions come from admin-defined roles (staff_roles) checked by has_permission in RLS and server functions; the app_role 'admin' remains the full-access super role.
 - Player displays use the shared profile-backed identity directory; invalidate shared identity caches after edits and refresh across tabs so names, roles, badges and pictures agree. Other-player stats use authenticated, narrowly projected database functions without opening private base-table policies.
+
+- Banner ownership and sale status are independent; purchases run atomically with wallet locks, profile selection is ownership-validated by a database trigger, and shared identities project the selected background.
