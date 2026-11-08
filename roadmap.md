@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Support gradient rarity colors and gently running role gradients
+- [ ] Sort pack blooks by ascending rarity then alphabetically, retaining alphabetical admin catalog
+- [ ] Lock desktop Market packs to five columns and reduce token artwork; verify desktop and phone
+
 - [x] Add banner catalog, protected purchases and owned nameplate selection
 - [x] Match reference banner cards below Market packs and add folded admin banner editors with previews
 - [x] Verify banner creation, purchase, selection, unlisted ownership and phone layout; temporary test content removed
