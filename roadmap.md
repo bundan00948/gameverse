@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Fold unopened admin editors and add live customization previews; verify keyboard and phone editing
+
 - [x] Match November 8 Market card reference and verify saved top-to-bottom color blending, pack selection, and phone layout
 
 - [x] Fix purchase-stage shaking and verify stationary pack before opening on desktop and phone
