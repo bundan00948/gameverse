@@ -20,7 +20,7 @@ async function trimImage(src: string): Promise<string> {
   if (!ctx) return src;
   ctx.drawImage(img, 0, 0);
   const { data, width, height } = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const solid = (i: number) => !(data[i + 3] < 16 || (data[i] > 242 && data[i + 1] > 242 && data[i + 2] > 242));
+  const solid = (i: number) => { const r = data[i] ?? 0, g = data[i + 1] ?? 0, b = data[i + 2] ?? 0, a = data[i + 3] ?? 0; return a >= 16 && !(r > 242 && g > 242 && b > 242); };
   let top = 0, bottom = height - 1, left = 0, right = width - 1;
   scan: for (; top <= bottom; top++) for (let x = 0; x < width; x++) if (solid((top * width + x) * 4)) break scan;
   scan2: for (; bottom >= top; bottom--) for (let x = 0; x < width; x++) if (solid((bottom * width + x) * 4)) break scan2;
