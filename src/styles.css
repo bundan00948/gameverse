@@ -280,7 +280,7 @@
 .market-pack:hover .market-pack-picture { transform: rotate(0); }
 .market-pack-pattern { position: absolute; right: 0; bottom: 0; width: 38%; height: 38%; object-fit: contain; opacity: .65; }
 .market-pack-name { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; text-align: center; font-family: var(--font-display); font-size: 24px; }
-.market-pack-price { position: absolute; right: var(--market-price-inset); bottom: var(--market-price-inset); display: flex; align-items: center; justify-content: center; gap: var(--spacing); min-height: calc(var(--spacing) * 8); padding: var(--spacing) calc(var(--spacing) * 2); border: var(--market-frame-width) solid color-mix(in srgb, var(--market-foreground) 25%, transparent); border-radius: var(--radius); background: var(--market-price); font-family: var(--font-display); font-size: var(--text-base); }
+.market-pack-price { position: absolute; right: var(--market-price-inset); bottom: var(--market-price-inset); display: flex; align-items: center; justify-content: center; gap: var(--spacing); min-height: calc(var(--spacing) * 8); padding: var(--spacing) calc(var(--spacing) * 2); border: calc(var(--market-frame-width) * 2) solid color-mix(in srgb, var(--market-foreground) 25%, transparent); border-radius: var(--radius); background: var(--market-price); font-family: var(--font-display); font-size: var(--text-base); }
 .market-pack-price svg { width: 20px; height: 20px; }
 :root {
   --pack-dialog-width: 720px;

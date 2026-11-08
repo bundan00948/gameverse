@@ -32,7 +32,7 @@ function Shop() {
           <BlookArt src={p.image_url} alt={p.name} className="market-pack-picture" />
           {!p.image_url && <span className="market-pack-name">{p.name}</span>}
         </span>
-        <span className="market-pack-price"><img src={tokenIcon.url} alt="" className="size-5 object-contain" />{p.price}</span>
+        <span className="market-pack-price"><img src={tokenIcon.url} alt="" className="size-[30px] object-contain" />{p.price}</span>
       </Button>))}</div></div>
     {pack && <Suspense fallback={null}><PackOpener pack={pack} tokens={wallet.tokens} onClose={() => setChosen(null)} /></Suspense>}
   </DashboardShell>;
