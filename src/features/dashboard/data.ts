@@ -1,6 +1,6 @@
 import { queryOptions, type QueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { rarityColors } from './appearance';
+import { rarityColors, rarityBadgeImages } from './appearance';
 import { groupCollection, raritySortedBlooks } from './blook-catalog';
 import { playerId as uid } from '@/features/account/auth-user';
 
@@ -44,6 +44,11 @@ export const appearanceOptions = () => queryOptions({ queryKey: ['market-appeara
   const r = await supabase.from('market_settings').select('colors').eq('id', 'rarity').maybeSingle();
   if (r.error) throw r.error;
   return rarityColors(r.data?.colors);
+} });
+export const rarityBadgesOptions = () => queryOptions({ queryKey: ['rarity-badges'], staleTime: 30_000, queryFn: async () => {
+  const r = await supabase.from('market_settings').select('badge_images').eq('id', 'rarity').maybeSingle();
+  if (r.error) throw r.error;
+  return rarityBadgeImages(r.data?.badge_images);
 } });
 
 export const inventoryOptions = () => queryOptions({ queryKey: ['inventory'], staleTime: 30_000, queryFn: async () => {

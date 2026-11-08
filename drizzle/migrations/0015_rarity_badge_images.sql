@@ -1,0 +1,2 @@
+ALTER TABLE public.market_settings ADD COLUMN badge_images jsonb NOT NULL DEFAULT '{}'::jsonb;
+COMMENT ON COLUMN public.market_settings.badge_images IS 'Rarity-keyed uploaded badge artwork; administered through the existing protected Market settings policies.';
