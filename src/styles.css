@@ -376,6 +376,9 @@
 .staff-workspace button { min-height: 44px; }
 .staff-rarity-grid input { min-width: 44px; min-height: 44px; }
 .staff-tabs { padding-block: 1rem; gap: .75rem; }
+.staff-workspace input[type=color] { min-height: calc(var(--spacing) * 11); width: 100%; padding: var(--spacing); border: 1px solid var(--surface-border); border-radius: var(--radius-md); background: var(--background); cursor: pointer; }
+.staff-workspace label:has(input[type=checkbox]) { min-height: calc(var(--spacing) * 11); }
+@media (max-width:767px) { .staff-tabs { flex-wrap: wrap; overflow: visible; } .staff-tabs button { flex: 1 0 auto; } }
 @media (hover:none) { .gv-chat-actions { opacity: 1; position: static; } }
 @media (max-width:767px) {
   .gv-sidebar > a { min-height: 56px; padding-block: .5rem; }

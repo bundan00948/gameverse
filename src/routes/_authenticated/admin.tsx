@@ -4,7 +4,6 @@ import { useServerFn } from '@tanstack/react-start';
 import { useState } from 'react';
 import { EditorSection } from '@/features/admin/editor-section';
 import { ResultPreview } from '@/features/admin/result-preview';
-import { PlayerAvatar } from '@/features/dashboard/player-identity';
 import { Trash2, Plus, Save, Shield, Users as UsersIcon, Store, Backpack, Gamepad2, Target, Crown, Award } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { DashboardShell } from '@/features/account/dashboard-shell';
@@ -65,7 +64,7 @@ function UserRow({ u, canGrantStaff }: { u: U; canGrantStaff: boolean }) {
   const m = useMutation({ mutationFn: () => save({ data: { id: u.id, ...f, password: f.password || undefined } }), onSuccess: () => { setF(s => ({ ...s, password: '' })); invalidatePlayerProfiles(cache); } });
   const d = useMutation({ mutationFn: () => del({ data: { id: u.id } }), onSuccess: () => invalidatePlayerProfiles(cache) });
   return <EditorSection title={f.username || u.email} summary={u.email}>
-    <div className="mb-4 flex items-center gap-3 border-b border-surface-border pb-3"><PlayerAvatar name={f.username} /><div className="min-w-0"><p className="text-xs text-muted-foreground">Result</p><p className="break-words font-display">{f.displayName || f.username}</p><p className="text-xs text-muted-foreground">{f.admin ? 'Full admin' : 'Player'} · {f.tokens} tokens</p></div></div>
+    <div className="mb-4 border-b border-surface-border pb-3"><p className="text-xs text-muted-foreground">Result</p><p className="break-words font-display">{f.displayName || f.username}</p><p className="text-xs text-muted-foreground">{f.admin ? 'Full admin' : 'Player'} · {f.tokens} tokens</p></div>
     <p className="mb-4 break-words border-b border-surface-border pb-3 text-sm text-muted-foreground">{u.email} · joined {new Date(u.created).toLocaleDateString()}</p>
     <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <label className="text-xs">Username<input className={input} value={f.username} onChange={e => setF({ ...f, username: e.target.value })} /></label>
@@ -97,8 +96,8 @@ function Table({ table, fields, blank, filter, title }: { table: TableName; fiel
   const add = useMutation({ mutationFn: async () => { const { error } = await supabase.from(table).insert({ ...blank, ...(filter ? { [filter.col]: filter.val } : {}) } as never); if (error) throw error; }, onSuccess: done });
   return <div className="space-y-4">
     <div className="flex flex-wrap items-center justify-between gap-3">{title ? <h2 className="text-xl font-bold">{title} <span className="ml-2 text-sm text-muted-foreground">{data?.length ?? 0}</span></h2> : <span />}<Button type="button" onClick={() => add.mutate()} disabled={add.isPending}><Plus />{add.isPending ? 'Adding…' : `Add ${table === 'missions' ? 'mission' : table === 'games' ? 'game' : 'pack'}`}</Button></div>
-    {error && <p className="text-xs text-destructive">{error.message}</p>}
-    {add.error && <p className="text-xs text-destructive">{add.error.message}</p>}
+    {error && <p role="alert" className="text-xs text-destructive">{error.message}</p>}
+    {add.error && <p role="alert" className="text-xs text-destructive">{add.error.message}</p>}
     <label className="block text-sm font-bold">Search {title?.toLowerCase() ?? table}<input className={input} type="search" value={search} onChange={e => setSearch(e.target.value)} /></label>
     {data?.filter(r => String(r['name'] ?? r['title'] ?? '').toLowerCase().includes(search.toLowerCase())).map(r => <EditRow key={r.id} table={table} row={r} fields={fields} onDone={done} />)}
   </div>;
@@ -146,6 +145,8 @@ function RarityEditor() {
     if (r.error) throw r.error;
   }, onSuccess: () => { cache.invalidateQueries({ queryKey: ['market-appearance'] }); cache.invalidateQueries({ queryKey: ['admin-rarity'] }); } });
   return <EditorSection title="Rarity colors" summary="Common, uncommon, rare, epic, legendary and chroma">
+    <p className="text-sm font-bold">Result</p>
+    <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3">{Object.entries(colors).map(([key, value]) => <div key={key} className="border-l-4 border-surface-border bg-background p-3" style={{ borderColor: value }}><p className="text-sm font-bold capitalize">{key}</p><p className="font-mono text-xs text-muted-foreground">{value}</p></div>)}</div>
     <div className="staff-rarity-grid">{Object.entries(colors).map(([key, value]) => <label key={key}>{key}<input aria-label={`${key} color`} type="color" value={value} onChange={e => setDraft({ ...colors, [key]: e.target.value })} /></label>)}</div>
     <Button size="sm" onClick={() => save.mutate()} disabled={!data || save.isPending}><Save />Save rarity colors</Button>
     {(error || save.error) && <p role="alert" className="text-destructive">{(error ?? save.error)?.message}</p>}
