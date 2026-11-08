@@ -4,7 +4,7 @@ import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { Lock, Search } from '@/lib/icons';
 import { DashboardShell } from '@/features/account/dashboard-shell';
-import { appearanceOptions, collectionOptions } from '@/features/dashboard/data';
+import { appearanceOptions, collectionOptions, rarityBadgesOptions } from '@/features/dashboard/data';
 import { PageError, meta } from '@/features/dashboard/page';
 import { rarityPaint, rarityDefaults } from '@/features/dashboard/appearance';
 
@@ -23,6 +23,7 @@ const select = 'rounded-lg border border-surface-border bg-surface px-3 py-2 tex
 function Inventory() {
   const { data } = useSuspenseQuery(collectionOptions());
   const { data: colors } = useQuery(appearanceOptions());
+  const { data: badges } = useQuery(rarityBadgesOptions());
   const [q, setQ] = useState(''); const [rarity, setRarity] = useState('all'); const [show, setShow] = useState('all');
   const [open, setOpen] = useState<Blook | null>(null);
   const all = data.flatMap(p => p.blooks);

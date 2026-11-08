@@ -13,7 +13,7 @@ import { RolesPanel, BadgesPanel } from '@/features/admin/roles-panel';
 import { PageError, PageTitle, meta } from '@/features/dashboard/page';
 import { ImagePicker } from '@/features/dashboard/image-picker';
 import { Button } from '@/components/ui/button';
-import { rarityColors, rarityDefaults, rarityColorValue, rarityPaint } from '@/features/dashboard/appearance';
+import { rarityColors, rarityDefaults, rarityColorValue, rarityPaint, rarityBadgeImages } from '@/features/dashboard/appearance';
 import { listUsers, updateUser, deleteUser } from '@/lib/admin.functions';
 import { BannersPanel } from '@/features/admin/banners-panel';
 import { BlooksPanel } from '@/features/admin/blooks-panel';
@@ -135,22 +135,25 @@ function Shop() {
 function RarityEditor() {
   const cache = useQueryClient();
   const { data, error } = useQuery({ queryKey: ['admin-rarity'], queryFn: async () => {
-    const r = await supabase.from('market_settings').select('colors').eq('id', 'rarity').maybeSingle();
+    const r = await supabase.from('market_settings').select('colors, badge_images').eq('id', 'rarity').maybeSingle();
     if (r.error) throw r.error;
-    return rarityColors(r.data?.colors);
+    return { colors: rarityColors(r.data?.colors), badges: rarityBadgeImages(r.data?.badge_images) };
   } });
   const [draft, setDraft] = useState<Record<string, string> | null>(null);
-  const colors = draft ?? data ?? rarityDefaults;
+  const [badgeDraft, setBadgeDraft] = useState<Record<string, string | null> | null>(null);
+  const colors = draft ?? data?.colors ?? rarityDefaults;
+  const badges = badgeDraft ?? data?.badges ?? {};
   const save = useMutation({ mutationFn: async () => {
     if (Object.values(colors).some(value => !rarityColorValue(value, ''))) throw new Error('Use one to nine #XXXXXX colors separated by commas.');
-    const r = await supabase.from('market_settings').upsert({ id: 'rarity', colors });
+    const r = await supabase.from('market_settings').upsert({ id: 'rarity', colors, badge_images: rarityBadgeImages(badges) });
     if (r.error) throw r.error;
-  }, onSuccess: () => { cache.invalidateQueries({ queryKey: ['market-appearance'] }); cache.invalidateQueries({ queryKey: ['admin-rarity'] }); } });
-  return <EditorSection title="Rarity colors" summary="Common, uncommon, rare, epic, legendary and chroma">
+  }, onSuccess: () => { cache.invalidateQueries({ queryKey: ['market-appearance'] }); cache.invalidateQueries({ queryKey: ['rarity-badges'] }); cache.invalidateQueries({ queryKey: ['admin-rarity'] }); } });
+  return <EditorSection title="Rarity colors & badges" summary="Common, uncommon, rare, epic, legendary and chroma">
     <p className="text-sm font-bold">Result</p>
     <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3">{Object.entries(colors).map(([key, value]) => <div key={key} className="rounded-md p-3 text-market-foreground" style={{ background: rarityPaint(value, rarityDefaults[key] ?? 'var(--secondary)') }}><p className="text-sm font-bold capitalize">{key}</p></div>)}</div>
     <div className="grid gap-3 sm:grid-cols-2">{Object.entries(colors).map(([key, value]) => <label key={key} className="min-w-0 text-sm font-bold capitalize">{key}<input aria-label={`${key} colors`} className={input + ' font-mono'} value={value} placeholder="#XXXXXX, #XXXXXX" onChange={e => setDraft({ ...colors, [key]: e.target.value })} /></label>)}</div>
-    <Button size="sm" onClick={() => save.mutate()} disabled={!data || save.isPending}><Save />Save rarity colors</Button>
+    <div className="my-4 grid gap-4 sm:grid-cols-2">{Object.keys(colors).map(key => <div key={key} className="min-w-0 space-y-2 border-t border-surface-border pt-3"><ImagePicker label={`${key} rarity badge`} value={badges[key] ?? null} onChange={url => setBadgeDraft({ ...badges, [key]: url })} />{badges[key] && <span className="relative isolate inline-grid size-9 place-items-center font-bold text-white"><img src={badges[key] ?? undefined} alt={`${key} count preview`} className="absolute inset-0 -z-10 size-full object-contain" /><span className="[text-shadow:0_1px_2px_var(--background),0_0_3px_var(--background)]">12</span></span>}</div>)}</div>
+    <Button size="sm" onClick={() => save.mutate()} disabled={!data || save.isPending}><Save />Save rarity settings</Button>
     {(error || save.error) && <p role="alert" className="text-destructive">{(error ?? save.error)?.message}</p>}
     {save.isSuccess && <p role="status">Saved.</p>}
   </EditorSection>;

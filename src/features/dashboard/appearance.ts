@@ -23,3 +23,12 @@ export function rarityEndpoints(value: unknown, fallback: string): [string, stri
   const colors = rarityColorValue(value, fallback).split(', ');
   return [colors[0] ?? fallback, colors.at(-1) ?? fallback];
 }
+/** Only HTTPS image URLs from saved rarity settings reach image elements. */
+export function rarityBadgeImages(value: unknown): Record<string, string | null> {
+  const images = value && typeof value === 'object' ? value as Record<string, unknown> : {};
+  return Object.fromEntries(Object.keys(rarityDefaults).map(key => {
+    const image = images[key];
+    try { return [key, typeof image === 'string' && new URL(image).protocol === 'https:' ? image : null]; }
+    catch { return [key, null]; }
+  }));
+}
