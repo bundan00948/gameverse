@@ -1,11 +1,12 @@
 import { roleTextStyle, type Identity } from './roles';
 import { PlanetLogo } from '@/components/planet-logo';
+import { TrimmedImage } from './trimmed-image';
 import { cn } from '@/lib/utils';
 
 export interface PlayerAvatarProps { name: string; identity?: Identity | undefined; className?: string }
-/** Player picture: their chosen blook, or the GameVerse planet icon. */
+/** Player picture: their chosen blook auto-trimmed to fill the frame, or the GameVerse planet icon. */
 export function PlayerAvatar({ name, identity, className }: PlayerAvatarProps) {
-  if (identity?.avatar) return <img src={identity.avatar} alt="" className={cn('aspect-square size-9 shrink-0 object-cover object-center', className)} />;
+  if (identity?.avatar) return <TrimmedImage src={identity.avatar} alt="" className={cn('aspect-square size-9 shrink-0 object-contain object-center', className)} />;
   return <span aria-hidden className={cn('grid size-9 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground', className)}><PlanetLogo className="size-3/5" /></span>;
 }
 
