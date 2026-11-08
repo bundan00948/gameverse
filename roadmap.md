@@ -1,8 +1,8 @@
 # Roadmap
 
-- [ ] Add banner catalog, protected purchases and owned nameplate selection
-- [ ] Match reference banner cards below Market packs and add folded admin banner editors with previews
-- [ ] Verify banner creation, purchase, selection, unlisted ownership and phone layout
+- [x] Add banner catalog, protected purchases and owned nameplate selection
+- [x] Match reference banner cards below Market packs and add folded admin banner editors with previews
+- [x] Verify banner creation, purchase, selection, unlisted ownership and phone layout; temporary test content removed
 
 - [x] Fold unopened admin editors and add live customization previews; verified keyboard controls, retained drafts, role/blook previews and phone layout
 
