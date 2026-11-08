@@ -264,6 +264,8 @@
   --market-pattern-size: 38%;
   --market-price-inset: calc(var(--spacing) * 2);
   --pack-art-size: min(300px, 65vw, 52dvh);
+  --market-token-size: calc(var(--spacing) * 7);
+  --role-gradient-motion: role-gradient-run 6s ease-in-out infinite alternate;
 }
 @theme inline {
   --color-market-coin: var(--market-coin);
@@ -274,7 +276,8 @@
 }
 .market-background { background: linear-gradient(145deg, var(--market-start), var(--market-end)); }
 .market-background h1 { color: var(--market-foreground); }
-.market-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 20px; }
+.market-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: calc(var(--spacing) * 5); }
+@media (max-width: 1023px) { .market-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .market-pack { position: relative; display: flex; flex-direction: column; gap: 0; height: auto; min-width: 0; padding: 0; overflow: hidden; border: 0; border-radius: var(--market-card-radius); background: linear-gradient(to bottom in oklab, color-mix(in oklab, var(--pack-start) 70%, var(--market-foreground)), color-mix(in oklab, var(--pack-end) 70%, var(--market-foreground))); box-shadow: var(--market-shadow); color: var(--market-foreground); white-space: normal; transition: transform .18s; }
 .market-pack:hover { transform: translateY(-3px); }
 .market-pack-art { position: relative; display: grid; place-items: center; width: calc(100% - var(--market-card-frame) * 2); aspect-ratio: 1; margin: var(--market-card-frame); background: linear-gradient(to bottom in oklab, var(--pack-start), var(--pack-end)); overflow: hidden; }
@@ -285,7 +288,7 @@
 .market-pack-name { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; text-align: center; font-family: var(--font-display); font-size: 24px; }
 .market-pack-price { position: absolute; z-index: 2; right: var(--market-price-inset); bottom: var(--market-price-inset); display: flex; align-items: center; justify-content: center; gap: calc(var(--spacing) * 1.5); min-height: calc(var(--spacing) * 11); padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 3); border: none; border-radius: var(--radius); background: var(--market-price); font-family: var(--font-display); font-size: var(--text-xl); }
 .market-pack-price svg { width: 28px; height: 28px; }
-.market-pack-price img { width: 42px; height: 42px; }
+.market-pack-price img { width: var(--market-token-size); height: var(--market-token-size); }
 :root {
   --pack-dialog-width: 720px;
   --pack-dialog-padding: 24px;
@@ -316,20 +319,20 @@
 .pack-stage[data-state] { --tw-translate-x: 0px; --tw-translate-y: 0px; position: fixed; inset: 0; width: 100%; height: 100dvh; max-width: none; max-height: none; translate: none !important; transform: none; animation: none; transition: none; border: 0; border-radius: 0; padding: var(--pack-dialog-padding); display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--pedestal); color: var(--market-foreground); box-shadow: none; }
 .pack-stage > button:last-child { display: none; }
 .pack-scene-gradient { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to bottom in oklab, color-mix(in srgb, var(--pack-start) 45%, var(--pedestal)), color-mix(in srgb, var(--pack-end) 45%, var(--pedestal))); }
-.pack-celebrating .pack-scene-gradient { background: linear-gradient(to bottom in oklab, color-mix(in srgb, var(--glow) 55%, var(--pedestal)), color-mix(in srgb, var(--glow) 15%, var(--pedestal))); }
+.pack-celebrating .pack-scene-gradient { background: linear-gradient(to bottom in oklab, color-mix(in srgb, var(--glow) 55%, var(--pedestal)), color-mix(in srgb, var(--glow-end) 35%, var(--pedestal))); }
 @keyframes pack-scene-breathe { from { transform: scale(1) rotate(-4deg); opacity: .8; } to { transform: scale(1.08) rotate(4deg); opacity: 1; } }
 .pack-ready { position: relative; display: flex; flex-direction: column; align-items: center; gap: 24px; }
 .pack-rays { pointer-events: none; left: 50%; top: 50%; margin: -80vmax 0 0 -80vmax; will-change: transform; }
 .pack-result, .pack-ready { z-index: 1; }
 .pack-confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .pack-confetti span { position: absolute; top: -24px; left: var(--confetti-x); width: 10px; height: 16px; border-radius: 2px; background: var(--glow); opacity: 0; animation: pack-confetti-fall var(--confetti-duration) var(--confetti-delay) ease-in forwards; }
-.pack-confetti span:nth-child(3n) { background: color-mix(in srgb, var(--glow) 50%, var(--market-foreground)); }
+.pack-confetti span:nth-child(3n) { background: color-mix(in srgb, var(--glow-end) 50%, var(--market-foreground)); }
 .pack-confetti span:nth-child(3n + 1) { background: color-mix(in srgb, var(--glow) 70%, var(--market-coin)); }
 @keyframes pack-confetti-fall { 0% { opacity: 0; transform: translate3d(0,-24px,0) rotate(0); } 8% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; transform: translate3d(var(--confetti-drift),calc(100dvh + 48px),0) rotate(var(--confetti-turn)); } }
 .pack-stage-background { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .35; pointer-events: none; }
 .opening-pack { position: relative; width: 280px; height: 280px; padding: 20px; border-radius: var(--market-radius); background: linear-gradient(145deg, var(--pack-start), var(--pack-end)); box-shadow: var(--shadow-tile); }
 .pack-result { position: relative; display: flex; max-width: 100%; max-height: 100%; overflow-y: auto; flex-direction: column; align-items: center; text-align: center; padding: 16px; }
-.rarity-label { display: inline-block; border-radius: var(--radius-sm); background: var(--glow); color: var(--market-foreground); padding: 4px 8px; font-weight: bold; font-size: 12px; text-transform: capitalize; }
+.rarity-label { display: inline-block; border-radius: var(--radius-sm); background: var(--rarity-paint, var(--glow)); color: var(--market-foreground); padding: 4px 8px; font-weight: bold; font-size: 12px; text-transform: capitalize; }
 @media (max-width: 480px) { .market-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; } }
 @media (prefers-reduced-motion: reduce) { .market-pack, .market-pack-picture { transition: none; } .pack-break, .pack-flash { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .pack-scene-gradient { animation: none; } .pack-confetti { display: none; } }
@@ -458,3 +461,5 @@
 .gv-nameplate h1, .gv-nameplate p { z-index:1; }
 .gv-nameplate-trigger { position:absolute; inset:0; z-index:2; width:100%; height:100%; border-radius:inherit; }
 .gv-nameplate-trigger:hover { background:var(--glass); }
+@keyframes role-gradient-run { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+@media (prefers-reduced-motion: reduce) { :root { --role-gradient-motion: none; } }
