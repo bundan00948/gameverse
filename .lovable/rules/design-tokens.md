@@ -124,6 +124,8 @@ Reference via `var(--name)` in inline styles or CSS.
 | `--pack-step-size` |
 | `--tw-translate-x` |
 | `--tw-translate-y` |
+| `--blook-silhouette-invert` |
+| `--blook-silhouette-opacity` |
 | `--banner-art-ratio` |
 | `--banner-price-height` |
 | `--banner-label-offset` |
