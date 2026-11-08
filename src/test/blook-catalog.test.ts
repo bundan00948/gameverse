@@ -1,8 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { alphabeticalBlooks, groupCollection } from '@/features/dashboard/blook-catalog';
+import { alphabeticalBlooks, groupCollection, raritySortedBlooks } from '@/features/dashboard/blook-catalog';
 
 describe('Independent blooks', () => {
+  it('sorts pack blooks by lowest rarity first then alphabetically, not weight', () => {
+    const rows = [{ id: '1', name: 'Apple', rarity: 'chroma', weight: 100 }, { id: '2', name: 'Zebra', rarity: 'common', weight: 1 }, { id: '3', name: 'Bear', rarity: 'common', weight: 2 }, { id: '4', name: 'A', rarity: 'legendary', weight: 4 }, { id: '5', name: 'B', rarity: 'epic', weight: 5 }, { id: '6', name: 'C', rarity: 'rare', weight: 6 }, { id: '7', name: 'D', rarity: 'uncommon', weight: 7 }];
+    expect(raritySortedBlooks(rows).map(b => b.id)).toEqual(['3', '2', '7', '6', '5', '4', '1']);
+    expect(groupCollection([{ id: 'p', name: 'Pack', image_url: null }], rows.map(b => ({ ...b, pack_id: 'p' })), new Map())[0]?.blooks.map(b => b.id)).toEqual(['3', '2', '7', '6', '5', '4', '1']);
+  });
   it('orders the complete admin catalog alphabetically', () => {
     expect(alphabeticalBlooks([{ id: '1', name: 'Zebra', pack_id: null }, { id: '2', name: 'apple', pack_id: 'p' }, { id: '3', name: 'Bear', pack_id: null }]).map(b => b.name)).toEqual(['apple', 'Bear', 'Zebra']);
   });

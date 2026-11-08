@@ -13,7 +13,7 @@ import { RolesPanel, BadgesPanel } from '@/features/admin/roles-panel';
 import { PageError, PageTitle, meta } from '@/features/dashboard/page';
 import { ImagePicker } from '@/features/dashboard/image-picker';
 import { Button } from '@/components/ui/button';
-import { rarityColors, rarityDefaults } from '@/features/dashboard/appearance';
+import { rarityColors, rarityDefaults, rarityColorValue, rarityPaint } from '@/features/dashboard/appearance';
 import { listUsers, updateUser, deleteUser } from '@/lib/admin.functions';
 import { BannersPanel } from '@/features/admin/banners-panel';
 import { BlooksPanel } from '@/features/admin/blooks-panel';
@@ -142,13 +142,14 @@ function RarityEditor() {
   const [draft, setDraft] = useState<Record<string, string> | null>(null);
   const colors = draft ?? data ?? rarityDefaults;
   const save = useMutation({ mutationFn: async () => {
+    if (Object.values(colors).some(value => !rarityColorValue(value, ''))) throw new Error('Use one to nine #XXXXXX colors separated by commas.');
     const r = await supabase.from('market_settings').upsert({ id: 'rarity', colors });
     if (r.error) throw r.error;
   }, onSuccess: () => { cache.invalidateQueries({ queryKey: ['market-appearance'] }); cache.invalidateQueries({ queryKey: ['admin-rarity'] }); } });
   return <EditorSection title="Rarity colors" summary="Common, uncommon, rare, epic, legendary and chroma">
     <p className="text-sm font-bold">Result</p>
-    <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3">{Object.entries(colors).map(([key, value]) => <div key={key} className="border-l-4 border-surface-border bg-background p-3" style={{ borderColor: value }}><p className="text-sm font-bold capitalize">{key}</p><p className="font-mono text-xs text-muted-foreground">{value}</p></div>)}</div>
-    <div className="staff-rarity-grid">{Object.entries(colors).map(([key, value]) => <label key={key}>{key}<input aria-label={`${key} color`} type="color" value={value} onChange={e => setDraft({ ...colors, [key]: e.target.value })} /></label>)}</div>
+    <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3">{Object.entries(colors).map(([key, value]) => <div key={key} className="rounded-md p-3 text-market-foreground" style={{ background: rarityPaint(value, rarityDefaults[key] ?? 'var(--secondary)') }}><p className="text-sm font-bold capitalize">{key}</p></div>)}</div>
+    <div className="grid gap-3 sm:grid-cols-2">{Object.entries(colors).map(([key, value]) => <label key={key} className="min-w-0 text-sm font-bold capitalize">{key}<input aria-label={`${key} colors`} className={input + ' font-mono'} value={value} placeholder="#XXXXXX, #XXXXXX" onChange={e => setDraft({ ...colors, [key]: e.target.value })} /></label>)}</div>
     <Button size="sm" onClick={() => save.mutate()} disabled={!data || save.isPending}><Save />Save rarity colors</Button>
     {(error || save.error) && <p role="alert" className="text-destructive">{(error ?? save.error)?.message}</p>}
     {save.isSuccess && <p role="status">Saved.</p>}

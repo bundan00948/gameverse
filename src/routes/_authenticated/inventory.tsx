@@ -6,6 +6,7 @@ import { Lock, Search } from '@/lib/icons';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { appearanceOptions, collectionOptions } from '@/features/dashboard/data';
 import { PageError, meta } from '@/features/dashboard/page';
+import { rarityPaint, rarityDefaults } from '@/features/dashboard/appearance';
 
 export const Route = createFileRoute('/_authenticated/inventory')({
   loader: ({ context }) => context.queryClient.ensureQueryData(collectionOptions()),
@@ -59,7 +60,7 @@ function Inventory() {
     {open && <Dialog open onOpenChange={value => { if (!value) setOpen(null); }}><DialogContent aria-describedby={undefined} className="w-[calc(100%-2rem)] max-w-sm rounded-md border-surface-border bg-surface p-6 text-center">
         <div className="mx-auto grid size-28 place-items-center rounded-2xl bg-glass-hover text-6xl">{open.owned ? <BlookArt src={open.image_url} alt={open.name} className="size-24 text-7xl" /> : <Lock className="size-10 text-muted-foreground" />}</div>
         <DialogTitle className="mt-4 font-display text-3xl">{open.owned ? open.name : 'Locked blook'}</DialogTitle>
-        <p className="text-sm font-bold uppercase" style={{ color: colors?.[open.rarity] }}>{open.rarity}</p>
+        <p className="text-sm font-bold uppercase" style={{ background: rarityPaint(colors?.[open.rarity], rarityDefaults[open.rarity] ?? 'var(--foreground)'), backgroundClip: 'text', color: 'transparent' }}>{open.rarity}</p>
         <dl className="mt-4 grid grid-cols-3 gap-2 text-sm">
           <div className="rounded-lg bg-glass-hover p-2"><dt className="text-xs text-muted-foreground">Pack</dt><dd className="font-bold">{open.pack}</dd></div>
           <div className="rounded-lg bg-glass-hover p-2"><dt className="text-xs text-muted-foreground">Owned</dt><dd className="font-bold">{open.owned}</dd></div>

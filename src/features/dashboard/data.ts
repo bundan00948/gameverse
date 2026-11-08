@@ -1,7 +1,7 @@
 import { queryOptions, type QueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { rarityColors } from './appearance';
-import { groupCollection } from './blook-catalog';
+import { groupCollection, raritySortedBlooks } from './blook-catalog';
 import { playerId as uid } from '@/features/account/auth-user';
 
 function ok<T>(r: { data: T | null; error: { message: string } | null }): T {
@@ -38,7 +38,7 @@ export const historyOptions = () => queryOptions({ queryKey: ['history'], staleT
   return ok(await supabase.from('game_plays').select('id, played_at, games(title, emoji)').eq('user_id', id).order('played_at', { ascending: false }).limit(50));
 } });
 
-export const shopOptions = () => queryOptions({ queryKey: ['shop'], staleTime: 60_000, queryFn: async () => ok(await supabase.from('packs').select('id, name, image_url, gradient_start, gradient_end, open_image_url, pattern_image_url, price, blooks(id, name, image_url, rarity, weight)').order('sort')) });
+export const shopOptions = () => queryOptions({ queryKey: ['shop'], staleTime: 60_000, queryFn: async () => ok(await supabase.from('packs').select('id, name, image_url, gradient_start, gradient_end, open_image_url, pattern_image_url, price, blooks(id, name, image_url, rarity, weight)').order('sort')).map(pack => ({ ...pack, blooks: raritySortedBlooks(pack.blooks) })) });
 
 export const appearanceOptions = () => queryOptions({ queryKey: ['market-appearance'], staleTime: 30_000, queryFn: async () => {
   const r = await supabase.from('market_settings').select('colors').eq('id', 'rarity').maybeSingle();
