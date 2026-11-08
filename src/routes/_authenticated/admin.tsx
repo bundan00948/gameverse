@@ -2,6 +2,9 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
 import { useState } from 'react';
+import { EditorSection } from '@/features/admin/editor-section';
+import { ResultPreview } from '@/features/admin/result-preview';
+import { PlayerAvatar } from '@/features/dashboard/player-identity';
 import { Trash2, Plus, Save, Shield, Users as UsersIcon, Store, Backpack, Gamepad2, Target, Crown, Award } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { DashboardShell } from '@/features/account/dashboard-shell';
@@ -61,7 +64,8 @@ function UserRow({ u, canGrantStaff }: { u: U; canGrantStaff: boolean }) {
   const [f, setF] = useState({ username: u.username, displayName: u.displayName, tokens: u.tokens, password: '', admin: u.admin });
   const m = useMutation({ mutationFn: () => save({ data: { id: u.id, ...f, password: f.password || undefined } }), onSuccess: () => { setF(s => ({ ...s, password: '' })); invalidatePlayerProfiles(cache); } });
   const d = useMutation({ mutationFn: () => del({ data: { id: u.id } }), onSuccess: () => invalidatePlayerProfiles(cache) });
-  return <div className="rounded-lg border border-surface-border bg-surface p-4">
+  return <EditorSection title={f.username || u.email} summary={u.email}>
+    <div className="mb-4 flex items-center gap-3 border-b border-surface-border pb-3"><PlayerAvatar name={f.username} /><div className="min-w-0"><p className="text-xs text-muted-foreground">Result</p><p className="break-words font-display">{f.displayName || f.username}</p><p className="text-xs text-muted-foreground">{f.admin ? 'Full admin' : 'Player'} · {f.tokens} tokens</p></div></div>
     <p className="mb-4 break-words border-b border-surface-border pb-3 text-sm text-muted-foreground">{u.email} · joined {new Date(u.created).toLocaleDateString()}</p>
     <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <label className="text-xs">Username<input className={input} value={f.username} onChange={e => setF({ ...f, username: e.target.value })} /></label>
@@ -76,13 +80,14 @@ function UserRow({ u, canGrantStaff }: { u: U; canGrantStaff: boolean }) {
     </div>
     {(m.error || d.error) && <p role="alert" className="mt-1 text-xs text-destructive">{(m.error ?? d.error)?.message}</p>}
     {m.isSuccess && <p role="status" className="mt-1 text-xs">Saved.</p>}
-  </div>;
+  </EditorSection>;
 }
 
 type TableName = 'games' | 'missions' | 'packs' | 'blooks';
 type Row = Record<string, string | number> & { id: string };
 function Table({ table, fields, blank, filter, title }: { table: TableName; fields: string[]; blank: Record<string, string | number>; filter?: { col: string; val: string }; title?: string }) {
   const cache = useQueryClient(); const key = ['admin', table, filter?.val ?? ''];
+  const [search, setSearch] = useState('');
   const { data, error } = useQuery({ queryKey: key, queryFn: async () => {
     let q = supabase.from(table).select('*');
     if (filter) q = q.eq(filter.col, filter.val);
@@ -91,33 +96,39 @@ function Table({ table, fields, blank, filter, title }: { table: TableName; fiel
   const done = () => { ['admin', 'admin-blooks', 'games', 'shop', 'collection', 'inventory'].forEach(key => cache.invalidateQueries({ queryKey: [key] })); };
   const add = useMutation({ mutationFn: async () => { const { error } = await supabase.from(table).insert({ ...blank, ...(filter ? { [filter.col]: filter.val } : {}) } as never); if (error) throw error; }, onSuccess: done });
   return <div className="space-y-4">
-    <div className="flex flex-wrap items-center justify-between gap-3">{title ? <h3 className="text-xl font-bold">{title} <span className="ml-2 text-sm text-muted-foreground">{data?.length ?? 0}</span></h3> : <span />}<Button type="button" onClick={() => add.mutate()} disabled={add.isPending}><Plus />{add.isPending ? 'Adding…' : `Add ${table === 'missions' ? 'mission' : table === 'games' ? 'game' : 'pack'}`}</Button></div>
+    <div className="flex flex-wrap items-center justify-between gap-3">{title ? <h2 className="text-xl font-bold">{title} <span className="ml-2 text-sm text-muted-foreground">{data?.length ?? 0}</span></h2> : <span />}<Button type="button" onClick={() => add.mutate()} disabled={add.isPending}><Plus />{add.isPending ? 'Adding…' : `Add ${table === 'missions' ? 'mission' : table === 'games' ? 'game' : 'pack'}`}</Button></div>
     {error && <p className="text-xs text-destructive">{error.message}</p>}
     {add.error && <p className="text-xs text-destructive">{add.error.message}</p>}
-    {data?.map(r => <EditRow key={r.id} table={table} row={r} fields={fields} onDone={done} />)}
+    <label className="block text-sm font-bold">Search {title?.toLowerCase() ?? table}<input className={input} type="search" value={search} onChange={e => setSearch(e.target.value)} /></label>
+    {data?.filter(r => String(r['name'] ?? r['title'] ?? '').toLowerCase().includes(search.toLowerCase())).map(r => <EditRow key={r.id} table={table} row={r} fields={fields} onDone={done} />)}
   </div>;
 }
 function EditRow({ table, row, fields, onDone }: { table: TableName; row: Row; fields: string[]; onDone: () => void }) {
   const [f, setF] = useState(row);
   const save = useMutation({ mutationFn: async () => { if (table === 'games' && f['play_url'] && !gameEmbedUrl(String(f['play_url']))) throw new Error('Enter a valid HTTPS embed link.'); const patch = Object.fromEntries([...fields, ...Object.keys(row).filter(k => k.endsWith('image_url'))].map(k => [k, f[k]])); const { error } = await supabase.from(table).update(patch as never).eq('id', row.id); if (error) throw error; }, onSuccess: onDone });
   const del = useMutation({ mutationFn: async () => { const { error } = await supabase.from(table).delete().eq('id', row.id); if (error) throw error; }, onSuccess: onDone });
-  return <div className="rounded-lg border border-surface-border bg-surface p-4">
-    <div className="staff-item-heading"><h4 className="min-w-0 break-words text-lg font-bold">{String(row['name'] ?? row['title'] ?? '')}</h4><span className="text-xs font-bold uppercase text-muted-foreground">{table === 'packs' ? 'Pack' : table === 'games' ? 'Game' : 'Mission'}</span></div>
+  return <EditorSection title={String(f['name'] ?? f['title'] ?? '')} summary={table === 'packs' ? `${f['price']} tokens` : table === 'games' ? 'Game' : 'Mission'}>
+    <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,16rem)]"><div>
     <div className="grid min-w-0 grid-cols-1 items-end gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {fields.map(k => <label key={k} className="min-w-0 text-xs font-bold capitalize">{k === 'play_url' ? 'Embed link' : k.replaceAll('_', ' ')}
         <input className={input} type={k.startsWith('gradient_') ? 'color' : typeof row[k] === 'number' ? 'number' : 'text'} value={f[k] ?? ''} onChange={e => setF({ ...f, [k]: typeof row[k] === 'number' ? Number(e.target.value) : e.target.value })} /></label>)}
       {Object.keys(row).filter(k => k.endsWith('image_url')).map(k => <ImagePicker key={k} label={k === 'image_url' ? table === 'packs' ? 'Pack image' : table === 'games' ? 'Application icon' : 'Blook image' : k === 'open_image_url' ? 'Pack open container image' : 'Bottom-right pattern image'} value={(f[k] as string | null) ?? null} onChange={url => setF({ ...f, [k]: url as string })} />)}
     </div>
+    </div><ResultPreview variant={table === 'packs' ? 'pack' : 'art'} name={String(f['name'] ?? f['title'] ?? '')} image={typeof f['image_url'] === 'string' ? f['image_url'] : null} pattern={typeof f['pattern_image_url'] === 'string' ? f['pattern_image_url'] : null} start={String(f['gradient_start'] ?? '')} end={String(f['gradient_end'] ?? '')} price={Number(f['price'] ?? 0)}>
+      {table === 'packs' && f['open_image_url'] && <div className="space-y-2"><p className="text-xs font-bold">Opening background</p><img src={String(f['open_image_url'])} alt="Opening background preview" className="aspect-video w-full rounded-md object-cover" /></div>}
+      {table === 'games' && <p className="break-words text-sm text-muted-foreground">{String(f['description'] ?? '')}</p>}
+      {table === 'missions' && <p className="text-sm">{String(f['kind'])} · Goal: {String(f['goal'])} · Reward: {String(f['reward'])} tokens</p>}
+    </ResultPreview></div>
     <div className="staff-actions"><Button type="button" disabled={save.isPending || del.isPending} onClick={() => confirm(table === 'packs' ? 'Delete this pack? Its blooks and owned copies will be kept and unassigned.' : 'Delete this?') && del.mutate()} variant="outline" aria-label="Delete" title="Delete"><Trash2 className="text-destructive" /></Button><Button type="button" disabled={save.isPending || del.isPending} onClick={() => save.mutate()}><Save />{save.isPending ? 'Saving…' : 'Save changes'}</Button></div>
-    {(save.error || del.error) && <p className="mt-1 text-xs text-destructive">{(save.error ?? del.error)?.message}</p>}
-    {save.isSuccess && <p className="mt-1 text-xs">Saved.</p>}
-  </div>;
+    {(save.error || del.error) && <p role="alert" className="mt-1 text-xs text-destructive">{(save.error ?? del.error)?.message}</p>}
+    {save.isSuccess && <p role="status" className="mt-1 text-xs">Saved.</p>}
+  </EditorSection>;
 }
 
 function Shop() {
   return <div className="space-y-6">
     <RarityEditor />
-    <Table table="packs" title="Packs" fields={['name', 'gradient_start', 'gradient_end', 'price', 'sort']} blank={{ emoji: '', name: 'New pack', gradient_start: '#17b9cc', gradient_end: '#308ee5', price: 20, sort: 99 }} />
+    <Table table="packs" title="Packs" fields={['name', 'gradient_start', 'gradient_end', 'price', 'sort']} blank={{ emoji: '', name: 'New pack', gradient_start: '#555555', gradient_end: '#222222', price: 20, sort: 99 }} />
   </div>;
 }
 
@@ -134,10 +145,10 @@ function RarityEditor() {
     const r = await supabase.from('market_settings').upsert({ id: 'rarity', colors });
     if (r.error) throw r.error;
   }, onSuccess: () => { cache.invalidateQueries({ queryKey: ['market-appearance'] }); cache.invalidateQueries({ queryKey: ['admin-rarity'] }); } });
-  return <section className="space-y-3 border-b border-surface-border pb-4"><h3 className="font-bold">Rarity colors</h3>
+  return <EditorSection title="Rarity colors" summary="Common, uncommon, rare, epic, legendary and chroma">
     <div className="staff-rarity-grid">{Object.entries(colors).map(([key, value]) => <label key={key}>{key}<input aria-label={`${key} color`} type="color" value={value} onChange={e => setDraft({ ...colors, [key]: e.target.value })} /></label>)}</div>
     <Button size="sm" onClick={() => save.mutate()} disabled={!data || save.isPending}><Save />Save rarity colors</Button>
     {(error || save.error) && <p role="alert" className="text-destructive">{(error ?? save.error)?.message}</p>}
     {save.isSuccess && <p role="status">Saved.</p>}
-  </section>;
+  </EditorSection>;
 }
