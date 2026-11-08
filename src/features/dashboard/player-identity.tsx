@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 export interface PlayerAvatarProps { name: string; identity?: Identity | undefined; className?: string }
 /** Player picture: their chosen blook, or their first initial. */
 export function PlayerAvatar({ name, identity, className }: PlayerAvatarProps) {
-  if (identity?.avatar) return <img src={identity.avatar} alt="" className={cn('size-9 shrink-0 object-contain', className)} />;
+  if (identity?.avatar) return <img src={identity.avatar} alt="" className={cn('size-9 shrink-0 rounded-lg border-2 border-border/60 bg-glass object-cover', className)} />;
   return <span aria-hidden className={cn('font-display grid size-9 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground', className)}>{name[0]?.toUpperCase()}</span>;
 }
 
