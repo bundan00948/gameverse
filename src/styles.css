@@ -255,7 +255,8 @@
   --market-price: color-mix(in srgb, var(--pedestal) 62%, transparent);
   --market-coin: #ffcc38;
   --market-foreground: #ffffff;
-  --market-radius: 10%;
+  --market-radius: 1.15rem;
+  --market-card-radius: 10%;
   --market-picture-size: 86%;
   --market-shadow: var(--layout-shadow);
   --market-frame-width: 2px;
@@ -274,10 +275,10 @@
 .market-background { background: linear-gradient(145deg, var(--market-start), var(--market-end)); }
 .market-background h1 { color: var(--market-foreground); }
 .market-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 20px; }
-.market-pack { position: relative; display: flex; flex-direction: column; gap: 0; height: auto; min-width: 0; padding: 0; overflow: hidden; border: 0; border-radius: var(--market-radius); background: linear-gradient(to bottom in oklab, color-mix(in oklab, var(--pack-start) 70%, var(--market-foreground)), color-mix(in oklab, var(--pack-end) 70%, var(--market-foreground))); box-shadow: var(--market-shadow); color: var(--market-foreground); white-space: normal; transition: transform .18s; }
+.market-pack { position: relative; display: flex; flex-direction: column; gap: 0; height: auto; min-width: 0; padding: 0; overflow: hidden; border: 0; border-radius: var(--market-card-radius); background: linear-gradient(to bottom in oklab, color-mix(in oklab, var(--pack-start) 70%, var(--market-foreground)), color-mix(in oklab, var(--pack-end) 70%, var(--market-foreground))); box-shadow: var(--market-shadow); color: var(--market-foreground); white-space: normal; transition: transform .18s; }
 .market-pack:hover { transform: translateY(-3px); }
 .market-pack-art { position: relative; display: grid; place-items: center; width: calc(100% - var(--market-card-frame) * 2); aspect-ratio: 1; margin: var(--market-card-frame); background: linear-gradient(to bottom in oklab, var(--pack-start), var(--pack-end)); overflow: hidden; }
-.market-pack > .market-pack-art { border-radius: calc(var(--market-radius) - var(--market-card-frame)); }
+.market-pack > .market-pack-art { border-radius: calc(var(--market-card-radius) - var(--market-card-frame)); }
 .market-pack-picture { position: relative; width: var(--market-picture-size); height: var(--market-picture-size); transform: rotate(8deg); transition: transform .18s; }
 .market-pack:hover .market-pack-picture { transform: rotate(0); }
 .market-pack-pattern { position: absolute; z-index: 1; right: 0; bottom: 0; width: var(--market-pattern-size); height: var(--market-pattern-size); object-fit: contain; opacity: .65; pointer-events: none; }
