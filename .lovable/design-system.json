@@ -1025,7 +1025,7 @@
       "name": "BannerCard",
       "file": "src/features/dashboard/banner-card",
       "import_path": "",
-      "usage": "Use for wide banner artwork with a rarity-colored token footer.",
+      "usage": "Use for wide banner artwork with a rarity-colored token footer. Pass validated solid or comma-separated rarity colors; the footer and seam label share the same blended paint.",
       "examples": [
         {
           "label": "Typical usage",
@@ -1033,7 +1033,8 @@
         }
       ],
       "antipatterns": [
-        "Do not crop banner art or choose footer colors independently of rarity."
+        "Do not crop banner art or choose footer colors independently of rarity.",
+        "Do not pass arbitrary CSS as rarity colors; use one to nine comma-separated hex colors."
       ]
     },
     {
