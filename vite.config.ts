@@ -1,8 +1,3 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-// ... there might be other imports here
+import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-export default defineConfig({
-  plugins: [react()],
-  // ... there might be more lines here like server settings or paths
-})
+export default defineConfig();
