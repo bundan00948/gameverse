@@ -18,9 +18,9 @@ export const ResultPreview = forwardRef<HTMLElement, ResultPreviewProps>(functio
   return <figure ref={ref} {...props} className={cn('min-w-0 space-y-3', className)}>
     <figcaption className="flex flex-wrap items-center justify-between gap-2 text-sm font-bold">Result <span className="text-xs font-normal text-muted-foreground">Unsaved preview</span></figcaption>
     {variant === 'pack' ? <div className="market-pack mx-auto w-full max-w-64" style={{ '--pack-start': safeColor(start, 'var(--market-start)'), '--pack-end': safeColor(end, 'var(--market-end)') } as CSSProperties}>
-      <span className="market-pack-art">{pattern && <img src={pattern} alt="" className="market-pack-pattern" />}<BlookArt src={image} alt={name} className="market-pack-picture" />{!image && <span className="market-pack-name">{name}</span>}</span>
+      <span className="market-pack-art">{pattern && <img src={pattern} alt="" className="market-pack-pattern" />}<BlookArt src={image ?? null} alt={name} className="market-pack-picture" />{!image && <span className="market-pack-name">{name}</span>}</span>
       <span className="market-pack-price"><img src={tokenIcon.url} alt="Tokens" className="size-8 object-contain" />{price ?? 0}</span>
-    </div> : <div className="flex min-w-0 flex-col items-center gap-3 py-3"><BlookArt src={image} alt={name} className="size-32" /><span className="max-w-full break-words text-center font-bold">{name}</span></div>}
+    </div> : <div className="flex min-w-0 flex-col items-center gap-3 py-3"><BlookArt src={image ?? null} alt={name} className="size-32" /><span className="max-w-full break-words text-center font-bold">{name}</span></div>}
     {children}
   </figure>;
 });
