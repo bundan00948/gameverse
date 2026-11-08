@@ -53,7 +53,7 @@ function Stats() {
     <div className="flex w-full max-w-2xl flex-col gap-4">
       <div className="flex flex-col items-center gap-4 sm:flex-row">
         <Button variant="ghost" type="button" disabled={!own} onClick={() => setPicking(true)} aria-label={own ? "Change profile picture" : `${name} profile picture`} className="group relative grid size-28 shrink-0 place-items-center rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-          <PlayerAvatar name={name} identity={me} className="size-28 text-4xl" />
+          <PlayerAvatar name={name} identity={me} className="size-28 rounded-2xl text-4xl" />
           <span className="absolute bottom-1 right-1 grid size-7 place-items-center rounded-full bg-surface opacity-0 shadow transition group-hover:opacity-100 group-focus-visible:opacity-100"><Pencil className="size-3.5" /></span>
         </Button>
         <div className={`${box} w-full flex-1 px-5 py-2.5 text-center sm:max-w-[50%]`}>
