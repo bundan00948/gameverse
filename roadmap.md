@@ -1,8 +1,8 @@
 # Roadmap
 
-- [ ] Fix purchase-stage shaking and verify stationary pack before opening
-- [ ] Refine peel/reveal animation against accessible Blooket reference
-- [ ] Blend vertical pack colors into thin frames; move price into translucent bottom-right badge and remove Market blue defaults
+- [x] Fix purchase-stage shaking and verify stationary pack before opening on desktop and phone
+- [x] Refine peel/reveal animation and verify purchased reveals; exact Blooket match unverified because its Market requires login
+- [x] Blend vertical pack colors into thin frames; move price into translucent bottom-right badge and remove fixed Market blue defaults while preserving admin-selected pack colors
 
 - [x] Optimize initial-load assets and repeated auth requests; compare cold-load measurements (preview cold load ~0.85–0.88s; 0.5s target not reached).
 
