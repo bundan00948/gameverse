@@ -255,10 +255,12 @@
   --market-price: color-mix(in srgb, var(--pedestal) 62%, transparent);
   --market-coin: #ffcc38;
   --market-foreground: #ffffff;
-  --market-radius: 1.15rem;
-  --market-picture-size: 75.6%;
+  --market-radius: 10%;
+  --market-picture-size: 86%;
   --market-shadow: var(--layout-shadow);
   --market-frame-width: 2px;
+  --market-card-frame: 2.6%;
+  --market-pattern-size: 38%;
   --market-price-inset: calc(var(--spacing) * 2);
   --pack-art-size: min(300px, 65vw, 52dvh);
 }
@@ -272,15 +274,15 @@
 .market-background { background: linear-gradient(145deg, var(--market-start), var(--market-end)); }
 .market-background h1 { color: var(--market-foreground); }
 .market-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 20px; }
-.market-pack { position: relative; display: flex; flex-direction: column; gap: 0; height: auto; min-width: 0; padding: var(--market-frame-width); overflow: hidden; border: 0; border-radius: var(--market-radius); background: linear-gradient(to bottom, color-mix(in srgb, var(--pack-start) 70%, var(--market-foreground)), color-mix(in srgb, var(--pack-end) 70%, var(--market-foreground))); box-shadow: var(--market-shadow); color: var(--market-foreground); white-space: normal; transition: transform .18s; }
+.market-pack { position: relative; display: flex; flex-direction: column; gap: 0; height: auto; min-width: 0; padding: 0; overflow: hidden; border: 0; border-radius: var(--market-radius); background: linear-gradient(to bottom in oklab, color-mix(in oklab, var(--pack-start) 70%, var(--market-foreground)), color-mix(in oklab, var(--pack-end) 70%, var(--market-foreground))); box-shadow: var(--market-shadow); color: var(--market-foreground); white-space: normal; transition: transform .18s; }
 .market-pack:hover { transform: translateY(-3px); }
-.market-pack-art { position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 1; background: linear-gradient(to bottom in oklab, var(--pack-start), var(--pack-end)); overflow: hidden; }
-.market-pack > .market-pack-art { border-radius: calc(var(--market-radius) - var(--market-frame-width)); }
+.market-pack-art { position: relative; display: grid; place-items: center; width: calc(100% - var(--market-card-frame) * 2); aspect-ratio: 1; margin: var(--market-card-frame); background: linear-gradient(to bottom in oklab, var(--pack-start), var(--pack-end)); overflow: hidden; }
+.market-pack > .market-pack-art { border-radius: calc(var(--market-radius) - var(--market-card-frame)); }
 .market-pack-picture { position: relative; width: var(--market-picture-size); height: var(--market-picture-size); transform: rotate(8deg); transition: transform .18s; }
 .market-pack:hover .market-pack-picture { transform: rotate(0); }
-.market-pack-pattern { position: absolute; right: 0; bottom: 0; width: 38%; height: 38%; object-fit: contain; opacity: .65; }
+.market-pack-pattern { position: absolute; z-index: 1; right: 0; bottom: 0; width: var(--market-pattern-size); height: var(--market-pattern-size); object-fit: contain; opacity: .65; pointer-events: none; }
 .market-pack-name { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; text-align: center; font-family: var(--font-display); font-size: 24px; }
-.market-pack-price { position: absolute; right: var(--market-price-inset); bottom: var(--market-price-inset); display: flex; align-items: center; justify-content: center; gap: var(--spacing); min-height: calc(var(--spacing) * 8); padding: var(--spacing) calc(var(--spacing) * 2); border: calc(var(--market-frame-width) * 2) solid color-mix(in srgb, var(--market-foreground) 25%, transparent); border-radius: var(--radius); background: var(--market-price); font-family: var(--font-display); font-size: var(--text-base); }
+.market-pack-price { position: absolute; z-index: 2; right: var(--market-price-inset); bottom: var(--market-price-inset); display: flex; align-items: center; justify-content: center; gap: var(--spacing); min-height: calc(var(--spacing) * 8); padding: var(--spacing) calc(var(--spacing) * 2); border: calc(var(--market-frame-width) * 2) solid color-mix(in srgb, var(--market-foreground) 25%, transparent); border-radius: var(--radius); background: var(--market-price); font-family: var(--font-display); font-size: var(--text-base); }
 .market-pack-price svg { width: 20px; height: 20px; }
 :root {
   --pack-dialog-width: 720px;
