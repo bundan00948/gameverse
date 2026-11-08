@@ -65,7 +65,7 @@ function Inventory() {
         <dl className="mt-4 grid grid-cols-3 gap-2 text-sm">
           <div className="rounded-lg bg-glass-hover p-2"><dt className="text-xs text-muted-foreground">Pack</dt><dd className="font-bold">{open.pack}</dd></div>
           <div className="rounded-lg bg-glass-hover p-2"><dt className="text-xs text-muted-foreground">Owned</dt><dd className="font-bold">{open.owned}</dd></div>
-          <div className="rounded-lg bg-glass-hover p-2"><dt className="text-xs text-muted-foreground">Chance</dt><dd className="font-bold">{open.pack === 'Unassigned' ? '—' : `${((open.weight / open.total) * 100).toFixed(1)}%`}</dd></div>
+          <div className="rounded-lg bg-glass-hover p-2"><dt className="text-xs text-muted-foreground">Chance</dt><dd className="font-bold">{open.pack === 'Unassigned' ? '—' : `${((open.weight / open.total) * 100).toFixed(2)}%`}</dd></div>
         </dl>
         {!open.owned && open.pack !== 'Unassigned' && <Link to="/shop" className="mt-4 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">Find it in the Market</Link>}
     </DialogContent></Dialog>}
