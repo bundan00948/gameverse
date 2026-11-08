@@ -3,7 +3,7 @@ import { parseColorList, roleGradient, roleTextStyle } from '@/features/dashboar
 
 describe('role colors', () => {
   it('enables running paint only for multi-color roles', () => {
-    expect(roleTextStyle(['#ff0000', '#00ff00'])?.animation).toBe('var(--role-gradient-motion)');
+    expect(roleTextStyle(['#ff0000', '#00ff00'])?.['animation']).toBe('var(--role-gradient-motion)');
     expect(roleTextStyle(['#ff0000'])).toEqual({ color: '#ff0000' });
   });
   it('uses a single color as a solid color', () => expect(roleGradient(['#ff0000'])).toBe('#ff0000'));
