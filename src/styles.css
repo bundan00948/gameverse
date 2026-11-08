@@ -283,8 +283,9 @@
 .market-pack:hover .market-pack-picture { transform: rotate(0); }
 .market-pack-pattern { position: absolute; z-index: 1; right: 0; bottom: 0; width: var(--market-pattern-size); height: var(--market-pattern-size); object-fit: contain; opacity: .65; pointer-events: none; }
 .market-pack-name { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; text-align: center; font-family: var(--font-display); font-size: 24px; }
-.market-pack-price { position: absolute; z-index: 2; right: var(--market-price-inset); bottom: var(--market-price-inset); display: flex; align-items: center; justify-content: center; gap: var(--spacing); min-height: calc(var(--spacing) * 8); padding: var(--spacing) calc(var(--spacing) * 2); border: calc(var(--market-frame-width) * 2) solid color-mix(in srgb, var(--market-foreground) 25%, transparent); border-radius: var(--radius); background: var(--market-price); font-family: var(--font-display); font-size: var(--text-base); }
-.market-pack-price svg { width: 20px; height: 20px; }
+.market-pack-price { position: absolute; z-index: 2; right: var(--market-price-inset); bottom: var(--market-price-inset); display: flex; align-items: center; justify-content: center; gap: calc(var(--spacing) * 1.5); min-height: calc(var(--spacing) * 11); padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 3); border: none; border-radius: var(--radius); background: var(--market-price); font-family: var(--font-display); font-size: var(--text-xl); }
+.market-pack-price svg { width: 28px; height: 28px; }
+.market-pack-price img { width: 42px; height: 42px; }
 :root {
   --pack-dialog-width: 720px;
   --pack-dialog-padding: 24px;
