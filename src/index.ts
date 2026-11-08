@@ -1,4 +1,5 @@
 import "./styles.css"
+export { THEME_STORAGE_KEY, normalizeTheme, applyTheme, themeInitScript, type Theme } from "./lib/theme"
 
 export { DiscordIcon } from "./components/discord-icon"
 export { PlanetLogo } from "./components/planet-logo"
