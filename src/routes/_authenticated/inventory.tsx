@@ -14,7 +14,7 @@ export const Route = createFileRoute('/_authenticated/inventory')({
   component: Inventory, errorComponent: PageError, notFoundComponent: () => <p>Not found.</p>,
 });
 
-type Blook = { id: string; name: string; emoji: string; image_url: string | null; rarity: string; weight: number; owned: number; pack: string; total: number; gradient_start?: string | null; gradient_end?: string | null; pattern_image_url?: string | null };
+type Blook = { id: string; name: string; emoji: string; image_url: string | null; rarity: string; weight: number; owned: number; pack: string; total: number; gradient_start?: string | null; gradient_end?: string | null; pattern_image_url?: string | null; open_image_url?: string | null };
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
@@ -51,26 +51,30 @@ function Inventory() {
           <div className="flex items-center gap-2 text-sm font-bold"><div className="h-2 w-28 overflow-hidden rounded-full bg-surface"><div className="h-full bg-tile-c" style={{ width: `${(got / totalInPack.length) * 100}%` }} /></div>{got} / {totalInPack.length}</div>
         </div>
         <div className="mt-3 flex flex-wrap gap-1">{p.blooks.map(b => (
-          <Button variant="ghost" key={b.id} type="button" onClick={() => setOpen({ ...b, pack: p.name, total: p.blooks.reduce((s, x) => s + x.weight, 0), gradient_start: p.gradient_start, gradient_end: p.gradient_end, pattern_image_url: p.pattern_image_url })} aria-label={b.owned ? b.name : `Locked blook`}
+          <Button variant="ghost" key={b.id} type="button" onClick={() => setOpen({ ...b, pack: p.name, total: p.blooks.reduce((s, x) => s + x.weight, 0), gradient_start: p.gradient_start, gradient_end: p.gradient_end, pattern_image_url: p.pattern_image_url, open_image_url: p.open_image_url })} aria-label={b.owned ? b.name : `Locked blook`}
             className="relative grid size-24 place-items-center rounded-none border-0 bg-transparent p-0 text-4xl shadow-none transition-transform hover:-translate-y-1 hover:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             {b.owned ? <BlookArt src={b.image_url} alt={b.name} className="size-20 text-5xl" /> : <span className="relative grid size-20 place-items-center">{b.image_url && <BlookArt src={b.image_url} alt="" aria-hidden className="blook-silhouette size-full" />}<Lock className="absolute size-6 text-foreground/85" /></span>}
             {b.owned > 0 && <span aria-label={`${b.owned} owned, ${b.rarity}`} title={`${b.rarity} · ${b.owned} owned`} className="absolute bottom-0 right-0 isolate grid min-h-7 min-w-7 place-items-center px-1 text-xs font-bold text-white">{badges?.[b.rarity] ? <img aria-hidden="true" src={badges[b.rarity] ?? undefined} alt="" className="absolute inset-0 -z-10 size-full object-contain" /> : <span aria-hidden="true" className="absolute inset-0 -z-10 [clip-path:polygon(50%_0%,63%_12%,80%_7%,85%_25%,100%_35%,92%_50%,100%_65%,85%_75%,80%_93%,63%_88%,50%_100%,37%_88%,20%_93%,15%_75%,0%_65%,8%_50%,0%_35%,15%_25%,20%_7%,37%_12%)]" style={{ background: rarityPaint(colors?.[b.rarity], rarityDefaults[b.rarity] ?? 'var(--secondary)') }} />}<span className="[text-shadow:0_1px_2px_var(--background),0_0_3px_var(--background)]">{b.owned.toLocaleString()}</span></span>}
           </Button>))}</div>
       </section>; })}
 
-    {open && <Dialog open onOpenChange={value => { if (!value) setOpen(null); }}><DialogContent aria-describedby={undefined} className="w-[calc(100%-2rem)] max-w-sm overflow-hidden rounded-md border-surface-border bg-surface p-6 text-center" style={{ '--pack-start': safeColor(open.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(open.gradient_end, 'var(--market-end)') } as CSSProperties}>
+    {open && <Dialog open onOpenChange={value => { if (!value) setOpen(null); }}><DialogContent aria-describedby={undefined} className="w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-md bg-surface p-8 text-center" style={{ '--pack-start': safeColor(open.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(open.gradient_end, 'var(--market-end)'), border: '4px solid color-mix(in srgb, var(--pack-start) 65%, var(--foreground))' } as CSSProperties}>
         <div aria-hidden className="pack-scene-gradient rounded-md" />
+        {open.open_image_url && <img aria-hidden src={open.open_image_url} alt="" className="pack-stage-background rounded-md" />}
         {open.pattern_image_url && <img aria-hidden src={open.pattern_image_url} alt="" className="market-pack-pattern" />}
         <div className="relative">
-        <div className="mx-auto grid size-28 place-items-center text-6xl">{open.owned ? <BlookArt src={open.image_url} alt={open.name} className="size-24 text-7xl" /> : <span className="relative grid size-24 place-items-center">{open.image_url && <BlookArt src={open.image_url} alt="" aria-hidden className="blook-silhouette size-full" />}<Lock className="absolute size-10 text-foreground/85" /></span>}</div>
-        <DialogTitle className="mt-4 font-display text-3xl">{open.owned ? open.name : 'Locked blook'}</DialogTitle>
-        <p className="text-sm font-bold uppercase" style={{ background: rarityPaint(colors?.[open.rarity], rarityDefaults[open.rarity] ?? 'var(--foreground)'), backgroundClip: 'text', color: 'transparent' }}>{open.rarity}</p>
-        <dl className="mt-4 grid grid-cols-3 gap-2 text-sm">
-          <div className="rounded-lg bg-glass-hover p-2"><dt className="text-xs text-muted-foreground">Pack</dt><dd className="font-bold">{open.pack}</dd></div>
-          <div className="rounded-lg bg-glass-hover p-2"><dt className="text-xs text-muted-foreground">Owned</dt><dd className="font-bold">{open.owned}</dd></div>
-          <div className="rounded-lg bg-glass-hover p-2"><dt className="text-xs text-muted-foreground">Chance</dt><dd className="font-bold">{open.pack === 'Unassigned' ? '—' : `${((open.weight / open.total) * 100).toFixed(2)}%`}</dd></div>
+        <div className="mx-auto grid size-36 place-items-center text-6xl">{open.owned ? <BlookArt src={open.image_url} alt={open.name} className="size-32 text-7xl" /> : <span className="relative grid size-32 place-items-center">{open.image_url && <BlookArt src={open.image_url} alt="" aria-hidden className="blook-silhouette size-full" />}<Lock className="absolute size-12 text-foreground/85" /></span>}</div>
+        <DialogTitle className="mt-5 font-display text-4xl">{open.owned ? open.name : 'Locked blook'}</DialogTitle>
+        <p className="mt-3 flex items-center justify-center gap-2.5">
+          {badges?.[open.rarity] ? <img aria-hidden="true" src={badges[open.rarity] ?? undefined} alt="" className="size-8 object-contain" /> : <span aria-hidden="true" className="size-8 [clip-path:polygon(50%_0%,63%_12%,80%_7%,85%_25%,100%_35%,92%_50%,100%_65%,85%_75%,80%_93%,63%_88%,50%_100%,37%_88%,20%_93%,15%_75%,0%_65%,8%_50%,0%_35%,15%_25%,20%_7%,37%_12%)]" style={{ background: rarityPaint(colors?.[open.rarity], rarityDefaults[open.rarity] ?? 'var(--secondary)') }} />}
+          <span className="rounded-full px-4 py-1.5 text-sm font-bold uppercase tracking-wide text-white shadow-tile" style={{ background: rarityPaint(colors?.[open.rarity], rarityDefaults[open.rarity] ?? 'var(--foreground)') }}>{open.rarity}</span>
+        </p>
+        <dl className="mt-5 grid grid-cols-3 gap-2.5 text-sm">
+          <div className="rounded-lg bg-glass-hover p-2.5"><dt className="text-xs text-muted-foreground">Pack</dt><dd className="font-bold">{open.pack}</dd></div>
+          <div className="rounded-lg bg-glass-hover p-2.5"><dt className="text-xs text-muted-foreground">Owned</dt><dd className="font-bold">{open.owned}</dd></div>
+          <div className="rounded-lg bg-glass-hover p-2.5"><dt className="text-xs text-muted-foreground">Chance</dt><dd className="font-bold">{open.pack === 'Unassigned' ? '—' : `${((open.weight / open.total) * 100).toFixed(2)}%`}</dd></div>
         </dl>
-        {!open.owned && open.pack !== 'Unassigned' && <Link to="/shop" className="mt-4 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">Find it in the Market</Link>}
+        {!open.owned && open.pack !== 'Unassigned' && <Link to="/shop" className="mt-5 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">Find it in the Market</Link>}
         </div>
     </DialogContent></Dialog>}
   </DashboardShell>;

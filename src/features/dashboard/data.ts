@@ -59,7 +59,7 @@ export const inventoryOptions = () => queryOptions({ queryKey: ['inventory'], st
 export const collectionOptions = () => queryOptions({ queryKey: ['collection'], staleTime: 30_000, queryFn: async () => {
   const id = await uid();
   const [packs, blooks, mine] = await Promise.all([
-    supabase.from('packs').select('id, name, image_url, gradient_start, gradient_end, pattern_image_url').order('sort'),
+    supabase.from('packs').select('id, name, image_url, gradient_start, gradient_end, pattern_image_url, open_image_url').order('sort'),
     supabase.from('blooks').select('id, name, pack_id, emoji, image_url, rarity, weight'),
     supabase.from('user_blooks').select('blook_id, quantity').eq('user_id', id),
   ]);
