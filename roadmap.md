@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Match November 8 Market card reference and verify saved top-to-bottom color blending, pack selection, and phone layout
+
 - [x] Fix purchase-stage shaking and verify stationary pack before opening on desktop and phone
 - [x] Refine peel/reveal animation and verify purchased reveals; exact Blooket match unverified because its Market requires login
 - [x] Blend vertical pack colors into thin frames; move price into translucent bottom-right badge and remove fixed Market blue defaults while preserving admin-selected pack colors
