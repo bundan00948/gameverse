@@ -262,7 +262,7 @@
   --market-price-inset: calc(var(--spacing) * 2);
   --pack-art-size: min(300px, 65vw, 52dvh);
   --market-token-size: calc(var(--spacing) * 7);
-  --role-gradient-motion: none;
+  --role-gradient-motion: role-gradient-run 5s ease-in-out infinite alternate;
 }
 @theme inline {
   --color-market-coin: var(--market-coin);
