@@ -2,7 +2,7 @@
   "meta": {
     "name": "GameVerse",
     "package": "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -208,7 +208,7 @@
       "src/routes/terms.tsx": "3d5fc64d4c2c4a4e6a4872900ca2c155",
       "src/server.ts": "c7bbc49bb70e318af618d92775ee0f27",
       "src/start.ts": "d77c1c12904be5077c6955d9b30071af",
-      "src/styles.css": "e7e486f9c589e483f346cbd724d3823e",
+      "src/styles.css": "47dac5292370c0aceb18cd9f7891fedc",
       "src/test/app-routing.test.tsx": "8eb1cfad1e614d4195714f1ad04770ea",
       "src/test/banners.test.ts": "86b298904c4e72db0dfddc05168138e7",
       "src/test/blook-catalog.test.ts": "94c7209ce86a896dbb850b029d27b5e5",
