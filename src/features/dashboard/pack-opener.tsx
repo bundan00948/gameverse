@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { BlookArt } from './blook-art';
 import { appearanceOptions, rarityBadgesOptions } from './data';
 import { rarityDefaults, rarityPaint, rarityEndpoints, safeColor } from './appearance';
-import { raritySortedBlooks } from './blook-catalog';
+import { dropChanceLabel, raritySortedBlooks } from './blook-catalog';
 import { purchaseTotal, validQuantity } from './purchase';
 
 type Blook = { id: string; name: string; image_url: string | null; rarity: string; weight: number };
