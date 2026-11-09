@@ -2,7 +2,7 @@
   "meta": {
     "name": "GameVerse",
     "package": "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -140,7 +140,7 @@
       "src/components/ui/tooltip.tsx": "67d71db5a1ab935695d1def497f5b8a6",
       "src/features/account/auth-form.tsx": "2394279ff66d506c8dd3fa972d2abc9a",
       "src/features/account/auth-user.ts": "225c770e8e61234a8b8fcc3d922f6eec",
-      "src/features/account/dashboard-shell.tsx": "191edf05f4f13c8e89ffa5d5def41149",
+      "src/features/account/dashboard-shell.tsx": "201e77b3df690b7527223f81fad54485",
       "src/features/account/password-form.tsx": "b1498d7a2bbb8d37004e8b586ea5a123",
       "src/features/account/profile.ts": "9a8604022c3751cfc47c9359c151889f",
       "src/features/account/session.tsx": "8f1d64e74eb3762821ba59667ae88022",
@@ -155,7 +155,7 @@
       "src/features/dashboard/banners.ts": "724de842c3fb20a47c20d0f9a4f41c0f",
       "src/features/dashboard/blook-art.tsx": "425b88de6eb524e9f362385f4260a953",
       "src/features/dashboard/blook-catalog.ts": "95586f277d110c97c003f08dfe89b6b5",
-      "src/features/dashboard/data.ts": "60b67af18ce393e9ee16c90d52df6446",
+      "src/features/dashboard/data.ts": "c8609415a647066fae5e4a68422316ec",
       "src/features/dashboard/game-embed.ts": "082ffbda8b14a53ef2e6011188a14ed3",
       "src/features/dashboard/image-picker.tsx": "849242a3e173793ee9625eef317f5268",
       "src/features/dashboard/market-banners.tsx": "fe7a49e9283172dead2a935ce74b6a9e",
@@ -208,7 +208,7 @@
       "src/routes/terms.tsx": "3d5fc64d4c2c4a4e6a4872900ca2c155",
       "src/server.ts": "c7bbc49bb70e318af618d92775ee0f27",
       "src/start.ts": "d77c1c12904be5077c6955d9b30071af",
-      "src/styles.css": "47dac5292370c0aceb18cd9f7891fedc",
+      "src/styles.css": "ff98ad14201f7826a580ef9fba6514fe",
       "src/test/app-routing.test.tsx": "8eb1cfad1e614d4195714f1ad04770ea",
       "src/test/banners.test.ts": "86b298904c4e72db0dfddc05168138e7",
       "src/test/blook-catalog.test.ts": "94c7209ce86a896dbb850b029d27b5e5",
@@ -613,7 +613,7 @@
       },
       {
         "name": "--role-gradient-motion",
-        "raw": "role-gradient-run 6s ease-in-out infinite alternate",
+        "raw": "none",
         "source": "src/styles.css"
       },
       {
