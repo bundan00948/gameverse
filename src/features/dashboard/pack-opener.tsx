@@ -65,7 +65,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
             <BlookArt src={b.image_url} alt="" className="size-9 shrink-0" />
             <span className="pack-drop-name" title={b.name}>{b.name}</span>
             <span className="rarity-label" style={{ '--rarity-paint': rarityPaint(colors?.[b.rarity], rarityDefaults[b.rarity] ?? 'var(--muted)') } as CSSProperties}>{b.rarity}</span>
-            <span className="pack-drop-chance">{((b.weight / total) * 100).toFixed(2)}%</span>
+            <span className="pack-drop-chance">{dropChanceLabel(b.weight, total)}</span>
           </li>)}</ul> : <>
             {pack.pattern_image_url && <img src={pack.pattern_image_url} alt="" className="market-pack-pattern" />}
             <BlookArt src={pack.image_url} alt={pack.name} className="market-pack-picture" />

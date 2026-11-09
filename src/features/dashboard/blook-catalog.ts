@@ -7,6 +7,10 @@ export function raritySortedBlooks<T extends { id: string; name: string; rarity?
   const rank = (rarity?: string) => { const index = rarityOrder.findIndex(r => r === rarity); return index < 0 ? rarityOrder.length : index; };
   return [...blooks].sort((a, b) => rank(a.rarity) - rank(b.rarity) || a.name.localeCompare(b.name, 'en', { sensitivity: 'base', numeric: true }) || a.id.localeCompare(b.id));
 }
+export function dropChanceLabel(weight: number, total: number): string {
+  const sum = total > 0 ? total : 1;
+  return `${((weight / sum) * 100).toFixed(3)}%`;
+}
 export function groupCollection<T extends CatalogBlook, P extends { id: string; name: string; image_url: string | null }>(packs: P[], blooks: T[], owned: Map<string, number>) {
   const items = alphabeticalBlooks(blooks).map(b => ({ ...b, owned: owned.get(b.id) ?? 0 }));
   return [
