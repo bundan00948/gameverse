@@ -123,20 +123,18 @@ function RootShell({ children }: { children: ReactNode }) {
 
 const CHUNK_RELOAD_KEY = "gameverse-chunk-reload";
 
-// Runs inline in <head> before any module loads: a new deploy replaces hashed
-// JS chunks, and a tab holding the old HTML fails its very first import (the
-// entry chunk) with a blank screen — before React can mount any listener.
-// Reload once so the tab picks up the fresh build instead of staying broken.
-const chunkRecoveryScript = `(function(){var k=${JSON.stringify(CHUNK_RELOAD_KEY)};function stale(m){return typeof m==="string"&&(m.indexOf("Importing a module script failed")>-1||m.indexOf("Failed to fetch dynamically imported module")>-1||m.indexOf("error loading dynamically imported module")>-1)}function recover(m){if(!stale(m)||sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1");window.location.reload()}window.addEventListener("error",function(e){recover(e.message||(e.error&&e.error.message))},true);window.addEventListener("unhandledrejection",function(e){var r=e.reason;recover(r&&r.message||String(r))});setTimeout(function(){sessionStorage.removeItem(k)},10000)})();`;
-
-function isStaleChunkError(reason: unknown): boolean {
-  const message = reason instanceof Error ? reason.message : String(reason ?? "");
-  return (
-    message.includes("Importing a module script failed") ||
-    message.includes("Failed to fetch dynamically imported module") ||
-    message.includes("error loading dynamically imported module")
-  );
+declare global {
+  interface Window {
+    __gvChunkRecover?: (message: string) => void;
+  }
 }
+
+// Runs inline in <head> before any module loads: a new deploy (or a dev server
+// reload) replaces hashed JS chunks, and a tab holding the old HTML fails its
+// very first import with a blank screen — before React can mount any listener.
+// Retry the reload a bounded number of times so one failed recovery attempt
+// cannot leave the tab stuck blank.
+const chunkRecoveryScript = `(function(){var k=${JSON.stringify(CHUNK_RELOAD_KEY)};var MAX=4;function read(){try{return JSON.parse(sessionStorage.getItem(k))||{n:0,t:0}}catch(e){return{n:0,t:0}}}function write(s){try{sessionStorage.setItem(k,JSON.stringify(s))}catch(e){}}function stale(m){return typeof m==="string"&&(m.indexOf("Importing a module script failed")>-1||m.indexOf("Failed to fetch dynamically imported module")>-1||m.indexOf("error loading dynamically imported module")>-1)}function mounted(){return document.documentElement.hasAttribute("data-app-mounted")}function retry(m){if(!stale(m))return;var s=read();if(s.n>=MAX||Date.now()-s.t<1200)return;s.n+=1;s.t=Date.now();write(s);window.location.reload()}window.__gvChunkRecover=retry;window.addEventListener("error",function(e){retry(e.message||(e.error&&e.error.message))},true);window.addEventListener("unhandledrejection",function(e){var r=e.reason;retry(r&&r.message||String(r))});[2500,5000,9000].forEach(function(d){setTimeout(function(){var s=read();if(!s.n||s.n>=MAX||mounted()||Date.now()-s.t<1200)return;retry("Failed to fetch dynamically imported module watchdog")},d)})})();`;
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
@@ -144,24 +142,21 @@ function RootComponent() {
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
     // A new deploy replaces hashed JS chunks; an open tab holding the old
-    // bundle fails its next lazy import with a blank screen. Reload once so
-    // the tab picks up the fresh build instead of staying broken.
+    // bundle fails its next lazy import with a blank screen. The inline head
+    // script owns the bounded reloads, so this only forwards post-mount
+    // failures to it and marks the app alive so the watchdog stops retrying.
+    document.documentElement.setAttribute("data-app-mounted", "");
+    sessionStorage.removeItem(CHUNK_RELOAD_KEY);
     const recover = (reason: unknown) => {
-      if (!isStaleChunkError(reason)) return;
-      if (sessionStorage.getItem(CHUNK_RELOAD_KEY)) return;
-      sessionStorage.setItem(CHUNK_RELOAD_KEY, "1");
-      window.location.reload();
+      window.__gvChunkRecover?.(reason instanceof Error ? reason.message : String(reason ?? ""));
     };
     const onRejection = (event: PromiseRejectionEvent) => recover(event.reason);
     const onError = (event: ErrorEvent) => recover(event.error ?? event.message);
     window.addEventListener("unhandledrejection", onRejection);
     window.addEventListener("error", onError);
-    // The page loaded fine, so allow a future deploy to trigger one reload again.
-    const clearFlag = window.setTimeout(() => sessionStorage.removeItem(CHUNK_RELOAD_KEY), 10_000);
     return () => {
       window.removeEventListener("unhandledrejection", onRejection);
       window.removeEventListener("error", onError);
-      window.clearTimeout(clearFlag);
     };
   }, []);
   useEffect(() => {
