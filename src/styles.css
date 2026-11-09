@@ -323,10 +323,10 @@
 .pack-result, .pack-ready { z-index: 1; }
 .pack-confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .pack-confetti span { position: absolute; top: -24px; left: var(--confetti-x); width: 10px; height: 16px; border-radius: 2px; background: var(--glow); opacity: 0; animation: pack-confetti-fall var(--confetti-duration) var(--confetti-delay) ease-in forwards; }
-.pack-confetti span:nth-child(3n) { background: color-mix(in srgb, var(--glow-end) 50%, var(--market-foreground)); }
-.pack-confetti span:nth-child(3n + 1) { background: color-mix(in srgb, var(--glow) 70%, var(--market-coin)); }
-.pack-confetti span:has(img) { width: 22px; height: 22px; border-radius: 0; background: transparent; }
-.pack-confetti span img { width: 100%; height: 100%; object-fit: contain; }
+.pack-confetti span:nth-child(3n):not(:has(img)) { background: color-mix(in srgb, var(--glow-end) 50%, var(--market-foreground)); }
+.pack-confetti span:nth-child(3n + 1):not(:has(img)) { background: color-mix(in srgb, var(--glow) 70%, var(--market-coin)); }
+.pack-confetti span:has(img) { width: 22px; height: 22px; border-radius: 0; background: none; box-shadow: none; }
+.pack-confetti span img { width: 100%; height: 100%; object-fit: contain; background: none; }
 @keyframes pack-confetti-fall { 0% { opacity: 0; transform: translate3d(0,-24px,0) rotate(0); } 8% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; transform: translate3d(var(--confetti-drift),calc(100dvh + 48px),0) rotate(var(--confetti-turn)); } }
 .pack-stage-background { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .65; pointer-events: none; }
 .opening-pack { position: relative; width: 280px; height: 280px; padding: 20px; border-radius: var(--market-radius); background: linear-gradient(145deg, var(--pack-start), var(--pack-end)); box-shadow: var(--shadow-tile); }
