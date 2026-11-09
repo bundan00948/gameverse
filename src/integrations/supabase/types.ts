@@ -70,6 +70,7 @@ export type Database = {
       }
       blooks: {
         Row: {
+          drop_weight: number
           emoji: string
           id: string
           image_url: string | null
@@ -79,6 +80,7 @@ export type Database = {
           weight: number
         }
         Insert: {
+          drop_weight?: number
           emoji: string
           id?: string
           image_url?: string | null
@@ -88,6 +90,7 @@ export type Database = {
           weight?: number
         }
         Update: {
+          drop_weight?: number
           emoji?: string
           id?: string
           image_url?: string | null
