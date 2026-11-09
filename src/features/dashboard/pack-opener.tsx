@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { BlookArt } from './blook-art';
-import { appearanceOptions } from './data';
+import { appearanceOptions, rarityBadgesOptions } from './data';
 import { rarityDefaults, rarityPaint, rarityEndpoints, safeColor } from './appearance';
 import { raritySortedBlooks } from './blook-catalog';
 import { purchaseTotal, validQuantity } from './purchase';
@@ -20,6 +20,7 @@ const sellPrice: Record<string, number> = { common: 2, uncommon: 5, rare: 15, ep
 export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   const cache = useQueryClient();
   const { data: colors } = useQuery(appearanceOptions());
+  const { data: badges } = useQuery(rarityBadgesOptions());
   const [stage, setStage] = useState<'confirm' | 'ready' | 'torn' | 'drop' | 'reveal'>('confirm');
   const [sold, setSold] = useState<number | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -43,6 +44,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   const rarity = pull?.rarity ?? 'common';
   const fallback = rarityDefaults[rarity] ?? 'var(--muted)';
   const [rarityStart, rarityEnd] = rarityEndpoints(colors?.[rarity], fallback);
+  const badge = badges?.[rarity] ?? null;
   const glow = stage === 'ready' || stage === 'torn' ? safeColor(pack.gradient_start, 'var(--market-start)') : rarityStart;
   const total = pack.blooks.reduce((s, b) => s + b.weight, 0) || 1;
   const variables = { '--glow': glow, '--glow-end': rarityEnd, '--rarity-paint': rarityPaint(colors?.[rarity], fallback), '--pack-start': safeColor(pack.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(pack.gradient_end, 'var(--market-end)') } as CSSProperties;
@@ -91,9 +93,8 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
       </> : <>
         <div aria-hidden className="pack-scene-gradient" />
         {pack.open_image_url && <img src={pack.open_image_url} alt="" className="pack-stage-background" />}
-        {stage === 'reveal' && <div aria-hidden className="pack-rays absolute size-[160vmax]" />}
         {stage === 'torn' && <div key={`flash-${pullIndex}`} aria-hidden className="pack-bg-rip-flash-dark" />}
-        {(stage === 'drop' || stage === 'reveal') && <div key={`confetti-${pullIndex}`} aria-hidden className="pack-confetti">{Array.from({ length: 64 }, (_, i) => <span key={i} style={{ '--confetti-x': `${(i * 37) % 100}%`, '--confetti-delay': `${(i % 12) * 0.08}s`, '--confetti-duration': `${2.4 + (i % 5) * 0.25}s`, '--confetti-drift': `${(i % 2 ? 1 : -1) * (40 + i % 70)}px`, '--confetti-turn': `${(i % 2 ? 1 : -1) * (360 + i * 13)}deg` } as CSSProperties} />)}</div>}
+        {(stage === 'drop' || stage === 'reveal') && <div key={`confetti-${pullIndex}`} aria-hidden className="pack-confetti">{Array.from({ length: 64 }, (_, i) => <span key={i} style={{ '--confetti-x': `${(i * 37) % 100}%`, '--confetti-delay': `${(i % 12) * 0.08}s`, '--confetti-duration': `${2.4 + (i % 5) * 0.25}s`, '--confetti-drift': `${(i % 2 ? 1 : -1) * (40 + i % 70)}px`, '--confetti-turn': `${(i % 2 ? 1 : -1) * (360 + i * 13)}deg` } as CSSProperties}>{badge && <img src={badge} alt="" />}</span>)}</div>}
         {stage !== 'reveal' && <div className="pack-ready">
           <div key={`unbox-${pullIndex}`} className={`pack-unbox ${stage !== 'ready' ? 'torn pack-unbox-peek' : ''} ${stage === 'drop' ? 'pack-unbox-cover-drop' : ''}`}>
             {pull && <BlookArt src={pull.image_url ?? null} alt="" className="pack-unbox-blook" />}
