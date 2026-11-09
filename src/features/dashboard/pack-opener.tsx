@@ -15,7 +15,7 @@ type Blook = { id: string; name: string; image_url: string | null; rarity: strin
 export type Pack = { id: string; name: string; image_url: string | null; gradient_start: string; gradient_end: string; open_image_url: string | null; pattern_image_url: string | null; price: number; blooks: Blook[] };
 type Pull = { id: string; name: string; rarity: string; image_url?: string | null };
 export interface PackOpenerProps { pack: Pack; tokens: number; onClose: () => void; }
-const sellPrice: Record<string, number> = { common: 2, uncommon: 5, rare: 15, epic: 30, legendary: 75, chroma: 200 };
+const sellPrice: Record<string, number> = { common: 2, uncommon: 5, rare: 15, epic: 30, legendary: 75, chroma: 200, mythical: 500, hidden: 1000 };
 
 export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   const cache = useQueryClient();

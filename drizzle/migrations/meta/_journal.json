@@ -113,6 +113,13 @@
       "when": 1794116406133,
       "tag": "0015_rarity_badge_images",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1794235274835,
+      "tag": "0016_eight_rarity_tiers",
+      "breakpoints": true
     }
   ]
 }

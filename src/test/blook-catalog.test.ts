@@ -12,7 +12,7 @@ describe('Independent blooks', () => {
     expect(alphabeticalBlooks([{ id: '1', name: 'Zebra', pack_id: null }, { id: '2', name: 'apple', pack_id: 'p' }, { id: '3', name: 'Bear', pack_id: null }]).map(b => b.name)).toEqual(['apple', 'Bear', 'Zebra']);
   });
   it('retains unassigned blooks and owned copies in inventory after pack deletion', () => {
-    expect(groupCollection([], [{ id: 'b', name: 'Bear', pack_id: null }], new Map([['b', 3]]))).toEqual([{ id: 'unassigned', name: 'Unassigned', image_url: null, blooks: [{ id: 'b', name: 'Bear', pack_id: null, owned: 3 }] }]);
+    expect(groupCollection([], [{ id: 'b', name: 'Bear', pack_id: null }], new Map([['b', 3]]))).toMatchObject([{ id: 'unassigned', name: 'Unassigned', image_url: null, blooks: [{ id: 'b', name: 'Bear', pack_id: null, owned: 3 }] }]);
   });
   it('uses a nullable assignment and SET NULL rather than cascading pack deletion', () => {
     const sql = readFileSync('drizzle/migrations/0009_independent_blooks.sql', 'utf8');

@@ -15,8 +15,12 @@ describe('saved Market appearance', () => {
     expect(rarityEndpoints(value, '#000000')).toEqual(['#123456', '#abcdef']);
   });
   it('rejects arbitrary CSS and oversized rarity color lists', () => {
-    expect(rarityPaint('url(https://example.com)', '#123456')).toBe('#123456');
-    expect(rarityPaint(Array(10).fill('#ffffff').join(', '), '#123456')).toBe('#123456');
+    expect(rarityPaint('url(https://example.com)', '#123456')).not.toContain('url(');
+    expect(rarityPaint(Array(10).fill('#ffffff').join(', '), '#123456')).toContain('#123456');
+  });
+  it('paints single-color rarities as a gradient and has eight tiers', () => {
+    expect(rarityPaint('#123456', '#000000')).toMatch(/^linear-gradient/);
+    expect(Object.keys(rarityColors({}))).toEqual(['common','uncommon','rare','epic','legendary','chroma','mythical','hidden']);
   });
   it('uses an administrator-selected rarity color', () => {
     expect(rarityColors({ rare: '#123456' })['rare']).toBe('#123456');

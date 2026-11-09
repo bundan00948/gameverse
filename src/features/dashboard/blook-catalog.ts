@@ -2,7 +2,7 @@ export interface CatalogBlook { id: string; name: string; pack_id: string | null
 export function alphabeticalBlooks<T extends CatalogBlook>(blooks: T[]): T[] {
   return [...blooks].sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base', numeric: true }) || a.id.localeCompare(b.id));
 }
-export const rarityOrder = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'chroma'] as const;
+export const rarityOrder = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'chroma', 'mythical', 'hidden'] as const;
 export function raritySortedBlooks<T extends { id: string; name: string; rarity?: string }>(blooks: T[]): T[] {
   const rank = (rarity?: string) => { const index = rarityOrder.findIndex(r => r === rarity); return index < 0 ? rarityOrder.length : index; };
   return [...blooks].sort((a, b) => rank(a.rarity) - rank(b.rarity) || a.name.localeCompare(b.name, 'en', { sensitivity: 'base', numeric: true }) || a.id.localeCompare(b.id));

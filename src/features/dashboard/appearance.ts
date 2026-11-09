@@ -1,6 +1,7 @@
 export const rarityDefaults: Record<string, string> = {
-  common: '#8d817a', uncommon: '#4bb853', rare: '#329be9',
-  epic: '#a44ac9', legendary: '#eea12c', chroma: '#ec4669',
+  common: '#a39890, #6f645d', uncommon: '#6fd877, #2f9137', rare: '#5cb8f5, #1f6fc0',
+  epic: '#c56be6, #7a2aa3', legendary: '#ffc44d, #e07a12', chroma: '#ff6f8f, #c41f4a',
+  mythical: '#4ef0d0, #1b8f9e', hidden: '#3a3a4a, #0d0d14',
 };
 export function safeColor(value: unknown, fallback: string): string {
   return typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value) ? value : fallback;
@@ -15,9 +16,12 @@ export function rarityColorValue(value: unknown, fallback: string): string {
   const parts = value.split(',').map(c => c.trim());
   return parts.length <= 9 && parts.every(c => /^#[0-9a-f]{6}$/i.test(c)) ? parts.join(', ') : fallback;
 }
+/** Every rarity paints as a gradient; a single saved color becomes a light-to-dark blend. */
 export function rarityPaint(value: unknown, fallback: string): string {
   const colors = rarityColorValue(value, fallback).split(', ');
-  return colors.length > 1 ? `linear-gradient(90deg in oklab, ${colors.join(', ')})` : colors[0] ?? fallback;
+  if (colors.length > 1) return `linear-gradient(90deg in oklab, ${colors.join(', ')})`;
+  const c = colors[0] ?? fallback;
+  return `linear-gradient(180deg in oklab, color-mix(in oklab, ${c}, white 25%), color-mix(in oklab, ${c}, black 25%))`;
 }
 export function rarityEndpoints(value: unknown, fallback: string): [string, string] {
   const colors = rarityColorValue(value, fallback).split(', ');
