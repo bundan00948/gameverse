@@ -6,6 +6,7 @@ import { Lock, Search } from '@/lib/icons';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { appearanceOptions, collectionOptions, rarityBadgesOptions } from '@/features/dashboard/data';
 import { PageError, meta } from '@/features/dashboard/page';
+import { dropChanceLabel } from '@/features/dashboard/blook-catalog';
 import { rarityPaint, rarityDefaults, safeColor } from '@/features/dashboard/appearance';
 
 export const Route = createFileRoute('/_authenticated/inventory')({
@@ -72,7 +73,7 @@ function Inventory() {
         <dl className="mt-5 grid grid-cols-3 gap-3 text-base">
           <div className="rounded-lg border border-white/25 bg-background/70 p-3.5 shadow-tile"><dt className="text-sm text-muted-foreground">Pack</dt><dd className="text-lg font-bold">{open.pack}</dd></div>
           <div className="rounded-lg border border-white/25 bg-background/70 p-3.5 shadow-tile"><dt className="text-sm text-muted-foreground">Owned</dt><dd className="text-lg font-bold">{open.owned}</dd></div>
-          <div className="rounded-lg border border-white/25 bg-background/70 p-3.5 shadow-tile"><dt className="text-sm text-muted-foreground">Chance</dt><dd className="text-lg font-bold">{open.pack === 'Unassigned' ? '—' : `${((open.weight / open.total) * 100).toFixed(2)}%`}</dd></div>
+          <div className="rounded-lg border border-white/25 bg-background/70 p-3.5 shadow-tile"><dt className="text-sm text-muted-foreground">Chance</dt><dd className="text-lg font-bold">{open.pack === 'Unassigned' ? '—' : dropChanceLabel(open.weight, open.total)}</dd></div>
         </dl>
         {!open.owned && open.pack !== 'Unassigned' && <Link to="/shop" className="mt-5 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">Find it in the Market</Link>}
         </div>

@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { alphabeticalBlooks, groupCollection, raritySortedBlooks } from '@/features/dashboard/blook-catalog';
+import { alphabeticalBlooks, dropChanceLabel, groupCollection, raritySortedBlooks } from '@/features/dashboard/blook-catalog';
+
+describe('Drop chance display', () => {
+  it('shows three decimal places', () => {
+    expect(dropChanceLabel(1, 8)).toBe('12.500%');
+    expect(dropChanceLabel(1, 3)).toBe('33.333%');
+    expect(dropChanceLabel(7, 1000)).toBe('0.700%');
+  });
+  it('never divides by a zero total', () => expect(dropChanceLabel(1, 0)).toBe('100.000%'));
+});
 
 describe('Independent blooks', () => {
   it('sorts pack blooks by lowest rarity first then alphabetically, not weight', () => {
