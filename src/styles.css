@@ -243,8 +243,7 @@
 .pack-reveal { animation: pack-reveal 1.1s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
 
 .rarity-rainbow { background: linear-gradient(90deg, oklch(0.65 0.25 0), oklch(0.65 0.25 120), oklch(0.65 0.25 240)); animation: rarity-hue 2s linear infinite; }
-.rarity-rainbow-rays { animation: pack-rays 20s linear infinite, rarity-hue 2s linear infinite; }
-@media (prefers-reduced-motion: reduce) { .pack-wobble, .pack-reveal, .pack-rays, .pack-spark { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .pack-wobble, .pack-reveal, .pack-spark { animation: none; } }
 
 /* Market artwork uses saved appearance values, not emoji or CSS-drawn wrappers. */
 :root {
@@ -321,7 +320,6 @@
 .pack-celebrating .pack-scene-gradient { background: linear-gradient(to bottom in oklab, color-mix(in srgb, var(--glow) 30%, transparent), color-mix(in srgb, var(--glow-end) 18%, transparent)); }
 @keyframes pack-scene-breathe { from { transform: scale(1) rotate(-4deg); opacity: .8; } to { transform: scale(1.08) rotate(4deg); opacity: 1; } }
 .pack-ready { position: relative; display: flex; flex-direction: column; align-items: center; gap: 24px; }
-.pack-rays { pointer-events: none; left: 50%; top: 50%; margin: -80vmax 0 0 -80vmax; will-change: transform; }
 .pack-result, .pack-ready { z-index: 1; }
 .pack-confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .pack-confetti span { position: absolute; top: -24px; left: var(--confetti-x); width: 10px; height: 16px; border-radius: 2px; background: var(--glow); opacity: 0; animation: pack-confetti-fall var(--confetti-duration) var(--confetti-delay) ease-in forwards; }
@@ -398,7 +396,7 @@
 }
 @media (prefers-reduced-motion:reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0s !important; }
-  .animate-float, .rarity-rainbow, .rarity-rainbow-rays { animation: none; }
+  .animate-float, .rarity-rainbow { animation: none; }
 }
 
 /* Pack unboxing: rip top flap, drop cover, pop blook, reveal card */
