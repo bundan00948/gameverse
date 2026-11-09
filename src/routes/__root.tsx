@@ -110,6 +110,7 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script dangerouslySetInnerHTML={{ __html: chunkRecoveryScript }} />
         <HeadContent />
       </head>
       <body>
@@ -121,6 +122,12 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 const CHUNK_RELOAD_KEY = "gameverse-chunk-reload";
+
+// Runs inline in <head> before any module loads: a new deploy replaces hashed
+// JS chunks, and a tab holding the old HTML fails its very first import (the
+// entry chunk) with a blank screen — before React can mount any listener.
+// Reload once so the tab picks up the fresh build instead of staying broken.
+const chunkRecoveryScript = `(function(){var k=${JSON.stringify(CHUNK_RELOAD_KEY)};function stale(m){return typeof m==="string"&&(m.indexOf("Importing a module script failed")>-1||m.indexOf("Failed to fetch dynamically imported module")>-1||m.indexOf("error loading dynamically imported module")>-1)}function recover(m){if(!stale(m)||sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1");window.location.reload()}window.addEventListener("error",function(e){recover(e.message||(e.error&&e.error.message))},true);window.addEventListener("unhandledrejection",function(e){var r=e.reason;recover(r&&r.message||String(r))});setTimeout(function(){sessionStorage.removeItem(k)},10000)})();`;
 
 function isStaleChunkError(reason: unknown): boolean {
   const message = reason instanceof Error ? reason.message : String(reason ?? "");

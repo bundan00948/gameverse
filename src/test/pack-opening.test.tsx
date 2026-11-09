@@ -5,7 +5,7 @@ import { PackOpener, type Pack } from '@/features/dashboard/pack-opener';
 import { supabase } from '@/integrations/supabase/client';
 
 vi.mock('@/integrations/supabase/client', () => ({ supabase: { rpc: vi.fn(async () => ({ data: [{ id: 'robot', name: 'Robot', rarity: 'rare' }], error: null })) } }));
-vi.mock('@/features/dashboard/data', () => ({ appearanceOptions: () => ({ queryKey: ['test-appearance'], queryFn: async () => ({ rare: '#329be9' }) }) }));
+vi.mock('@/features/dashboard/data', () => ({ appearanceOptions: () => ({ queryKey: ['test-appearance'], queryFn: async () => ({ rare: '#329be9' }) }), rarityBadgesOptions: () => ({ queryKey: ['test-badges'], queryFn: async () => ({ rare: null }) }) }));
 const pack: Pack = { id: 'space', name: 'Space Pack', price: 25, image_url: null, gradient_start: '#17b9cc', gradient_end: '#308ee5', open_image_url: null, pattern_image_url: null, blooks: [{ id: 'robot', name: 'Robot', image_url: null, rarity: 'rare', weight: 10 }] };
 afterEach(cleanup);
 describe('purchased pack opening', () => {
