@@ -16,9 +16,12 @@ export function rarityColorValue(value: unknown, fallback: string): string {
   const parts = value.split(',').map(c => c.trim());
   return parts.length <= 9 && parts.every(c => /^#[0-9a-f]{6}$/i.test(c)) ? parts.join(', ') : fallback;
 }
+/** Every rarity paints as a gradient; a single saved color becomes a light-to-dark blend. */
 export function rarityPaint(value: unknown, fallback: string): string {
   const colors = rarityColorValue(value, fallback).split(', ');
-  return colors.length > 1 ? `linear-gradient(90deg in oklab, ${colors.join(', ')})` : colors[0] ?? fallback;
+  if (colors.length > 1) return `linear-gradient(90deg in oklab, ${colors.join(', ')})`;
+  const c = colors[0] ?? fallback;
+  return `linear-gradient(180deg in oklab, color-mix(in oklab, ${c}, white 25%), color-mix(in oklab, ${c}, black 25%))`;
 }
 export function rarityEndpoints(value: unknown, fallback: string): [string, string] {
   const colors = rarityColorValue(value, fallback).split(', ');
