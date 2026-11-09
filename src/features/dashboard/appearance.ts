@@ -1,6 +1,7 @@
 export const rarityDefaults: Record<string, string> = {
-  common: '#8d817a', uncommon: '#4bb853', rare: '#329be9',
-  epic: '#a44ac9', legendary: '#eea12c', chroma: '#ec4669',
+  common: '#a39890, #6f645d', uncommon: '#6fd877, #2f9137', rare: '#5cb8f5, #1f6fc0',
+  epic: '#c56be6, #7a2aa3', legendary: '#ffc44d, #e07a12', chroma: '#ff6f8f, #c41f4a',
+  mythical: '#4ef0d0, #1b8f9e', hidden: '#3a3a4a, #0d0d14',
 };
 export function safeColor(value: unknown, fallback: string): string {
   return typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value) ? value : fallback;

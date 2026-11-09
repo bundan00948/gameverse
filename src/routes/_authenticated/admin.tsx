@@ -148,7 +148,7 @@ function RarityEditor() {
     const r = await supabase.from('market_settings').upsert({ id: 'rarity', colors, badge_images: rarityBadgeImages(badges) });
     if (r.error) throw r.error;
   }, onSuccess: () => { cache.invalidateQueries({ queryKey: ['market-appearance'] }); cache.invalidateQueries({ queryKey: ['rarity-badges'] }); cache.invalidateQueries({ queryKey: ['admin-rarity'] }); } });
-  return <EditorSection title="Rarity colors & badges" summary="Common, uncommon, rare, epic, legendary and chroma">
+  return <EditorSection title="Rarity colors & badges" summary="Common, uncommon, rare, epic, legendary, chroma, mythical and hidden">
     <p className="text-sm font-bold">Result</p>
     <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3">{Object.entries(colors).map(([key, value]) => <div key={key} className="rounded-md p-3 text-market-foreground" style={{ background: rarityPaint(value, rarityDefaults[key] ?? 'var(--secondary)') }}><p className="text-sm font-bold capitalize">{key}</p></div>)}</div>
     <div className="grid gap-3 sm:grid-cols-2">{Object.entries(colors).map(([key, value]) => <label key={key} className="min-w-0 text-sm font-bold capitalize">{key}<input aria-label={`${key} colors`} className={input + ' font-mono'} value={value} placeholder="#XXXXXX, #XXXXXX" onChange={e => setDraft({ ...colors, [key]: e.target.value })} /></label>)}</div>

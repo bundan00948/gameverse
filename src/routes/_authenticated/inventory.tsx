@@ -39,7 +39,7 @@ function Inventory() {
     </div>
     <div className="mt-4 flex flex-wrap gap-2">
       <label className="relative min-w-60 flex-1"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><input value={q} onChange={e => setQ(e.target.value)} placeholder="Search blooks or packs…" aria-label="Search" className="w-full rounded-lg border border-surface-border bg-surface py-2 pl-9 pr-3 text-sm" /></label>
-      <select aria-label="Rarity" className={select} value={rarity} onChange={e => setRarity(e.target.value)}><option value="all">All rarities</option>{['common', 'uncommon', 'rare', 'epic', 'legendary', 'chroma'].map(r => <option key={r} value={r} className="capitalize">{r}</option>)}</select>
+      <select aria-label="Rarity" className={select} value={rarity} onChange={e => setRarity(e.target.value)}><option value="all">All rarities</option>{['common', 'uncommon', 'rare', 'epic', 'legendary', 'chroma', 'mythical', 'hidden'].map(r => <option key={r} value={r} className="capitalize">{r}</option>)}</select>
       <select aria-label="Show" className={select} value={show} onChange={e => setShow(e.target.value)}><option value="all">All blooks</option><option value="owned">Unlocked</option><option value="locked">Locked</option></select>
     </div>
 

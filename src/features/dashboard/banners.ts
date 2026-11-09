@@ -2,7 +2,7 @@ import { queryOptions } from '@tanstack/react-query';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { playerId } from '@/features/account/auth-user';
-export const bannerRarities = ['common','uncommon','rare','epic','legendary','chroma'] as const;
+export const bannerRarities = ['common','uncommon','rare','epic','legendary','chroma','mythical','hidden'] as const;
 export const bannerSchema = z.object({ name: z.string().trim().min(1).max(80), image_url: z.string().url().nullable(), rarity: z.enum(bannerRarities), price: z.number().int().min(0).max(1_000_000), listed: z.boolean(), sort: z.number().int() }).refine(b => !b.listed || !!b.image_url, { message: 'Upload artwork before listing this banner.' });
 export type BannerDraft = Omit<z.infer<typeof bannerSchema>, 'rarity'> & { rarity: string };
 export interface Banner extends BannerDraft { id: string }
