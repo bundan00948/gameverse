@@ -192,8 +192,7 @@
     z-index: -1;
     background-image: var(--tiles-image);
     background-size: 210px 210px;
-    animation: tiles-drift 46s linear infinite;
-    will-change: transform;
+
   }
 }
 
@@ -263,7 +262,7 @@
   --market-price-inset: calc(var(--spacing) * 2);
   --pack-art-size: min(300px, 65vw, 52dvh);
   --market-token-size: calc(var(--spacing) * 7);
-  --role-gradient-motion: role-gradient-run 6s ease-in-out infinite alternate;
+  --role-gradient-motion: none;
 }
 @theme inline {
   --color-market-coin: var(--market-coin);
