@@ -1,8 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { alphabeticalBlooks, dropChanceLabel, groupCollection, raritySortedBlooks } from '@/features/dashboard/blook-catalog';
+import { alphabeticalBlooks, dropChanceLabel, groupCollection, raritySortedBlooks, validDropWeight } from '@/features/dashboard/blook-catalog';
 
 describe('Drop chance display', () => {
+  it('accepts positive fractional drop weights below one', () => {
+    expect(validDropWeight(0.001)).toBe(true);
+    expect(validDropWeight(0.5)).toBe(true);
+    expect(validDropWeight(1)).toBe(true);
+    expect(validDropWeight(0)).toBe(false);
+    expect(validDropWeight(-1)).toBe(false);
+    expect(validDropWeight(NaN)).toBe(false);
+    expect(validDropWeight(Infinity)).toBe(false);
+    expect(dropChanceLabel(0.001, 100)).toBe('0.001%');
+  });
   it('shows three decimal places', () => {
     expect(dropChanceLabel(1, 8)).toBe('12.500%');
     expect(dropChanceLabel(1, 3)).toBe('33.333%');
