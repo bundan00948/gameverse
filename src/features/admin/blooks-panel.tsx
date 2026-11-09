@@ -5,7 +5,7 @@ import { ResultPreview } from './result-preview';
 import { Plus, Save, Search, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import type { Tables } from '@/integrations/supabase/types';
-import { alphabeticalBlooks, validDropWeight } from '@/features/dashboard/blook-catalog';
+import { alphabeticalBlooks, rarityOrder, validDropWeight } from '@/features/dashboard/blook-catalog';
 import { BlookArt } from '@/features/dashboard/blook-art';
 import { ImagePicker } from '@/features/dashboard/image-picker';
 import { Button } from '@/components/ui/button';
@@ -56,7 +56,7 @@ function BlookEditor({ blook, packs, onClose }: BlookEditorProps) {
       <ImagePicker label="Blook image" value={form.image_url} onChange={image_url => setForm({ ...form, image_url })} />
       <label className="block space-y-1 text-sm font-bold"><span>Name</span><input required className={field} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></label>
       <label className="block space-y-1 text-sm font-bold"><span>Assigned pack</span><select className={field} value={form.pack_id} onChange={e => setForm({ ...form, pack_id: e.target.value })}><option value="">Unassigned</option>{packs.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
-      <div className="grid grid-cols-2 gap-3"><label className="space-y-1 text-sm font-bold"><span>Rarity</span><select className={field} value={form.rarity} onChange={e => setForm({ ...form, rarity: e.target.value })}>{[...new Set(['common', 'uncommon', 'rare', 'epic', 'legendary', 'chroma', form.rarity])].map(r => <option key={r} value={r}>{r}</option>)}</select></label><label className="space-y-1 text-sm font-bold"><span>Drop weight</span><input type="number" min="0" step="any" required className={field} value={form.weight} onChange={e => setForm({ ...form, weight: Number(e.target.value) })} /></label></div>
+      <div className="grid grid-cols-2 gap-3"><label className="space-y-1 text-sm font-bold"><span>Rarity</span><select className={field} value={form.rarity} onChange={e => setForm({ ...form, rarity: e.target.value })}>{[...new Set([...rarityOrder, form.rarity])].map(r => <option key={r} value={r}>{r}</option>)}</select></label><label className="space-y-1 text-sm font-bold"><span>Drop weight</span><input type="number" min="0" step="any" required className={field} value={form.weight} onChange={e => setForm({ ...form, weight: Number(e.target.value) })} /></label></div>
       {(save.error || del.error) && <p role="alert" className="text-sm text-destructive">{(save.error ?? del.error)?.message}</p>}
       <div className="flex justify-between gap-3 border-t border-surface-border pt-4">{blook ? <Button type="button" variant="destructive" disabled={save.isPending || del.isPending} onClick={() => { if (confirm(`Permanently delete ${blook.name} and all owned copies?`)) del.mutate(); }}><Trash2 />Delete blook</Button> : <span />}<Button type="submit" disabled={save.isPending || del.isPending}><Save />{save.isPending ? 'Saving…' : 'Save blook'}</Button></div>
     </form>
