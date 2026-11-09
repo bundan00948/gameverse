@@ -43,6 +43,7 @@ use the editor.
 - Currency displays import the canonical token asset used by Stats so Market prices, purchases, rewards and wallet displays stay visually consistent.
 - Pack opening stays in one portal dialog with explicit viewport positioning and state-specific centering with transitions disabled, preventing purchase-to-opening shifts; block accidental dismissal until purchased pulls are revealed.
 - Blooks use nullable pack assignments with ON DELETE SET NULL; query the full catalog for admin and inventory so unassigned blooks and owned copies remain visible.
+- Blook editors and weighted draws use the decimal drop_weight column; query aliases preserve display APIs and a legacy-write trigger supports older published clients without rounding fractional draws.
 - Admin sections use validated tab search state and mount only the selected panel; the legacy Blooks URL redirects to its integrated admin tab.
 - Admin item editors use accessible collapsible sections with draft-driven previews; collapsing preserves draft state and previews never perform writes or launch embedded games.
 - Games use admin-uploaded icons and validated HTTPS embed URLs; mount a sandboxed iframe only for the selected game and record play history separately.

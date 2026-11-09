@@ -11,6 +11,9 @@ export function dropChanceLabel(weight: number, total: number): string {
   const sum = total > 0 ? total : 1;
   return `${((weight / sum) * 100).toFixed(3)}%`;
 }
+export function validDropWeight(weight: number): boolean {
+  return Number.isFinite(weight) && weight > 0;
+}
 export function groupCollection<T extends CatalogBlook, P extends { id: string; name: string; image_url: string | null }>(packs: P[], blooks: T[], owned: Map<string, number>) {
   const items = alphabeticalBlooks(blooks).map(b => ({ ...b, owned: owned.get(b.id) ?? 0 }));
   return [

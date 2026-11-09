@@ -120,6 +120,13 @@
       "when": 1794235274835,
       "tag": "0016_eight_rarity_tiers",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1794236764675,
+      "tag": "0017_decimal_blook_drop_weights",
+      "breakpoints": true
     }
   ]
 }
