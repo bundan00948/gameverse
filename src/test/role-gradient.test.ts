@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { parseColorList, roleGradient, roleTextStyle } from '@/features/dashboard/roles';
 
+const css = readFileSync('src/styles.css', 'utf8');
+
 describe('role colors', () => {
+  it('keeps multi-color role names running in the stylesheet', () => {
+    expect(css).toMatch(/--role-gradient-motion:\s*role-gradient-run/);
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\) \{ :root \{ --role-gradient-motion: none; \} \}/);
+  });
   it('enables running paint only for multi-color roles', () => {
     expect(roleTextStyle(['#ff0000', '#00ff00'])?.['animation']).toBe('var(--role-gradient-motion)');
     expect(roleTextStyle(['#ff0000'])).toEqual({ color: '#ff0000' });
