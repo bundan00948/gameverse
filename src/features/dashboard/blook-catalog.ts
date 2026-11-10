@@ -20,4 +20,8 @@ export function groupCollection<T extends CatalogBlook, P extends { id: string; 
     ...packs.map(p => ({ ...p, blooks: raritySortedBlooks(items.filter(b => b.pack_id === p.id)) })),
     { id: 'unassigned', name: 'Unassigned', image_url: null, gradient_start: null, gradient_end: null, pattern_image_url: null, open_image_url: null, blooks: items.filter(b => !b.pack_id || !packs.some(p => p.id === b.pack_id)) },
   ].filter(p => p.blooks.length > 0);
+}export const rarityWorth: Record<string, number> = { common: 2, uncommon: 5, rare: 20, epic: 75, legendary: 200, chroma: 500, mythical: 1000, hidden: 5000 };
+export function worthLabel(rarity: string | undefined): string {
+  const v = rarityWorth[(rarity ?? '').toLowerCase()];
+  return v === undefined ? '—' : `${v.toLocaleString('en-US')} Tokens`;
 }
