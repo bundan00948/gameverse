@@ -60,7 +60,7 @@ function Inventory() {
           </Button>))}</div>
       </section>; })}
 
-    {open && <Dialog open onOpenChange={value => { if (!value) setOpen(null); }}><DialogContent aria-describedby={undefined} className="w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-md bg-surface p-8 text-center" style={{ '--pack-start': safeColor(open.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(open.gradient_end, 'var(--market-end)'), backgroundImage: `${open.open_image_url ? `url("${open.open_image_url}"), ` : ''}linear-gradient(to bottom, var(--pack-start), var(--pack-end))`, backgroundSize: 'cover', backgroundPosition: 'center', border: '11px solid transparent', boxShadow: 'var(--market-shadow)' } as CSSProperties}>
+    {open && <Dialog open onOpenChange={value => { if (!value) setOpen(null); }}><DialogContent aria-describedby={undefined} className="w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-md bg-surface p-8 text-center" style={{ '--pack-start': safeColor(open.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(open.gradient_end, 'var(--market-end)'), backgroundImage: `${open.open_image_url ? `url("${open.open_image_url}"), ` : ''}linear-gradient(to bottom, var(--pack-start), var(--pack-end))`, backgroundSize: 'cover', backgroundPosition: 'center', border: '11px solid rgba(255,255,255,0.4)', boxShadow: 'var(--market-shadow)' } as CSSProperties}>
         <div aria-hidden className="pack-scene-gradient rounded-md" />
         {open.open_image_url && <img aria-hidden src={open.open_image_url} alt="" className="pack-stage-background rounded-md" />}
         {open.pattern_image_url && <img aria-hidden src={open.pattern_image_url} alt="" className="market-pack-pattern" />}
