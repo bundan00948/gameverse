@@ -102,6 +102,7 @@ Box-shadow classes:
 |---|---|
 | `shadow-tile` | `--shadow-tile` |
 | — | `--layout-shadow` |
+| — | `--rarity-shadow` |
 
 ## Other
 
@@ -116,6 +117,7 @@ Reference via `var(--name)` in inline styles or CSS.
 | `--market-frame-width` |
 | `--market-pattern-size` |
 | `--pack-art-size` |
+| `--pack-reveal-size` |
 | `--market-token-size` |
 | `--role-gradient-motion` |
 | `--pack-dialog-width` |
