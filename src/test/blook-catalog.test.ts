@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { alphabeticalBlooks, dropChanceLabel, groupCollection, raritySortedBlooks, validDropWeight } from '@/features/dashboard/blook-catalog';
+import { alphabeticalBlooks, dropChanceLabel, groupCollection, raritySortedBlooks, validDropWeight, worthTokens } from '@/features/dashboard/blook-catalog';
 
 describe('Drop chance display', () => {
   it('accepts positive fractional drop weights below one', () => {
@@ -38,5 +38,24 @@ describe('Independent blooks', () => {
     expect(sql).toContain('ALTER COLUMN pack_id DROP NOT NULL');
     expect(sql).toContain('REFERENCES public.packs(id) ON DELETE SET NULL');
     expect(sql).not.toContain('ON DELETE CASCADE');
+  });
+});
+
+describe('Blook worth', () => {
+  it('returns the token value for each rarity', () => {
+    expect(worthTokens('common')).toBe(2);
+    expect(worthTokens('uncommon')).toBe(5);
+    expect(worthTokens('rare')).toBe(20);
+    expect(worthTokens('epic')).toBe(75);
+    expect(worthTokens('legendary')).toBe(200);
+    expect(worthTokens('chroma')).toBe(500);
+    expect(worthTokens('mythical')).toBe(1000);
+    expect(worthTokens('hidden')).toBe(5000);
+  });
+  it('is case insensitive and null for unknown rarities', () => {
+    expect(worthTokens('HIDDEN')).toBe(5000);
+    expect(worthTokens(undefined)).toBeNull();
+    expect(worthTokens('')).toBeNull();
+    expect(worthTokens('nonsense')).toBeNull();
   });
 });
