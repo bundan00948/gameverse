@@ -60,7 +60,7 @@ export const updateUser = createServerFn({ method: 'POST' })
     if (owner.error || callerOwner.error || (owner.data && !callerOwner.data)) throw new Error('Only the Owner can change this account');
     if (data.password !== undefined || data.username !== undefined) {
       const r = await admin.auth.admin.updateUserById(data.id, { ...(data.password ? { password: data.password } : {}), ...(data.username !== undefined ? { user_metadata: { username: data.username } } : {}) });
-      if (r.error) throw new Error('Could not update account');
+      if (r.error) throw new Error(/weak|pwned|leak|breach|known/i.test(r.error.message) ? 'That password is too common or has appeared in a data leak — choose a stronger one.' : `Could not update account: ${r.error.message}`);
     }
     if (data.username !== undefined || data.displayName !== undefined) {
       const r = await admin.from('profiles').update({ ...(data.username !== undefined ? { username: data.username } : {}), ...(data.displayName !== undefined ? { display_name: data.displayName } : {}) }).eq('id', data.id);
