@@ -51,32 +51,23 @@ function Bazaar() {
   const chosen = catalog.blooks.find(b => b.id === blook);
 
   return <DashboardShell bare>
-    <section className="bazaar-hero">
-      <div className="flex items-center gap-4"><span className="grid size-14 place-items-center rounded-xl bg-white/15"><Gavel className="size-8" /></span><div><h1 className="font-display text-3xl drop-shadow-[0_3px_0_rgb(0_0_0/0.3)] sm:text-4xl">Bazaar</h1><p className="text-sm text-white/80">Trade blooks with other players</p></div></div>
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="bazaar-chip"><b>{listings.filter(l => l.kind === 'sale').length}</b> for sale</span>
-        <span className="bazaar-chip"><Gavel className="size-4" /><b>{listings.filter(l => l.kind === 'auction').length}</b> auctions</span>
-        <span className="bazaar-chip"><b>{listings.filter(l => l.seller_id === me?.id).length}</b> yours</span>
-        <Button size="lg" onClick={() => setSelling(true)} className="font-display text-lg">List a blook</Button>
-      </div>
-    </section>
     <div className="bazaar-layout mt-5">
-      <nav aria-label="Bazaar views" className="bazaar-tabs">{views.map(v => <Button key={v} variant={view === v ? 'default' : 'secondary'} aria-pressed={view === v} onClick={() => setView(v)} className="justify-start font-bold">{v === 'Mine' ? 'My listings' : v}</Button>)}</nav>
+      <nav aria-label="Bazaar views" className="bazaar-tabs"><Button onClick={() => setSelling(true)} className="justify-start font-display text-base">List a blook</Button>{views.map(v => <Button key={v} variant={view === v ? 'default' : 'secondary'} aria-pressed={view === v} onClick={() => setView(v)} className="justify-start font-bold">{v === 'Mine' ? 'My listings' : v}</Button>)}</nav>
       <div className="min-w-0 space-y-4">
         <div className="flex flex-wrap gap-2">
           <label className="relative min-w-56 flex-1"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><input value={chosen && view === 'Blooks' ? chosen.name : q} onChange={e => { setBlook(null); setQ(e.target.value); }} placeholder="Search blooks…" aria-label="Search blooks" className="w-full rounded-lg border border-surface-border bg-surface py-2 pl-9 pr-3 font-display text-lg" /></label>
           <Button variant="secondary" onClick={() => { setQ(''); setBlook(null); setPack(null); }}>Clear</Button>
         </div>
         {view === 'Blooks' && <>
-          <p className="bazaar-label">Packs</p><div className="bazaar-panel flex gap-2 overflow-x-auto p-3" role="group" aria-label="Filter by pack">
-            {catalog.packs.map(p => <button key={p.id} type="button" aria-pressed={pack === p.id} aria-label={p.name} title={p.name} onClick={() => setPack(pack === p.id ? null : p.id)} className={`shrink-0 rounded-lg p-1 transition-transform hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${pack === p.id ? 'bg-white/20 ring-2 ring-primary' : ''}`}><BlookArt src={p.image_url} alt="" className="size-16" /><span className="mt-1 block max-w-20 truncate text-xs font-bold">{p.name}</span></button>)}
+          <div className="bazaar-panel flex gap-2 overflow-x-auto p-3" role="group" aria-label="Filter by pack">
+            {catalog.packs.map(p => <button key={p.id} type="button" aria-pressed={pack === p.id} aria-label={p.name} title={p.name} onClick={() => setPack(pack === p.id ? null : p.id)} className={`shrink-0 rounded-lg p-1 transition-transform hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${pack === p.id ? 'bg-white/20 ring-2 ring-primary' : ''}`}><BlookArt src={p.image_url} alt="" className="size-32" /></button>)}
           </div>
-          <p className="bazaar-label">Blooks <span className="font-normal normal-case text-muted-foreground">· faded ones have no listings</span></p><div className="bazaar-panel grid grid-cols-[repeat(auto-fill,minmax(5rem,1fr))] justify-items-center gap-1 p-3">
+          <div className="bazaar-panel grid grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] justify-items-center gap-1 p-3">
             {grid.length === 0 && <p className="py-6 text-muted-foreground">No blooks match.</p>}
-            {grid.map(b => { const c = counts.get(b.id) ?? 0; return <button key={b.id} type="button" onClick={() => setBlook(b.id)} aria-pressed={blook === b.id} aria-label={`${b.name}, ${c} listed`} title={`${b.name} · ${c} listed`} className={`relative rounded-lg p-1 transition-transform hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${blook === b.id ? 'bg-white/20 ring-2 ring-primary' : ''} ${c ? '' : 'opacity-45'}`}><BlookArt src={b.image_url} alt="" className="size-[4.5rem]" />{c > 0 && <span className="absolute bottom-0 right-0 rounded-full bg-primary px-1.5 text-xs font-bold text-primary-foreground">{c}</span>}</button>; })}
+            {grid.map(b => { const c = counts.get(b.id) ?? 0; return <button key={b.id} type="button" onClick={() => setBlook(b.id)} aria-pressed={blook === b.id} aria-label={`${b.name}, ${c} listed`} title={`${b.name} · ${c} listed`} className={`relative rounded-lg p-1 transition-transform hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${blook === b.id ? 'bg-white/20 ring-2 ring-primary' : ''} ${c ? '' : 'opacity-45'}`}><BlookArt src={b.image_url} alt="" className="size-24" />{c > 0 && <span className="absolute bottom-0 right-0 rounded-full bg-primary px-1.5 text-xs font-bold text-primary-foreground">{c}</span>}</button>; })}
           </div>
         </>}
-        <h2 className="bazaar-results-title">{view === 'Blooks' ? (chosen ? `Results: ${chosen.name}` : 'Pick a blook to see listings') : 'Results:'}</h2>
+        {(view !== 'Blooks' || chosen) && <h2 className="bazaar-results-title">{view === 'Blooks' ? `Results: ${chosen?.name}` : 'Results:'}</h2>}
         {(view !== 'Blooks' || chosen) && <div className="bazaar-panel grid grid-cols-[repeat(auto-fill,minmax(7.5rem,1fr))] gap-3 p-4">
           {results.length === 0 && <div className="col-span-full py-8 text-center"><Gavel className="mx-auto size-10 text-muted-foreground" /><p className="mt-2 font-display text-xl">No listings yet</p><p className="text-sm text-muted-foreground">Be the first to list one.</p><Button className="mt-3" onClick={() => setSelling(true)}>List a blook</Button></div>}
           {results.map(l => { const id = ids?.get(l.seller_id); return <button key={l.id} type="button" onClick={() => setOpen(l)} className="bazaar-result" style={{ '--rarity': rarityPaint(colors?.[l.blook.rarity], rarityDefaults[l.blook.rarity] ?? 'var(--secondary)') } as React.CSSProperties}>
