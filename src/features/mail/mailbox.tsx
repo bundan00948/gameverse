@@ -50,22 +50,18 @@ export function Mailbox() {
     </button>
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent aria-describedby={undefined} className="mail-drawer">
-        <header className="mail-head">
-          <span className="mail-head-logo"><PlanetLogo className="size-8" /></span>
-          <div className="min-w-0 flex-1"><DialogTitle className="font-display text-2xl leading-none sm:text-3xl">GameVerse Mail</DialogTitle><p className="mt-1 text-xs font-semibold text-white/75">{fresh.size ? `${fresh.size} new message${fresh.size > 1 ? 's' : ''}` : 'You are all caught up'}</p></div>
-          <button type="button" onClick={() => setOpen(false)} aria-label="Close mail" className="grid size-10 place-items-center rounded-full bg-white/10 transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"><X className="size-5" /></button>
-        </header>
-        <div role="tablist" aria-label="Mail filter" className="mail-filters">{filters.map(([k, label]) => <button key={k} role="tab" type="button" aria-selected={filter === k} onClick={() => setFilter(k)} className="mail-filter">{label}</button>)}</div>
+        <DialogTitle className="sr-only">GameVerse Mail</DialogTitle>
+        <div role="tablist" aria-label="Mail filter" className="mail-filters">{filters.map(([k, label]) => <button key={k} role="tab" type="button" aria-selected={filter === k} onClick={() => setFilter(k)} className="mail-filter">{label}</button>)}<button type="button" onClick={() => setOpen(false)} aria-label="Close mail" className="ml-auto grid size-8 place-items-center rounded-full hover:bg-glass-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><X className="size-4" /></button></div>
         <div className="mail-list">
           {(() => { const list = mail.filter(m => filter === 'all' || (filter === 'system' ? m.kind === 'system' : m.kind !== 'system'));
             if (!list.length) return <div className="mail-empty"><span><Mail className="size-9" /></span><p className="font-display text-xl">No mail here</p><p className="text-sm text-muted-foreground">News and trade updates will land in this box.</p></div>;
             return list.map(m => { const k = kinds[m.kind] ?? systemKind; const Icon = k.icon; const isNew = fresh.has(m.id);
               return <article key={m.id} className="mail-card" data-new={isNew || undefined} style={{ '--mail-tone': k.tone } as React.CSSProperties}>
-                <div className="flex items-center gap-2.5"><span className="mail-kind-icon"><Icon className="size-4" /></span><p className="flex-1 text-[11px] font-extrabold uppercase tracking-[0.08em]" style={{ color: k.tone }}>{k.label}</p>{isNew && <span className="mail-new">New</span>}<time dateTime={m.created_at} className="text-[11px] font-semibold text-muted-foreground">{timeAgo(m.created_at)}</time></div>
+                <div className="flex items-center gap-2.5"><span className="mail-kind-icon"><Icon className="size-4" /></span><span className="flex-1" />{isNew && <span className="mail-new">New</span>}<time dateTime={m.created_at} className="text-[11px] font-semibold text-muted-foreground">{timeAgo(m.created_at)}</time></div>
                 <h3 className="mt-2.5 font-display text-xl leading-tight">{m.title}</h3>
                 {m.image_url && <div className="mail-image"><img src={m.image_url} alt="" loading="lazy" /></div>}
                 {m.body && <p className="mt-2.5 whitespace-pre-line text-[14.5px] leading-relaxed text-foreground/85">{m.body}</p>}
-                {m.kind === 'system' && <p className="mt-3 flex items-center gap-1.5 border-t border-surface-border pt-2.5 text-xs font-bold text-muted-foreground"><PlanetLogo className="size-4" />The GameVerse Team</p>}
+                
               </article>; }); })()}
         </div>
       </DialogContent>
