@@ -18,6 +18,11 @@ import titanFont from "@/assets/fonts/titan-one-latin.woff2?url";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { themeInitScript } from "../components/theme-toggle";
+import { useServerFn } from '@tanstack/react-start';
+import { accountStatus } from '@/lib/account-safety.functions';
+import { activeBan } from '@/lib/account-safety';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 function NotFoundComponent() {
   return (
@@ -140,6 +145,30 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [banNotice, setBanNotice] = useState<string | null>(null);
+  const status = useServerFn(accountStatus);
+  useEffect(() => {
+    if (!user) return;
+    let active = true; let signingOut = false;
+    const check = async () => {
+      try {
+        const ban = await status();
+        if (!active || signingOut || !activeBan(ban)) return;
+        signingOut = true;
+        setBanNotice(ban?.reason || 'Your account has been banned.');
+        await queryClient.cancelQueries(); queryClient.clear();
+        await supabase.auth.signOut({ scope: 'local' });
+        window.history.replaceState(null, '', '/login');
+        await router.navigate({ to: '/login', replace: true });
+      } catch { /* Transient connection errors are retried, never treated as a ban. */ }
+    };
+    void check();
+    const channel = supabase.channel(`account:${user.id}`, { config: { private: true } })
+      .on('broadcast', { event: 'ban_changed' }, () => void check()).subscribe();
+    const timer = window.setInterval(() => { if (document.visibilityState === 'visible') void check(); }, 30000);
+    const focused = () => void check(); window.addEventListener('focus', focused);
+    return () => { active = false; window.clearInterval(timer); window.removeEventListener('focus', focused); void supabase.removeChannel(channel); };
+  }, [user?.id, status, queryClient, router]);
   useEffect(() => {
     // A new deploy replaces hashed JS chunks; an open tab holding the old
     // bundle fails its next lazy import with a blank screen. The inline head
@@ -179,6 +208,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <SessionProvider user={user}><Outlet /></SessionProvider>
+      <Dialog open={banNotice !== null} onOpenChange={open => { if (!open) setBanNotice(null); }}><DialogContent><DialogHeader><DialogTitle>Account banned</DialogTitle><DialogDescription>{banNotice}</DialogDescription></DialogHeader><p className="text-sm text-muted-foreground">You have been signed out. Contact staff if you believe this is a mistake.</p><Button onClick={() => setBanNotice(null)}>Close</Button></DialogContent></Dialog>
     </QueryClientProvider>
   );
 }
