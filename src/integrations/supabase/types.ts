@@ -122,6 +122,59 @@ export type Database = {
         }
         Relationships: []
       }
+      bazaar_listings: {
+        Row: {
+          bidder_id: string | null
+          blook_id: string
+          buyer_id: string | null
+          closed_at: string | null
+          created_at: string
+          current_bid: number | null
+          ends_at: string | null
+          id: string
+          kind: string
+          price: number
+          seller_id: string
+          status: string
+        }
+        Insert: {
+          bidder_id?: string | null
+          blook_id: string
+          buyer_id?: string | null
+          closed_at?: string | null
+          created_at?: string
+          current_bid?: number | null
+          ends_at?: string | null
+          id?: string
+          kind?: string
+          price: number
+          seller_id: string
+          status?: string
+        }
+        Update: {
+          bidder_id?: string | null
+          blook_id?: string
+          buyer_id?: string | null
+          closed_at?: string | null
+          created_at?: string
+          current_bid?: number | null
+          ends_at?: string | null
+          id?: string
+          kind?: string
+          price?: number
+          seller_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bazaar_listings_blook_id_fkey"
+            columns: ["blook_id"]
+            isOneToOne: false
+            referencedRelation: "blooks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blooks: {
         Row: {
           drop_weight: number
@@ -338,6 +391,62 @@ export type Database = {
           title?: string
         }
         Relationships: []
+      }
+      mail: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          image_url: string | null
+          kind: string
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          kind?: string
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          kind?: string
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      mail_reads: {
+        Row: {
+          mail_id: string
+          read_at: string
+          user_id: string
+        }
+        Insert: {
+          mail_id: string
+          read_at?: string
+          user_id: string
+        }
+        Update: {
+          mail_id?: string
+          read_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mail_reads_mail_id_fkey"
+            columns: ["mail_id"]
+            isOneToOne: false
+            referencedRelation: "mail"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       market_settings: {
         Row: {
@@ -746,6 +855,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      bazaar_bid: {
+        Args: { _amount: number; _listing: string }
+        Returns: undefined
+      }
+      bazaar_buy: { Args: { _listing: string }; Returns: undefined }
+      bazaar_cancel: { Args: { _listing: string }; Returns: undefined }
+      bazaar_list: {
+        Args: {
+          _auction: boolean
+          _blook: string
+          _hours: number
+          _price: number
+        }
+        Returns: string
+      }
       boost_factor: {
         Args: { _pack: string; _rarity: string }
         Returns: number
@@ -769,6 +893,10 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      give_blook: {
+        Args: { _blook: string; _user: string }
+        Returns: undefined
       }
       has_permission: {
         Args: { _perm: string; _user_id: string }
@@ -834,6 +962,7 @@ export type Database = {
       record_play: { Args: { _game: string }; Returns: undefined }
       sacrifice_blook: { Args: { _blook: string }; Returns: Json }
       sell_blook: { Args: { _blook: string }; Returns: number }
+      settle_auctions: { Args: never; Returns: number }
       staff_tier: { Args: { _user_id: string }; Returns: number }
     }
     Enums: {
