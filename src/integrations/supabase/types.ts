@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      auth_links: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          token_hash: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          token_hash: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          token_hash?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       badges: {
         Row: {
           description: string
@@ -355,6 +382,7 @@ export type Database = {
         Row: {
           avatar_blook_id: string | null
           banner_id: string | null
+          code_id: string | null
           created_at: string
           display_name: string
           id: string
@@ -363,6 +391,7 @@ export type Database = {
         Insert: {
           avatar_blook_id?: string | null
           banner_id?: string | null
+          code_id?: string | null
           created_at?: string
           display_name?: string
           id: string
@@ -371,6 +400,7 @@ export type Database = {
         Update: {
           avatar_blook_id?: string | null
           banner_id?: string | null
+          code_id?: string | null
           created_at?: string
           display_name?: string
           id?: string
@@ -564,6 +594,7 @@ export type Database = {
     Functions: {
       claim_daily: { Args: never; Returns: number }
       claim_mission: { Args: { _mission: string }; Returns: number }
+      create_auth_link: { Args: never; Returns: string }
       ensure_wallet: {
         Args: never
         Returns: {
@@ -592,6 +623,7 @@ export type Database = {
       }
       mission_progress: { Args: { _kind: string }; Returns: number }
       my_permissions: { Args: never; Returns: string[] }
+      new_player_code: { Args: { _year: number }; Returns: string }
       open_pack: { Args: { _pack: string }; Returns: Json }
       open_packs: { Args: { _pack: string; _quantity: number }; Returns: Json }
       player_avatars: {
@@ -606,6 +638,13 @@ export type Database = {
         Returns: {
           banner_id: string
           image_url: string
+          user_id: string
+        }[]
+      }
+      player_codes: {
+        Args: never
+        Returns: {
+          code_id: string
           user_id: string
         }[]
       }

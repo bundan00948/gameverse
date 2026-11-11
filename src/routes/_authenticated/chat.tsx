@@ -28,6 +28,7 @@ function Name({ name, identity }: { name: string; identity?: Identity | undefine
   </span>;
 }
 
+function statsHref(ids: Map<string, Identity>, id: string) { const c = ids.get(id)?.codeId; return c ? `/stats/view/${c}` : `/stats?player=${id}`; }
 function Chat() {
   const { data } = useSuspenseQuery(chatOptions()); const { data: ids } = useSuspenseQuery(identitiesOptions());
   const { data: perms = [] } = useQuery(permissionsOptions()); const { data: notes = [] } = useQuery(notificationsOptions());
@@ -48,9 +49,9 @@ function Chat() {
       {data.length === 0 && <p className="text-center text-muted-foreground">No messages yet — say hi!</p>}
       {data.map(m => { const parent = m.reply_to ? byId.get(m.reply_to) : undefined; const mentionsMe = parent?.user_id === user?.id && m.user_id !== user?.id; return (
         <div key={m.id} className={`group relative flex gap-3 rounded-lg px-2 py-1.5 hover:bg-glass-hover ${mentionsMe ? 'border-l-4 border-tile-d bg-tile-d/15' : ''}`}>
-          <Link to="/stats" search={{ player: m.user_id }} preload={false} aria-label={`View ${messageName(m)} profile`} className="shrink-0"><PlayerAvatar name={messageName(m)} identity={ids.get(m.user_id)} /></Link>
+          <a href={statsHref(ids, m.user_id)} aria-label={`View ${messageName(m)} profile`} className="shrink-0"><PlayerAvatar name={messageName(m)} identity={ids.get(m.user_id)} /></a>
           <div className="min-w-0 flex-1">
-            <p className="text-sm"><Link to="/stats" search={{ player: m.user_id }} preload={false} className="rounded-sm hover:underline"><Name name={messageName(m)} identity={ids.get(m.user_id)} /></Link> <span className="ml-1 text-xs text-muted-foreground">{new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span></p>
+            <p className="text-sm"><a href={statsHref(ids, m.user_id)} className="rounded-sm hover:underline"><Name name={messageName(m)} identity={ids.get(m.user_id)} /></a> <span className="ml-1 text-xs text-muted-foreground">{new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span></p>
             {m.reply_to && <p className="truncate text-xs text-muted-foreground"><Reply className="mr-1 inline size-3" />{parent ? <>@{messageName(parent)}: {parent.body}</> : 'Original message unavailable'}</p>}
             <p className="break-words text-sm">{m.body}</p>
           </div>
