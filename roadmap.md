@@ -2,6 +2,7 @@
 
 - [ ] Add selectable 24/48/72-hour, 7-day and 30-day login links; preserve two-active limit
 - [ ] Add verified Owner access, precise permissions, protected IP/activity logs and password resets (never password viewing)
+- [x] Address follow-up password viewing request: irreversible password storage is retained; authorized reset replaces viewing
 - [ ] Add live bans with immediate notice/logout and server/database enforcement
 - [ ] Verify permissions, link durations, activity readback and live ban flows
 
