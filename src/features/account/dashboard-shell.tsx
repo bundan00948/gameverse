@@ -1,7 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
-import { Gamepad2, BarChart3, History, Store, Backpack, Target, MessageCircle, Settings, LogOut, ShieldCheck } from '@/lib/icons';
+import { Gamepad2, BarChart3, History, Store, Backpack, Target, MessageCircle, Settings, Star, LogOut, ShieldCheck } from '@/lib/icons';
 import { supabase } from '@/integrations/supabase/client';
 import { PlanetLogo } from '@/components/planet-logo';
 import { Button } from '@/components/ui/button';
@@ -57,6 +57,7 @@ export function DashboardShell({ children, bare = false, market = false }: { chi
         <div className="hidden items-center gap-2 border-t border-surface-border p-3 md:flex">
           <PlayerAvatar name={name} identity={me} className="size-6" />
           <p className="min-w-0 flex-1 truncate text-sm font-bold"><PlayerName name={name} identity={me} /></p>
+          <Link to="/credits" preload={false} aria-label="Credits" className="grid size-11 shrink-0 place-items-center rounded-md hover:bg-glass-hover"><Star className="size-5" /></Link>
           <Link to="/settings" preload={false} aria-label="Account settings" className="grid size-11 shrink-0 place-items-center rounded-md hover:bg-glass-hover"><Settings className="size-5" /></Link>
         </div>
         <Button variant="ghost" type="button" disabled={busy} onClick={logout} className={cn(navClass, 'mx-3 mb-3 justify-start hover:text-destructive disabled:opacity-60')}>
