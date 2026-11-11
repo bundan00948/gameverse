@@ -22,7 +22,7 @@ function left(ends: string) {
 export function BoostNotice() {
   const { data } = useQuery(boostsOptions());
   if (!data?.length) return null;
-  return <aside aria-label="Active boosts" className="fixed bottom-4 right-4 z-40 w-72 max-w-[calc(100%-2rem)] space-y-1.5 rounded-xl border border-surface-border bg-surface/95 p-3 text-xs shadow-tile">
+  return <aside aria-label="Active boosts" className="fixed bottom-4 right-4 z-40 w-[291px] max-w-[calc(100%-2rem)] space-y-1.5 rounded-xl border border-surface-border bg-surface/95 p-[13.5px] text-xs shadow-tile">
     <p className="font-display text-sm">Active boosts</p>
     {data.slice(0, 4).map(b => <p key={b.id}><span className="font-bold">{b.player_name}</span> boosted <span className="font-bold capitalize">{b.pack_name ?? 'all packs'}</span> x{Number(b.multiplier)} <span className="text-muted-foreground">· {left(b.ends_at)} left</span></p>)}
   </aside>;

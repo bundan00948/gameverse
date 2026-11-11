@@ -183,6 +183,13 @@
       "when": 1794403495608,
       "tag": "0025_fix_boosted_open_pack",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1794403764181,
+      "tag": "0026_limit_active_boosts",
+      "breakpoints": true
     }
   ]
 }
