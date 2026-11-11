@@ -162,6 +162,13 @@
       "when": 1794397001585,
       "tag": "0022_owner_full_access",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1794398181461,
+      "tag": "0023_credits",
+      "breakpoints": true
     }
   ]
 }
