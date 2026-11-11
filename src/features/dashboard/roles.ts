@@ -18,6 +18,8 @@ export const permissionList = [
   { key: 'chat', label: 'Delete chat messages' },
   { key: 'roles', label: 'Roles' },
   { key: 'badges', label: 'Badges' },
+  { key: 'mail', label: 'Send system mail' },
+  { key: 'bazaar', label: 'Remove Bazaar listings' },
 ] as const;
 export type Permission = (typeof permissionList)[number]['key'];
 

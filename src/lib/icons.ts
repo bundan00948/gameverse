@@ -21,3 +21,5 @@ export { default as Target } from 'lucide-react/dist/esm/icons/target.js';
 export { default as UserPlus } from 'lucide-react/dist/esm/icons/user-plus.js';
 export { default as Users } from 'lucide-react/dist/esm/icons/users.js';
 export { default as X } from 'lucide-react/dist/esm/icons/x.js';
+export { default as Gavel } from 'lucide-react/dist/esm/icons/gavel.js';
+export { default as Mail } from 'lucide-react/dist/esm/icons/mail.js';
