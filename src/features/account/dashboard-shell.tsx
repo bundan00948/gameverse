@@ -61,7 +61,6 @@ export function DashboardShell({ children, bare = false, market = false }: { chi
           <p className="min-w-0 flex-1 truncate text-sm font-bold"><PlayerName name={name} identity={me} /></p>
           <Mailbox />
           <Link to="/credits" preload={false} aria-label="Credits" className="grid size-11 shrink-0 place-items-center rounded-md hover:bg-glass-hover"><Star className="size-5" /></Link>
-          <Link to="/settings" preload={false} aria-label="Account settings" className="grid size-11 shrink-0 place-items-center rounded-md hover:bg-glass-hover"><Settings className="size-5" /></Link>
         </div>
         <Button variant="ghost" type="button" disabled={busy} onClick={logout} className={cn(navClass, 'mx-3 mb-3 justify-start hover:text-destructive disabled:opacity-60')}>
           <LogOut className="size-5" />{busy ? 'Signing out…' : 'Sign out'}
