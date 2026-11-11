@@ -127,6 +127,13 @@
       "when": 1794236764675,
       "tag": "0017_decimal_blook_drop_weights",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1794386851460,
+      "tag": "0018_migration",
+      "breakpoints": true
     }
   ]
 }
