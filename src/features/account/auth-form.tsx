@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { forwardRef, useEffect, useState, type FormEvent, type HTMLAttributes } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { supabase } from '@/integrations/supabase/client';
 import { usePlayer } from './session';
@@ -10,7 +10,8 @@ import { registerAccount } from '@/lib/account-safety.functions';
 const inputClass =
   'h-12 w-full rounded-md border-2 border-input bg-card px-4 text-lg text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none';
 
-export function AuthForm({ register = false }: { register?: boolean }) {
+export interface AuthFormProps extends HTMLAttributes<HTMLElement> { register?: boolean; }
+export const AuthForm = forwardRef<HTMLElement, AuthFormProps>(function AuthForm({ register = false, className, ...props }, ref) {
   const navigate = useNavigate();
   const signup = useServerFn(registerAccount);
   const user = usePlayer();
@@ -34,7 +35,7 @@ export function AuthForm({ register = false }: { register?: boolean }) {
   }
 
   return (
-    <main className="bg-tiles flex min-h-dvh flex-col">
+    <main ref={ref} {...props} className={['bg-tiles flex min-h-dvh flex-col', className].filter(Boolean).join(' ')}>
       <SiteHeader />
       <div className="flex flex-1 items-center justify-center px-4 pb-16 pt-4">
         <div className="w-full max-w-md rounded-md border border-surface-border bg-surface p-8 shadow-layer">
@@ -67,4 +68,4 @@ export function AuthForm({ register = false }: { register?: boolean }) {
       </div>
     </main>
   );
-}
+});

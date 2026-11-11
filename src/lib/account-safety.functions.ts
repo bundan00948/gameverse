@@ -37,7 +37,7 @@ export const registerAccount = createServerFn({ method: 'POST' })
     // Fake duplicate-signup responses have no identities: never log those as registrations.
     if (result.user?.identities?.length) {
       const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
-      const r = await supabaseAdmin.from('security_activity').insert({ user_id: result.user.id, kind: 'register', ip_address: getRequestHeader('cf-connecting-ip') || null });
+      const r = await supabaseAdmin.from('security_activity').update({ ip_address: getRequestHeader('cf-connecting-ip') || null }).eq('user_id', result.user.id).eq('kind', 'register');
       if (r.error) console.error('Registration activity could not be saved');
     }
     return { session: result.session ? { access_token: result.session.access_token, refresh_token: result.session.refresh_token } : null };
