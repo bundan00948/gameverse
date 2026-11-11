@@ -19,7 +19,7 @@ export function CreditPlate({ identity, description, size }: CreditPlateProps) {
   const avatar = size === 'big' ? 'size-24 md:size-28' : size === 'medium' ? 'size-20' : 'size-14';
   const body = <div className={cn('relative flex h-full items-center gap-4 overflow-hidden rounded-2xl border-4 border-white/40 bg-tile-a p-4 text-white shadow-lg transition-transform hover:-translate-y-0.5', size === 'small' ? 'min-h-28' : 'min-h-44 md:min-h-56')}
     style={identity?.bannerImage ? { backgroundImage: `url(${identity.bannerImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}>
-    <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
+    <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent" />
     <PlayerAvatar name={name} identity={identity} className={cn('relative', avatar)} />
     <div className="relative min-w-0">
       <p className={cn('truncate drop-shadow', size === 'big' ? 'text-3xl md:text-4xl' : size === 'medium' ? 'text-2xl' : 'text-xl')}><PlayerName name={name} identity={identity} /></p>
