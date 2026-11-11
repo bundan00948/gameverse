@@ -19,6 +19,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminBlooksRouteImport } from './routes/_authenticated/admin-blooks'
+import { Route as AuthenticatedBazaarRouteImport } from './routes/_authenticated/bazaar'
 import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
 import { Route as AuthenticatedCreditsRouteImport } from './routes/_authenticated/credits'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -81,6 +82,11 @@ const AuthenticatedAdminBlooksRoute =
     path: '/admin-blooks',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedBazaarRoute = AuthenticatedBazaarRouteImport.update({
+  id: '/bazaar',
+  path: '/bazaar',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
   id: '/chat',
   path: '/chat',
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/admin-blooks': typeof AuthenticatedAdminBlooksRoute
+  '/bazaar': typeof AuthenticatedBazaarRoute
   '/chat': typeof AuthenticatedChatRoute
   '/credits': typeof AuthenticatedCreditsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -170,6 +177,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/admin-blooks': typeof AuthenticatedAdminBlooksRoute
+  '/bazaar': typeof AuthenticatedBazaarRoute
   '/chat': typeof AuthenticatedChatRoute
   '/credits': typeof AuthenticatedCreditsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -194,6 +202,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/admin-blooks': typeof AuthenticatedAdminBlooksRoute
+  '/_authenticated/bazaar': typeof AuthenticatedBazaarRoute
   '/_authenticated/chat': typeof AuthenticatedChatRoute
   '/_authenticated/credits': typeof AuthenticatedCreditsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -218,6 +227,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin'
     | '/admin-blooks'
+    | '/bazaar'
     | '/chat'
     | '/credits'
     | '/dashboard'
@@ -240,6 +250,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin'
     | '/admin-blooks'
+    | '/bazaar'
     | '/chat'
     | '/credits'
     | '/dashboard'
@@ -263,6 +274,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authenticated/admin'
     | '/_authenticated/admin-blooks'
+    | '/_authenticated/bazaar'
     | '/_authenticated/chat'
     | '/_authenticated/credits'
     | '/_authenticated/dashboard'
@@ -359,6 +371,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminBlooksRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/bazaar': {
+      id: '/_authenticated/bazaar'
+      path: '/bazaar'
+      fullPath: '/bazaar'
+      preLoaderRoute: typeof AuthenticatedBazaarRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/chat': {
       id: '/_authenticated/chat'
       path: '/chat'
@@ -442,6 +461,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedAdminBlooksRoute: typeof AuthenticatedAdminBlooksRoute
+  AuthenticatedBazaarRoute: typeof AuthenticatedBazaarRoute
   AuthenticatedChatRoute: typeof AuthenticatedChatRoute
   AuthenticatedCreditsRoute: typeof AuthenticatedCreditsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -458,6 +478,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedAdminBlooksRoute: AuthenticatedAdminBlooksRoute,
+  AuthenticatedBazaarRoute: AuthenticatedBazaarRoute,
   AuthenticatedChatRoute: AuthenticatedChatRoute,
   AuthenticatedCreditsRoute: AuthenticatedCreditsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,

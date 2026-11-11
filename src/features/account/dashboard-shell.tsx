@@ -1,7 +1,8 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
-import { Gamepad2, BarChart3, History, Store, Backpack, Target, MessageCircle, Settings, Star, LogOut, ShieldCheck } from '@/lib/icons';
+import { Gamepad2, BarChart3, History, Store, Backpack, Target, MessageCircle, Settings, Star, LogOut, ShieldCheck, Gavel } from '@/lib/icons';
+import { Mailbox } from '@/features/mail/mailbox';
 import { supabase } from '@/integrations/supabase/client';
 import { PlanetLogo } from '@/components/planet-logo';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,7 @@ const nav = [
   { to: '/dashboard', label: 'Games', icon: Gamepad2 },
   { to: '/history', label: 'History', icon: History },
   { to: '/shop', label: 'Market', icon: Store },
+  { to: '/bazaar', label: 'Bazaar', icon: Gavel },
   { to: '/inventory', label: 'Inventory', icon: Backpack },
   { to: '/missions', label: 'Missions', icon: Target },
   { to: '/chat', label: 'Chat', icon: MessageCircle },
@@ -57,6 +59,7 @@ export function DashboardShell({ children, bare = false, market = false }: { chi
         <div className="hidden items-center gap-2 border-t border-surface-border p-3 md:flex">
           <PlayerAvatar name={name} identity={me} className="size-6" />
           <p className="min-w-0 flex-1 truncate text-sm font-bold"><PlayerName name={name} identity={me} /></p>
+          <Mailbox />
           <Link to="/credits" preload={false} aria-label="Credits" className="grid size-11 shrink-0 place-items-center rounded-md hover:bg-glass-hover"><Star className="size-5" /></Link>
           <Link to="/settings" preload={false} aria-label="Account settings" className="grid size-11 shrink-0 place-items-center rounded-md hover:bg-glass-hover"><Settings className="size-5" /></Link>
         </div>

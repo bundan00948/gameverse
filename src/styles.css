@@ -482,3 +482,17 @@
 @media (prefers-reduced-motion: reduce) { :root { --role-gradient-motion: none; } }
 
 .pack-drop-boosted { color: #ffe066; font-weight: 800; text-shadow: 0 0 6px rgb(255 214 64 / 0.9), 0 0 14px rgb(255 170 0 / 0.6); }
+
+/* Bazaar */
+.bazaar-layout { display: grid; gap: 1rem; }
+@media (min-width: 768px) { .bazaar-layout { grid-template-columns: 9rem minmax(0, 1fr); align-items: start; } }
+.bazaar-tabs { display: flex; gap: 0.5rem; overflow-x: auto; }
+@media (min-width: 768px) { .bazaar-tabs { flex-direction: column; position: sticky; top: 5rem; } }
+.bazaar-panel { border-radius: 0.75rem; border: 1px solid var(--surface-border); background: color-mix(in oklab, var(--background) 82%, transparent); box-shadow: var(--shadow-tile, 0 4px 0 rgb(0 0 0 / 0.25)); }
+.bazaar-result { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.15rem; border-radius: 0.6rem; background: var(--surface); padding: 0.6rem 0.4rem; text-align: center; transition: transform 120ms ease; }
+.bazaar-result:hover { transform: translateY(-3px); }
+.bazaar-result:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--ring); }
+
+/* Mail drawer: slides in from the right */
+.mail-drawer { left: auto !important; right: 0 !important; top: 0 !important; translate: none !important; transform: none !important; display: flex !important; flex-direction: column; gap: 0 !important; height: 100dvh; width: min(28rem, 100vw); max-width: none !important; border-radius: 0 !important; padding: 0 !important; overflow: hidden; background: var(--surface); }
+.mail-drawer > button[class*="absolute"] { display: none; }
