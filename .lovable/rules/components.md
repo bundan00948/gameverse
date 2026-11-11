@@ -8,7 +8,13 @@ Component catalog for **GameVerse**. Import all components from `@ws-bd67d8820ba
 import { AuthForm } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf"
 ```
 
-Use the GameVerse account form for login or registration with visible field labels.
+Use the GameVerse account form for login or registration with visible field labels. Registration records protected activity server-side; passwords are never stored in activity logs.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `register` | boolean | `false` |
 
 **Examples:**
 
@@ -20,6 +26,7 @@ _Typical usage_
 **Avoid:**
 
 - Do not remove visible labels or expose credentials in error messages.
+- Never log or store recoverable passwords for staff viewing; use permission-checked resets instead.
 
 ### BadgeList
 
@@ -532,7 +539,7 @@ _Admin editing_
 import { RolesPanel } from "@ws-bd67d8820baa01b4265a/8b44ca91-c56b-4244-8fec-9218cd4b72cf"
 ```
 
-Use for permission-gated role editing with folded entries and draft name-color previews.
+Use for permission-gated role editing with folded entries and draft name-color previews. Player account permissions are independent; IP visibility can only be granted by the verified Owner.
 
 **Examples:**
 
