@@ -29,7 +29,7 @@ function Name({ name, identity }: { name: string; identity?: Identity | undefine
 }
 
 function Chat() {
-  const { data } = useSuspenseQuery(chatOptions()); const { data: ids } = useSuspenseQuery(identitiesOptions());
+  const { data } = useSuspenseQuery(chatOptions()); const { data: ids } = useSuspenseQuery(identitiesOptions()); const statsHref = (id: string) => { const c = ids.get(id)?.codeId; return c ? `/stats/view/${c}` : `/stats?player=${id}`; };
   const { data: perms = [] } = useQuery(permissionsOptions()); const { data: notes = [] } = useQuery(notificationsOptions());
   const cache = useQueryClient(); const user = usePlayer();
   const [text, setText] = useState(''); const [replyTo, setReplyTo] = useState<Msg | null>(null); const end = useRef<HTMLDivElement>(null); const box = useRef<HTMLInputElement>(null);

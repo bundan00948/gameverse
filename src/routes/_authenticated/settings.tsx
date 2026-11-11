@@ -4,7 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { profileOptions } from '@/features/account/profile';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { Button } from '@/components/ui/button';
-import { Save } from 'lucide-react';
+import { Save, Link2, Trash2, Copy } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
@@ -29,5 +30,18 @@ function Profile() {
  <Button disabled={save.isPending} type="submit"><Save />{save.isPending ? 'Saving…' : 'Save profile'}</Button>{save.isSuccess && <p role="status" className="text-sm">Profile saved.</p>}{save.error && <p role="alert" className="text-sm text-destructive">{save.error.message}</p>}</form></section>
  <section className="min-w-0 border-t border-surface-border pt-8 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0"><h2 className="font-display text-2xl">Appearance</h2>
  <div className="mt-6 flex items-center gap-4 border-y border-surface-border py-5"><span className="grid size-12 shrink-0 place-items-center rounded-md bg-secondary">{bright ? <Sun /> : <Moon />}</span><label htmlFor="bright-mode" className="flex-1 text-base font-bold">Bright mode</label><Switch id="bright-mode" checked={bright} onCheckedChange={next => { setBright(next); applyTheme(next ? 'bright' : 'dark'); }} /></div>
- <p role="status" className="mt-3 text-sm text-muted-foreground">{bright ? 'Bright' : 'Dark'} theme</p></section></div></DashboardShell>;
+ <p role="status" className="mt-3 text-sm text-muted-foreground">{bright ? 'Bright' : 'Dark'} theme</p><LoginLinks /></section></div></DashboardShell>;
+}
+
+function LoginLinks() {
+ const cache = useQueryClient(); const [fresh, setFresh] = useState<string | null>(null);
+ const { data: links = [] } = useQuery({ queryKey: ['auth-links'], queryFn: async () => { const r = await supabase.from('auth_links').select('id, created_at, expires_at').is('used_at', null).gt('expires_at', new Date().toISOString()).order('created_at'); if (r.error) throw r.error; return r.data; } });
+ const create = useMutation({ mutationFn: async () => { const r = await supabase.rpc('create_auth_link'); if (r.error) throw r.error; return `${window.location.origin}/login?key=${r.data}`; }, onSuccess: url => { setFresh(url); void cache.invalidateQueries({ queryKey: ['auth-links'] }); } });
+ const remove = useMutation({ mutationFn: async (id: string) => { const r = await supabase.from('auth_links').delete().eq('id', id); if (r.error) throw r.error; }, onSuccess: () => cache.invalidateQueries({ queryKey: ['auth-links'] }) });
+ return <div className="mt-10"><h2 className="font-display text-2xl">Login links</h2>
+ <p className="mt-2 text-sm text-muted-foreground">Open a link on another device to sign in without a password. Each link works once and expires after 24 hours. You can have up to 2 active.</p>
+ <Button className="mt-4" disabled={create.isPending || links.length >= 2} onClick={() => create.mutate()}><Link2 />{links.length >= 2 ? '2 of 2 active' : 'Generate login link'}</Button>
+ {create.error && <p role="alert" className="mt-2 text-sm text-destructive">{create.error.message}</p>}
+ {fresh && <div className="mt-4 rounded-md border border-surface-border bg-surface p-3"><p className="text-xs font-bold">Copy now — it won't be shown again:</p><div className="mt-2 flex gap-2"><input readOnly value={fresh} aria-label="New login link" className="h-10 min-w-0 flex-1 rounded-md border border-input bg-background px-2 text-xs" onFocus={e => e.currentTarget.select()} /><Button type="button" variant="outline" aria-label="Copy login link" onClick={() => void navigator.clipboard.writeText(fresh)}><Copy /></Button></div></div>}
+ <ul className="mt-4 space-y-2">{links.map(l => <li key={l.id} className="flex items-center gap-3 rounded-md border border-surface-border px-3 py-2 text-sm"><Link2 className="size-4" /><span className="flex-1">Expires {new Date(l.expires_at).toLocaleString()}</span><Button type="button" variant="ghost" aria-label="Remove login link" disabled={remove.isPending} onClick={() => remove.mutate(l.id)}><Trash2 /></Button></li>)}</ul></div>;
 }
