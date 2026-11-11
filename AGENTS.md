@@ -30,6 +30,7 @@ use the editor.
 <!-- LOVABLE:END -->
 
 ## App architecture
+- Keep privileged admin helpers in `src/lib/admin.server.ts`, imported only inside server-function handlers, so browser bundles never reach server-only headers or clients.
 - The library barrel imports its canonical stylesheet so attached consumers receive theme tokens and base styles when importing the library.
 - All signed-in pages share the unframed GameVerse shell and semantic main landmark; appearance is persisted locally through the shared theme utility and selected in Settings, keeping page data loaders independent.
 - Signed-in pages live under the client-only `_authenticated` gate; public login remains `/login` with `/auth` redirect compatibility, because browser sessions cannot be read during SSR.
