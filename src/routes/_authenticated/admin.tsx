@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { rarityColors, rarityDefaults, rarityColorValue, rarityPaint, rarityBadgeImages } from '@/features/dashboard/appearance';
 import { listUsers, getUserInventory, setUserBlook, updateUser, deleteUser, setAccountBan, listAccountBans, listGameLog } from '@/lib/admin.functions';
 import { BannersPanel } from '@/features/admin/banners-panel';
+import { CreditsPanel } from '@/features/admin/credits-panel';
 import { BlooksPanel } from '@/features/admin/blooks-panel';
 import { gameEmbedUrl } from '@/features/dashboard/game-embed';
 import { activeBan, playerPermissions } from '@/lib/account-safety';
@@ -32,9 +33,9 @@ export const Route = createFileRoute('/_authenticated/admin')({
 
 const input = 'mt-1 w-full min-w-0 rounded-md border border-surface-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const btn = 'inline-flex items-center gap-2 rounded-md px-3 py-2 text-xs font-bold disabled:opacity-50';
-const tabs = ['Users', 'Roles', 'Badges', 'Shop', 'Banners', 'Blooks', 'Games', 'Missions', 'Game Log'] as const;
-const tabIcons = { Users: UsersIcon, Roles: Crown, Badges: Award, Shop: Store, Banners: Store, Blooks: Backpack, Games: Gamepad2, Missions: Target, 'Game Log': Shield };
-const tabPerm = { Users: 'players.view', Roles: 'roles', Badges: 'badges', Shop: 'shop', Banners: 'shop', Blooks: 'blooks', Games: 'games', Missions: 'missions', 'Game Log': 'logs.view' } as const;
+const tabs = ['Users', 'Roles', 'Badges', 'Shop', 'Banners', 'Blooks', 'Games', 'Missions', 'Credits', 'Game Log'] as const;
+const tabIcons = { Users: UsersIcon, Roles: Crown, Badges: Award, Shop: Store, Banners: Store, Blooks: Backpack, Games: Gamepad2, Missions: Target, Credits: Award, 'Game Log': Shield };
+const tabPerm = { Users: 'players.view', Roles: 'roles', Badges: 'badges', Shop: 'shop', Banners: 'shop', Blooks: 'blooks', Games: 'games', Missions: 'missions', Credits: 'roles', 'Game Log': 'logs.view' } as const;
 
 function Admin() {
   const { data: perms = [], isLoading } = useQuery(permissionsOptions());
@@ -48,7 +49,7 @@ function Admin() {
   return <DashboardShell bare><div className="staff-workspace">
     <PageTitle kicker="Staff" title="Admin Panel" />
     <nav aria-label="Admin sections" className="staff-tabs">{allowed.map(t => { const Icon = tabIcons[t]; return <Button key={t} type="button" variant={tab === t ? 'default' : 'ghost'} aria-pressed={tab === t} onClick={() => navigate({ search: { tab: t }, replace: true })} className="gap-2 font-bold"><Icon />{t}</Button>; })}</nav>
-    <div className="mt-6">{tab === 'Game Log' ? <GameLog /> : tab === 'Banners' ? <BannersPanel /> : tab === 'Blooks' ? <BlooksPanel /> : tab === 'Users' ? <Users canGrantStaff={isFullAdmin} perms={perms} /> : tab === 'Roles' ? <RolesPanel /> : tab === 'Badges' ? <BadgesPanel /> : tab === 'Shop' ? <Shop /> : tab === 'Games' ? <Table title="Games" table="games" fields={['title', 'description', 'play_url']} blank={{ emoji: '', title: 'New game', description: '', play_url: '' }} /> : <Table title="Missions" table="missions" fields={['title', 'kind', 'goal', 'reward']} blank={{ title: 'New mission', kind: 'plays', goal: 5, reward: 10 }} />}</div>
+    <div className="mt-6">{tab === 'Credits' ? <CreditsPanel /> : tab === 'Game Log' ? <GameLog /> : tab === 'Banners' ? <BannersPanel /> : tab === 'Blooks' ? <BlooksPanel /> : tab === 'Users' ? <Users canGrantStaff={isFullAdmin} perms={perms} /> : tab === 'Roles' ? <RolesPanel /> : tab === 'Badges' ? <BadgesPanel /> : tab === 'Shop' ? <Shop /> : tab === 'Games' ? <Table title="Games" table="games" fields={['title', 'description', 'play_url']} blank={{ emoji: '', title: 'New game', description: '', play_url: '' }} /> : <Table title="Missions" table="missions" fields={['title', 'kind', 'goal', 'reward']} blank={{ title: 'New mission', kind: 'plays', goal: 5, reward: 10 }} />}</div>
   </div></DashboardShell>;
 }
 
