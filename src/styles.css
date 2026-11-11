@@ -436,7 +436,16 @@
 @keyframes packRipFlash { 0% { opacity: 0; } 20% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes packRevealCardIn { 0% { transform: translateY(40px) scale(.85); filter: blur(10px); opacity: 0; } 100% { transform: none; filter: none; opacity: 1; } }
 @media (max-height: 600px) { .pack-unbox { width: 247px; height: 247px; } }
-@media (prefers-reduced-motion: reduce) { .pack-unbox-half, .pack-unbox-blook, .pack-bg-rip-flash-dark, .pack-reveal-card { animation-duration: .01s !important; } }
+/* Reduced motion: keep the opening sequence visible as gentle fades instead of an instant jump. */
+@keyframes packFadeOut { to { opacity: 0; } }
+@keyframes packFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .torn .pack-unbox-half-top { animation: packFadeOut .45s ease-out forwards; }
+  .pack-unbox-cover-drop .pack-unbox-half-bot, .pack-unbox-cover-drop.torn .pack-unbox-half-bot { animation: packFadeOut .45s ease-out forwards; }
+  .pack-unbox-cover-drop .pack-unbox-blook { animation: packFadeIn .45s ease-out forwards; }
+  .pack-bg-rip-flash-dark { animation: none; }
+  .pack-reveal-card { animation: packFadeIn .45s ease-out both; }
+}
 
 .pack-confetti span { animation-iteration-count: infinite; }
 @keyframes packTornShake { 0%,100% { transform: none; } 30% { transform: translateX(-2%) rotate(-1.5deg); } 65% { transform: translateX(1.5%) rotate(1deg); } }
