@@ -54,17 +54,17 @@ function Stats() {
   return <DashboardShell bare>
     <div className="flex w-full max-w-2xl flex-col gap-4">
       <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2 sm:flex sm:flex-row">
-        <Button variant="ghost" type="button" disabled={!own} onClick={() => setPicking(true)} aria-label={own ? "Change profile picture" : `${name} profile picture`} className="group relative grid size-16 shrink-0 place-items-center rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:size-27">
-          <PlayerAvatar name={name} identity={me} className="size-16 rounded-2xl text-2xl sm:size-27 sm:text-4xl" />
-          <span className="absolute bottom-0.5 right-0.5 grid size-5 place-items-center rounded-full bg-surface opacity-0 shadow transition group-hover:opacity-100 group-focus-visible:opacity-100 sm:bottom-1 sm:right-1 sm:size-7"><Pencil className="size-3" /></span>
+        <Button variant="ghost" type="button" disabled={!own} onClick={() => setPicking(true)} aria-label={own ? "Change profile picture" : `${name} profile picture`} className="group relative grid size-27 shrink-0 place-items-center rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <PlayerAvatar name={name} identity={me} className="size-27 rounded-2xl text-4xl" />
+          <span className="absolute bottom-1 right-1 grid size-7 place-items-center rounded-full bg-surface opacity-0 shadow transition group-hover:opacity-100 group-focus-visible:opacity-100"><Pencil className="size-3.5" /></span>
         </Button>
         <div className={`${box} gv-nameplate relative w-full min-w-0 flex-1 overflow-hidden text-center sm:max-w-[50%]`}>
           {me?.bannerImage && <img src={me.bannerImage} alt="" className="gv-nameplate-background" />}
-          <h1 className="relative truncate px-3 pt-1 font-display text-lg leading-tight sm:px-5 sm:pt-2.5 sm:text-3xl"><PlayerName name={name} identity={me} className="font-normal" /></h1>
-          <p className="relative pb-1 text-[10px] text-muted-foreground sm:pb-2.5 sm:text-xs" style={roleTextStyle(me?.role?.colors)}>{me?.role?.name ?? 'Player'}</p>
+          <h1 className="relative truncate px-4 pt-1 font-display text-3xl leading-[1.05] sm:px-5 sm:pt-2.5 sm:leading-tight"><PlayerName name={name} identity={me} className="font-normal" /></h1>
+          <p className="relative pb-1 text-xs leading-tight text-muted-foreground sm:pb-2.5" style={roleTextStyle(me?.role?.colors)}>{me?.role?.name ?? 'Player'}</p>
           {own && <Button variant="ghost" aria-label="Change nameplate background" className="gv-nameplate-trigger" onClick={() => setBannerPicking(true)} />}
         </div>
-        {me?.badges.length ? <div className={`${box} col-span-2 flex min-h-14 w-full items-center justify-center gap-2 px-5 py-2 sm:w-auto sm:min-h-20 sm:flex-1`}><BadgeList identity={me} size="lg" /></div> : null}
+        {me?.badges.length ? <div className={`${box} col-span-2 flex min-h-20 w-full items-center justify-center gap-2 px-5 py-2.5 sm:w-auto sm:flex-1`}><BadgeList identity={me} size="lg" /></div> : null}
       </div>
       <div className="flex items-center sm:max-w-[65%]">
         <span className="relative z-10 -mr-2.5 grid size-12 shrink-0 place-items-center"><Star className="absolute size-12 fill-tile-b text-tile-b drop-shadow" /><span className="relative font-display text-base text-white">{level}</span></span>
