@@ -747,6 +747,7 @@ export type Database = {
       purchase_banner: { Args: { _banner: string }; Returns: string }
       record_play: { Args: { _game: string }; Returns: undefined }
       sell_blook: { Args: { _blook: string }; Returns: number }
+      staff_tier: { Args: { _user_id: string }; Returns: number }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
