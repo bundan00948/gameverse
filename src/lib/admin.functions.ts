@@ -2,6 +2,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { requiredPlayerPermissions } from './account-safety';
+import { setResponseHeader } from '@tanstack/react-start/server';
 
 type Ctx = { supabase: { rpc: (fn: 'has_permission', args: { _user_id: string; _perm: string }) => PromiseLike<{ data: boolean | null }> }; userId: string };
 async function hasPerm(context: Ctx, perm: string) {
@@ -9,6 +10,7 @@ async function hasPerm(context: Ctx, perm: string) {
   return !!data;
 }
 async function assertAdmin(context: Ctx, perms: string[] = ['players.view']) {
+  setResponseHeader('Cache-Control', 'no-store');
   const banned = await (context.supabase.rpc as unknown as (f: 'is_account_banned', a: { _user_id: string }) => PromiseLike<{ data: boolean | null; error: unknown }>)('is_account_banned', { _user_id: context.userId });
   if (banned.error || banned.data) throw new Error('Account unavailable');
   const checks = await Promise.all(perms.map(p => hasPerm(context, p)));
@@ -112,9 +114,11 @@ export const listGameLog = createServerFn({ method: 'GET' }).middleware([require
   .handler(async ({ context, data }) => {
     const admin = await assertAdmin(context as unknown as Ctx, ['logs.view', 'ips.view']);
     const ips = await hasPerm(context as unknown as Ctx, 'ips.view');
-    let query = admin.from('security_activity').select(ips ? 'id,user_id,kind,game_title,created_at,ip_address' : 'id,user_id,kind,game_title,created_at', { count: 'exact' }).order('created_at', { ascending: false }).range(data.page*50, data.page*50+49);
-    if (data.kind !== 'all') query = query.eq('kind', data.kind);
-    const r = await query;
+    const base = () => admin.from('security_activity');
+    const columns = 'id,user_id,kind,game_title,created_at' as const;
+    const q = ips ? base().select('id,user_id,kind,game_title,created_at,ip_address', { count: 'exact' }) : base().select(columns, { count: 'exact' });
+    const filtered = data.kind === 'all' ? q : q.eq('kind', data.kind);
+    const r = await filtered.order('created_at', { ascending: false }).range(data.page*50, data.page*50+49);
     if (r.error) throw new Error('Could not load activity');
     const profiles = await admin.from('profiles').select('id,username,code_id');
     return { count: r.count ?? 0, ips, rows: (r.data ?? []).map(row => { const p = profiles.data?.find(p => p.id===row.user_id); return { id: row.id, kind: row.kind, title: row.game_title, created: row.created_at, player: p?.username || 'Deleted player', code: p?.code_id ?? null, ip: ips && 'ip_address' in row ? String(row.ip_address ?? '') || null : null }; }) };

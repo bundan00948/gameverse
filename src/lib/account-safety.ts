@@ -5,7 +5,7 @@ export const loginDurations = [
 ] as const;
 export function validLoginHours(hours: number) { return loginDurations.some(d => d.hours === hours); }
 export const playerPermissions = ['players.view', 'players.profile', 'players.tokens', 'players.password_reset', 'players.delete', 'players.ban'] as const;
-export function requiredPlayerPermissions(changes: { username?: string; displayName?: string; tokens?: number; password?: string; admin?: boolean }): string[] {
+export function requiredPlayerPermissions(changes: { username?: string | undefined; displayName?: string | undefined; tokens?: number | undefined; password?: string | undefined; admin?: boolean | undefined }): string[] {
   const permissions: string[] = [];
   if (changes.username !== undefined || changes.displayName !== undefined) permissions.push('players.profile');
   if (changes.tokens !== undefined) permissions.push('players.tokens');
