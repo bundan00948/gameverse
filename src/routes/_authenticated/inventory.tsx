@@ -90,7 +90,7 @@ function Inventory() {
           <div className="rounded-lg border border-white/25 bg-background/70 p-3.5 shadow-tile"><dt className="text-sm text-muted-foreground">Owned</dt><dd className="text-lg font-bold">{open.owned}</dd></div>
           <div className="rounded-lg border border-white/25 bg-background/70 p-3.5 shadow-tile"><dt className="text-sm text-muted-foreground">Worth</dt><dd className="mt-0.5 flex items-center justify-center gap-1.5 text-[20.5px] font-bold"><img src={tokenIcon.url} alt="" className="size-5 object-contain" />{(worthTokens(open.rarity) ?? 0).toLocaleString('en-US')}</dd></div>
         </dl>
-        {open.owned > 0 && (sacrificeRarities as readonly string[]).includes(open.rarity) && <div className="mt-5"><Button disabled={busy} onClick={() => sacrifice(open)}>{busy ? 'Sacrificing…' : 'Sacrifice to boost everyone'}</Button><p className="mt-2 text-sm text-muted-foreground">{boostDescription[open.rarity]}</p></div>}
+        {open.owned > 0 && (sacrificeRarities as readonly string[]).includes(open.rarity) && <div className="mt-5"><Button disabled={busy} onClick={() => sacrifice(open)}>{busy ? 'Sacrificing…' : 'Sacrifice to boost everyone'}</Button><p className="mt-2 text-sm font-semibold text-white [text-shadow:0_1px_3px_rgb(0_0_0/0.6)]">{boostDescription[open.rarity]}</p></div>}
         {note && <p role="status" className="mt-2 text-sm font-bold">{note}</p>}
         {!open.owned && open.pack !== 'Unassigned' && <Link to="/shop" className="mt-5 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">Find it in the Market</Link>}
         </div>
