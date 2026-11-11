@@ -32,7 +32,9 @@ export const registerAccount = createServerFn({ method: 'POST' })
     const url = process.env['SUPABASE_URL']; const key = process.env['SUPABASE_PUBLISHABLE_KEY'];
     if (!url || !key) throw new Error('Registration unavailable');
     const client = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false }, global: { fetch: (input, init) => { const h = new Headers(init?.headers); if (key.startsWith('sb_') && h.get('Authorization') === `Bearer ${key}`) h.delete('Authorization'); h.set('apikey', key); return fetch(input, { ...init, headers: h }); } } });
-    const { data: result, error } = await client.auth.signUp({ email: data.email, password: data.password, options: { data: { username: data.username } } });
+    const requestOrigin = getRequestHeader('origin');
+    const redirect = requestOrigin && requestOrigin === data.origin ? requestOrigin : undefined;
+    const { data: result, error } = await client.auth.signUp({ email: data.email, password: data.password, options: { ...(redirect ? { emailRedirectTo: redirect } : {}), data: { username: data.username } } });
     if (error) throw new Error(error.message);
     // Fake duplicate-signup responses have no identities: never log those as registrations.
     if (result.user?.identities?.length) {

@@ -29,6 +29,7 @@ function Play() {
   const [reload, setReload] = useState(0);
   const [notice, setNotice] = useState('');
   const player = useRef<HTMLDivElement>(null);
+  const logged = useRef<string | null>(null);
   const embed = game ? gameEmbedUrl(game.play_url) : null;
   const record = useServerFn(recordGameOpen);
   const play = useMutation({
@@ -36,13 +37,13 @@ function Play() {
     onSuccess: () => { ['history', 'stats', 'missions'].forEach(key => cache.invalidateQueries({ queryKey: [key] })); },
   });
   const { mutate } = play;
-  useEffect(() => { if (game && embed) mutate(game.id); }, [game, embed, mutate]);
+  useEffect(() => { if (game && embed && logged.current !== game.id) { logged.current = game.id; mutate(game.id); } }, [game, embed, mutate]);
   if (!game || !embed) return <DashboardShell bare><Link to="/dashboard" reloadDocument className="text-sm font-bold underline">Back to games</Link><Empty>{game ? 'This game is coming soon.' : 'Game not found.'}</Empty></DashboardShell>;
   return <DashboardShell bare>
     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-surface-border pb-4">
       <div className="flex min-w-0 items-center gap-3"><Button asChild variant="ghost" size="icon"><Link to="/dashboard" reloadDocument aria-label="Back to games" title="Back to games"><ArrowLeft /></Link></Button><h1 className="min-w-0 break-words font-display text-2xl">{game.title}</h1></div>
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="icon" aria-label="Reload game" title="Reload game" onClick={() => setReload(n => n + 1)}><RotateCw /></Button>
+        <Button variant="outline" size="icon" aria-label="Reload game" title="Reload game" onClick={() => { setReload(n => n + 1); mutate(game.id); }}><RotateCw /></Button>
         <Button variant="outline" size="icon" aria-label="Fullscreen" title="Fullscreen" onClick={async () => { try { if (player.current?.requestFullscreen) await player.current.requestFullscreen(); else setNotice('Fullscreen is not available in this browser.'); } catch { setNotice('Fullscreen is not available in this browser.'); } }}><Maximize /></Button>
         <Button asChild variant="outline" size="icon"><a href={embed} target="_blank" rel="noopener noreferrer" aria-label="Open game in new tab" title="Open game in new tab"><ExternalLink /></a></Button>
       </div>

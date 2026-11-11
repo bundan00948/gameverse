@@ -17,6 +17,10 @@ export const Route = createFileRoute("/terms")({
 
 const sections = [
   {
+    title: "Account security and activity",
+    body: "GameVerse records registrations and games opened, including IP addresses when available, for account security. Only the Owner and staff explicitly authorized by the Owner can view IP addresses. Passwords are never included in these logs. Account bans may take effect immediately and sign you out.",
+  },
+  {
     title: "1. Accounts",
     body: "You are responsible for keeping your account secure. One account per person; sharing or selling accounts is not allowed.",
   },
