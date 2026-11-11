@@ -26,6 +26,8 @@ export async function tierOf(admin: Admin, id: string) {
 
 /** Staff may only act on accounts ranked strictly below their own tier. */
 export async function assertLowerTier(admin: Admin, callerId: string, targetId: string) {
+  const owner = await admin.rpc('is_site_owner', { _user_id: callerId });
+  if (owner.data === true) return;
   const [caller, target] = await Promise.all([tierOf(admin, callerId), tierOf(admin, targetId)]);
   if (!(target > caller)) throw new Error('You can only manage players ranked below you');
 }

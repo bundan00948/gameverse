@@ -36,7 +36,8 @@ export const listUsers = createServerFn({ method: 'GET' })
         admin: isAdmin,
       };
     });
-    return sortByAuthority(rows.filter(r => r.tier > callerTier));
+    const callerIsOwner = !!owners.data?.some(o => o.user_id === context.userId);
+    return sortByAuthority(callerIsOwner ? rows : rows.filter(r => r.tier > callerTier));
   });
 
 export const updateUser = createServerFn({ method: 'POST' })
