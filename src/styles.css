@@ -503,4 +503,5 @@
 
 .bazaar-hero { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; border-radius: 1rem; padding: 1.1rem 1.25rem; color: #fff; background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 55%, #1a1030), color-mix(in oklab, var(--tile-d, var(--primary)) 45%, #10101c)); border: 1px solid rgb(255 255 255 / 0.15); box-shadow: 0 6px 0 rgb(0 0 0 / 0.3); }
 .bazaar-chip { display: inline-flex; align-items: center; gap: 0.35rem; border-radius: 999px; background: rgb(0 0 0 / 0.3); padding: 0.4rem 0.8rem; font-size: 0.85rem; }
-.bazaar-layout { margin-top: 1.25rem; }
+.bazaar-layout { margin-top: 0; min-height: calc(100dvh - 8rem); }
+.bazaar-layout > div > .bazaar-panel:nth-of-type(2) { min-height: 50dvh; align-content: start; }
