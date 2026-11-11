@@ -2,7 +2,7 @@ import { queryOptions, useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 export const boostsOptions = () => queryOptions({ queryKey: ['boosts'], staleTime: 30_000, refetchInterval: 60_000, refetchIntervalInBackground: false, queryFn: async () => {
-  const r = await supabase.from('boosts').select('id, player_name, blook_name, rarity, pack_name, multiplier, ends_at').gt('ends_at', new Date().toISOString()).order('ends_at', { ascending: false }).limit(10);
+  const r = await supabase.from('boosts').select('id, player_name, blook_name, rarity, pack_id, pack_name, affected, multiplier, ends_at').gt('ends_at', new Date().toISOString()).order('ends_at', { ascending: false }).limit(10);
   if (r.error) throw r.error;
   return r.data;
 } });
@@ -26,4 +26,8 @@ export function BoostNotice() {
     <p className="font-display text-sm">Active boosts</p>
     {data.slice(0, 4).map(b => <p key={b.id}><span className="font-bold">{b.player_name}</span> boosted <span className="font-bold capitalize">{b.pack_name ?? 'all packs'}</span> x{Number(b.multiplier)} <span className="text-muted-foreground">· {left(b.ends_at)} left</span></p>)}
   </aside>;
+}
+
+export function boostFactor(boosts: { pack_id: string | null; affected: string[]; multiplier: number; ends_at: string }[] | undefined, pack: string, rarity: string) {
+  return (boosts ?? []).filter(b => new Date(b.ends_at).getTime() > Date.now() && b.affected.includes(rarity) && (!b.pack_id || b.pack_id === pack)).reduce((f, b) => f * Number(b.multiplier), 1);
 }
