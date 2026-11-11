@@ -2,37 +2,12 @@ import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { requiredPlayerPermissions, sortByAuthority } from './account-safety';
-import { setResponseHeader } from '@tanstack/react-start/server';
-
-type Ctx = { supabase: { rpc: (fn: 'has_permission', args: { _user_id: string; _perm: string }) => PromiseLike<{ data: boolean | null }> }; userId: string };
-async function hasPerm(context: Ctx, perm: string) {
-  const { data } = await context.supabase.rpc('has_permission', { _user_id: context.userId, _perm: perm });
-  return !!data;
-}
-async function assertAdmin(context: Ctx, perms: string[] = ['players.view']) {
-  setResponseHeader('Cache-Control', 'no-store');
-  const banned = await (context.supabase.rpc as unknown as (f: 'is_account_banned', a: { _user_id: string }) => PromiseLike<{ data: boolean | null; error: unknown }>)('is_account_banned', { _user_id: context.userId });
-  if (banned.error || banned.data) throw new Error('Account unavailable');
-  const checks = await Promise.all(perms.map(p => hasPerm(context, p)));
-  if (!checks.some(Boolean)) throw new Error('Staff only');
-  const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
-  return supabaseAdmin;
-}
-type Admin = Awaited<ReturnType<typeof assertAdmin>>;
-async function tierOf(admin: Admin, id: string) {
-  const r = await admin.rpc('staff_tier', { _user_id: id });
-  if (r.error) throw new Error('Could not check staff tier');
-  return Number(r.data);
-}
-/** Staff may only act on accounts ranked strictly below their own tier. */
-async function assertLowerTier(admin: Admin, callerId: string, targetId: string) {
-  const [caller, target] = await Promise.all([tierOf(admin, callerId), tierOf(admin, targetId)]);
-  if (!(target > caller)) throw new Error('You can only manage players ranked below you');
-}
+import type { Ctx } from './admin.server';
 
 export const listUsers = createServerFn({ method: 'GET' })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    const { assertAdmin, tierOf } = await import('./admin.server');
     const admin = await assertAdmin(context as unknown as Ctx, ['players.view', 'players.profile', 'players.tokens', 'players.password_reset', 'players.delete', 'players.ban', 'roles', 'badges']);
     const { data, error } = await admin.auth.admin.listUsers({ perPage: 200 });
     if (error) throw new Error(error.message);
@@ -48,7 +23,7 @@ export const listUsers = createServerFn({ method: 'GET' })
     const rows = data.users.map(u => {
       const owner = !!owners.data?.some(o => o.user_id === u.id);
       const isAdmin = !!roles.data?.some(r => r.user_id === u.id);
-      const staffRoles = (staff.data ?? []).filter(r => r.user_id === u.id && r.staff_roles).map(r => r.staff_roles!).sort((a, b) => a.sort - b.sort);
+      const staffRoles = (staff.data ?? []).filter(r => r.user_id === u.id).flatMap(r => r.staff_roles ? [r.staff_roles] : []).sort((a, b) => a.sort - b.sort);
       const tier = owner ? -2 : isAdmin ? -1 : staffRoles[0]?.sort ?? 1e9;
       const effects = owner ? ['Owner: every permission'] : isAdmin ? ['Full admin: every permission except IP visibility unless granted'] : [...new Set(staffRoles.flatMap(r => r.permissions))];
       return {
@@ -71,6 +46,7 @@ export const updateUser = createServerFn({ method: 'POST' })
     tokens: z.number().int().min(0).max(1_000_000).optional(), password: z.string().min(6).max(72).optional(), admin: z.boolean().optional(),
   }).parse(d))
   .handler(async ({ data, context }) => {
+    const { assertAdmin, hasPerm, assertLowerTier } = await import('./admin.server');
     const ctx = context as unknown as Ctx;
     for (const permission of requiredPlayerPermissions(data)) if (!await hasPerm(ctx, permission)) throw new Error('Permission denied');
     const admin = await assertAdmin(ctx, ['players.view', ...requiredPlayerPermissions(data)]);
@@ -101,6 +77,7 @@ export const deleteUser = createServerFn({ method: 'POST' })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    const { assertAdmin, assertLowerTier } = await import('./admin.server');
     const admin = await assertAdmin(context as unknown as Ctx, ['players.delete']);
     if (data.id === (context as unknown as Ctx).userId) throw new Error("You can't delete yourself");
     await assertLowerTier(admin, context.userId, data.id);
@@ -114,6 +91,7 @@ export const deleteUser = createServerFn({ method: 'POST' })
 export const setAccountBan = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid(), banned: z.boolean(), reason: z.string().trim().max(500), hours: z.number().int().min(1).max(8760).nullable() }).parse(d))
   .handler(async ({ data, context }) => {
+    const { assertAdmin, assertLowerTier } = await import('./admin.server');
     const admin = await assertAdmin(context as unknown as Ctx, ['players.ban']);
     const owner = await admin.rpc('is_site_owner', { _user_id: data.id });
     if (owner.error || owner.data || data.id === context.userId) throw new Error('Cannot ban this account');
@@ -132,6 +110,7 @@ export const setAccountBan = createServerFn({ method: 'POST' }).middleware([requ
     return { ok: true };
   });
 export const listAccountBans = createServerFn({ method: 'GET' }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
+    const { assertAdmin } = await import('./admin.server');
   const admin = await assertAdmin(context as unknown as Ctx, ['players.ban']);
   const r = await admin.from('account_bans').select('user_id, reason, expires_at, revoked_at');
   if (r.error) throw new Error('Could not load bans'); return r.data;
@@ -139,6 +118,7 @@ export const listAccountBans = createServerFn({ method: 'GET' }).middleware([req
 export const listGameLog = createServerFn({ method: 'GET' }).middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ page: z.number().int().min(0).max(10000), kind: z.enum(['all','game','register']) }).parse(d))
   .handler(async ({ context, data }) => {
+    const { assertAdmin, hasPerm } = await import('./admin.server');
     const admin = await assertAdmin(context as unknown as Ctx, ['logs.view', 'ips.view']);
     const ips = await hasPerm(context as unknown as Ctx, 'ips.view');
     const base = () => admin.from('security_activity');
@@ -154,6 +134,7 @@ export const listGameLog = createServerFn({ method: 'GET' }).middleware([require
 export const getUserInventory = createServerFn({ method: 'GET' }).middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    const { assertAdmin, assertLowerTier } = await import('./admin.server');
     const admin = await assertAdmin(context as unknown as Ctx, ['players.inventory']);
     await assertLowerTier(admin, context.userId, data.id);
     const r = await admin.from('user_blooks').select('blook_id, quantity').eq('user_id', data.id);
@@ -163,6 +144,7 @@ export const getUserInventory = createServerFn({ method: 'GET' }).middleware([re
 export const setUserBlook = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid(), blookId: z.string().uuid(), quantity: z.number().int().min(0).max(100000) }).parse(d))
   .handler(async ({ data, context }) => {
+    const { assertAdmin, assertLowerTier } = await import('./admin.server');
     const admin = await assertAdmin(context as unknown as Ctx, ['players.inventory']);
     await assertLowerTier(admin, context.userId, data.id);
     const r = data.quantity === 0
