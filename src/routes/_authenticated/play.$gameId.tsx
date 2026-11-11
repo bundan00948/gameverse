@@ -7,6 +7,8 @@ import { DashboardShell } from '@/features/account/dashboard-shell';
 import { gameEmbedUrl } from '@/features/dashboard/game-embed';
 import { Empty, PageError, meta } from '@/features/dashboard/page';
 import { Button } from '@/components/ui/button';
+import { useServerFn } from '@tanstack/react-start';
+import { recordGameOpen } from '@/lib/account-safety.functions';
 
 const gameOptions = (id: string) => queryOptions({ queryKey: ['game', id], staleTime: 60_000, queryFn: async () => {
   const { data, error } = await supabase.from('games').select('id, title, description, image_url, play_url').eq('id', id).maybeSingle();
@@ -28,8 +30,9 @@ function Play() {
   const [notice, setNotice] = useState('');
   const player = useRef<HTMLDivElement>(null);
   const embed = game ? gameEmbedUrl(game.play_url) : null;
+  const record = useServerFn(recordGameOpen);
   const play = useMutation({
-    mutationFn: async (id: string) => { const { error } = await supabase.rpc('record_play', { _game: id }); if (error) throw error; },
+    mutationFn: (id: string) => record({ data: { gameId: id } }),
     onSuccess: () => { ['history', 'stats', 'missions'].forEach(key => cache.invalidateQueries({ queryKey: [key] })); },
   });
   const { mutate } = play;

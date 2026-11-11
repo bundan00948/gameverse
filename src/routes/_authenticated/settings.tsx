@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
+import { loginDurations } from '@/lib/account-safety';
 import { applyTheme } from '@/lib/theme';
 import { PageTitle } from '@/features/dashboard/page';
 import { identitiesOptions } from '@/features/dashboard/roles';
@@ -35,11 +36,13 @@ function Profile() {
 
 function LoginLinks() {
  const cache = useQueryClient(); const [fresh, setFresh] = useState<string | null>(null);
+ const [hours, setHours] = useState(24);
  const { data: links = [] } = useQuery({ queryKey: ['auth-links'], queryFn: async () => { const r = await supabase.from('auth_links').select('id, created_at, expires_at').is('used_at', null).gt('expires_at', new Date().toISOString()).order('created_at'); if (r.error) throw r.error; return r.data; } });
- const create = useMutation({ mutationFn: async () => { const r = await supabase.rpc('create_auth_link'); if (r.error) throw r.error; return `${window.location.origin}/login?key=${r.data}`; }, onSuccess: url => { setFresh(url); void cache.invalidateQueries({ queryKey: ['auth-links'] }); } });
+ const create = useMutation({ mutationFn: async () => { const r = await supabase.rpc('create_auth_link', { _hours: hours }); if (r.error) throw r.error; return `${window.location.origin}/login?key=${r.data}`; }, onSuccess: url => { setFresh(url); void cache.invalidateQueries({ queryKey: ['auth-links'] }); } });
  const remove = useMutation({ mutationFn: async (id: string) => { const r = await supabase.from('auth_links').delete().eq('id', id); if (r.error) throw r.error; }, onSuccess: () => cache.invalidateQueries({ queryKey: ['auth-links'] }) });
  return <div className="mt-10"><h2 className="font-display text-2xl">Login links</h2>
- <p className="mt-2 text-sm text-muted-foreground">Open a link on another device to sign in without a password. Each link works once and expires after 24 hours. You can have up to 2 active.</p>
+ <p className="mt-2 text-sm text-muted-foreground">Each link works once. Maximum 2 active links.</p>
+ <label className="mt-4 block text-sm font-bold">Link duration<select aria-label="Link duration" value={hours} onChange={e => setHours(Number(e.target.value))} className="mt-2 block h-11 rounded-md border border-input bg-surface px-3">{loginDurations.map(d => <option key={d.hours} value={d.hours}>{d.label}</option>)}</select></label>
  <Button className="mt-4" disabled={create.isPending || links.length >= 2} onClick={() => create.mutate()}><Link2 />{links.length >= 2 ? '2 of 2 active' : 'Generate login link'}</Button>
  {create.error && <p role="alert" className="mt-2 text-sm text-destructive">{create.error.message}</p>}
  {fresh && <div className="mt-4 rounded-md border border-surface-border bg-surface p-3"><p className="text-xs font-bold">Copy now — it won't be shown again:</p><div className="mt-2 flex gap-2"><input readOnly value={fresh} aria-label="New login link" className="h-10 min-w-0 flex-1 rounded-md border border-input bg-background px-2 text-xs" onFocus={e => e.currentTarget.select()} /><Button type="button" variant="outline" aria-label="Copy login link" onClick={() => void navigator.clipboard.writeText(fresh)}><Copy /></Button></div></div>}

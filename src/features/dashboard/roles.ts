@@ -2,7 +2,14 @@ import { queryOptions } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 export const permissionList = [
-  { key: 'users', label: 'Manage players' },
+  { key: 'players.view', label: 'View player accounts' },
+  { key: 'players.profile', label: 'Edit player profiles' },
+  { key: 'players.tokens', label: 'Adjust player tokens' },
+  { key: 'players.password_reset', label: 'Reset player passwords' },
+  { key: 'players.delete', label: 'Delete player accounts' },
+  { key: 'players.ban', label: 'Ban / unban accounts' },
+  { key: 'logs.view', label: 'View game / registration logs' },
+  { key: 'ips.view', label: 'View IP addresses (Owner grants)' },
   { key: 'shop', label: 'Market & packs' },
   { key: 'blooks', label: 'Blooks' },
   { key: 'games', label: 'Games' },
