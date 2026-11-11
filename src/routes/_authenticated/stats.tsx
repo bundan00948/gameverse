@@ -33,7 +33,7 @@ const btn = 'flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm
 
 function Stats() { const { player } = Route.useSearch(); return <StatsView player={player} />; }
 
-export function StatsView({ player }: { player?: string }) {
+export function StatsView({ player }: { player?: string | undefined }) {
   const { data } = useSuspenseQuery(statsOptions(player)); const { data: ids } = useSuspenseQuery(identitiesOptions());
   const cache = useQueryClient(); const user = usePlayer(); const [picking, setPicking] = useState(false);
   const target = player ?? user?.id;

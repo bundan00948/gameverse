@@ -5,7 +5,7 @@ import { identitiesOptions } from '@/features/dashboard/roles';
 import { PageError, meta } from '@/features/dashboard/page';
 import { StatsView } from './stats';
 
-export const Route = createFileRoute('/_authenticated/stats/view/$id')({
+export const Route = createFileRoute('/_authenticated/stats_/view/$id')({
   loader: async ({ context, params }) => {
     if (!/^\d{7}$/.test(params.id)) throw notFound();
     const r = await supabase.from('profiles').select('id').eq('code_id', params.id).maybeSingle();
