@@ -11,6 +11,7 @@ import { MarketBanners } from '@/features/dashboard/market-banners';
 import { bannersOptions, ownedBannersOptions } from '@/features/dashboard/banners';
 import { appearanceOptions } from '@/features/dashboard/data';
 import { safeColor } from '@/features/dashboard/appearance';
+import { BoostNotice } from '@/features/dashboard/boosts';
 
 const PackOpener = lazy(() => import('@/features/dashboard/pack-opener').then(module => ({ default: module.PackOpener })));
 
@@ -36,7 +37,7 @@ function Shop() {
           {!p.image_url && <span className="market-pack-name">{p.name}</span>}
         </span>
         <span className="market-pack-price"><img src={tokenIcon.url} alt="" className="size-[30px] object-contain" />{p.price}</span>
-      </Button>))}</div><MarketBanners /></div>
+      </Button>))}</div><MarketBanners /></div><BoostNotice />
     {pack && <Suspense fallback={null}><PackOpener pack={pack} tokens={wallet.tokens} onClose={() => setChosen(null)} /></Suspense>}
   </DashboardShell>;
 }
