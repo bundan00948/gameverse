@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { playerId } from '@/features/account/auth-user';
 import { Mail, X, Gavel, Store, Sparkles } from '@/lib/icons';
-import { PlanetLogo } from '@/components/planet-logo';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
 export interface MailItem { id: string; user_id: string | null; kind: string; title: string; body: string; image_url: string | null; created_at: string; read: boolean }
