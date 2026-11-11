@@ -28,7 +28,7 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedShopRouteImport } from './routes/_authenticated/shop'
 import { Route as AuthenticatedStatsRouteImport } from './routes/_authenticated/stats'
 import { Route as AuthenticatedPlayGameIdRouteImport } from './routes/_authenticated/play.$gameId'
-import { Route as AuthenticatedStatsViewIdRouteImport } from './routes/_authenticated/stats.view.$id'
+import { Route as AuthenticatedStatsViewIdRouteImport } from './routes/_authenticated/stats_.view.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -127,9 +127,9 @@ const AuthenticatedPlayGameIdRoute = AuthenticatedPlayGameIdRouteImport.update({
 } as any)
 const AuthenticatedStatsViewIdRoute =
   AuthenticatedStatsViewIdRouteImport.update({
-    id: '/view/$id',
-    path: '/view/$id',
-    getParentRoute: () => AuthenticatedStatsRoute,
+    id: '/stats_/view/$id',
+    path: '/stats/view/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -149,7 +149,7 @@ export interface FileRoutesByFullPath {
   '/missions': typeof AuthenticatedMissionsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/shop': typeof AuthenticatedShopRoute
-  '/stats': typeof AuthenticatedStatsRouteWithChildren
+  '/stats': typeof AuthenticatedStatsRoute
   '/play/$gameId': typeof AuthenticatedPlayGameIdRoute
   '/stats/view/$id': typeof AuthenticatedStatsViewIdRoute
 }
@@ -170,7 +170,7 @@ export interface FileRoutesByTo {
   '/missions': typeof AuthenticatedMissionsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/shop': typeof AuthenticatedShopRoute
-  '/stats': typeof AuthenticatedStatsRouteWithChildren
+  '/stats': typeof AuthenticatedStatsRoute
   '/play/$gameId': typeof AuthenticatedPlayGameIdRoute
   '/stats/view/$id': typeof AuthenticatedStatsViewIdRoute
 }
@@ -193,9 +193,9 @@ export interface FileRoutesById {
   '/_authenticated/missions': typeof AuthenticatedMissionsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/shop': typeof AuthenticatedShopRoute
-  '/_authenticated/stats': typeof AuthenticatedStatsRouteWithChildren
+  '/_authenticated/stats': typeof AuthenticatedStatsRoute
   '/_authenticated/play/$gameId': typeof AuthenticatedPlayGameIdRoute
-  '/_authenticated/stats/view/$id': typeof AuthenticatedStatsViewIdRoute
+  '/_authenticated/stats_/view/$id': typeof AuthenticatedStatsViewIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -261,7 +261,7 @@ export interface FileRouteTypes {
     | '/_authenticated/shop'
     | '/_authenticated/stats'
     | '/_authenticated/play/$gameId'
-    | '/_authenticated/stats/view/$id'
+    | '/_authenticated/stats_/view/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -410,26 +410,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPlayGameIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/stats/view/$id': {
-      id: '/_authenticated/stats/view/$id'
-      path: '/view/$id'
+    '/_authenticated/stats_/view/$id': {
+      id: '/_authenticated/stats_/view/$id'
+      path: '/stats/view/$id'
       fullPath: '/stats/view/$id'
       preLoaderRoute: typeof AuthenticatedStatsViewIdRouteImport
-      parentRoute: typeof AuthenticatedStatsRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
-
-interface AuthenticatedStatsRouteChildren {
-  AuthenticatedStatsViewIdRoute: typeof AuthenticatedStatsViewIdRoute
-}
-
-const AuthenticatedStatsRouteChildren: AuthenticatedStatsRouteChildren = {
-  AuthenticatedStatsViewIdRoute: AuthenticatedStatsViewIdRoute,
-}
-
-const AuthenticatedStatsRouteWithChildren =
-  AuthenticatedStatsRoute._addFileChildren(AuthenticatedStatsRouteChildren)
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
@@ -441,8 +430,9 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMissionsRoute: typeof AuthenticatedMissionsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedShopRoute: typeof AuthenticatedShopRoute
-  AuthenticatedStatsRoute: typeof AuthenticatedStatsRouteWithChildren
+  AuthenticatedStatsRoute: typeof AuthenticatedStatsRoute
   AuthenticatedPlayGameIdRoute: typeof AuthenticatedPlayGameIdRoute
+  AuthenticatedStatsViewIdRoute: typeof AuthenticatedStatsViewIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -455,8 +445,9 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMissionsRoute: AuthenticatedMissionsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedShopRoute: AuthenticatedShopRoute,
-  AuthenticatedStatsRoute: AuthenticatedStatsRouteWithChildren,
+  AuthenticatedStatsRoute: AuthenticatedStatsRoute,
   AuthenticatedPlayGameIdRoute: AuthenticatedPlayGameIdRoute,
+  AuthenticatedStatsViewIdRoute: AuthenticatedStatsViewIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
