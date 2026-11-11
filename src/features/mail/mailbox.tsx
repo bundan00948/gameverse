@@ -23,6 +23,7 @@ const kinds: Record<string, { label: string; icon: typeof Mail; tone: string }> 
   sale: { label: 'Bazaar sale', icon: Store, tone: 'var(--tile-c, #22c55e)' },
   auction: { label: 'Auction', icon: Gavel, tone: 'var(--tile-d, #f59e0b)' },
 };
+const systemKind = { label: 'Announcement', icon: Sparkles, tone: 'var(--primary)' };
 const filters = [['all', 'All'], ['system', 'News'], ['trade', 'Trades']] as const;
 export function timeAgo(iso: string) {
   const s = Math.max(1, (Date.now() - new Date(iso).getTime()) / 1000);
@@ -58,7 +59,7 @@ export function Mailbox() {
         <div className="mail-list">
           {(() => { const list = mail.filter(m => filter === 'all' || (filter === 'system' ? m.kind === 'system' : m.kind !== 'system'));
             if (!list.length) return <div className="mail-empty"><span><Mail className="size-9" /></span><p className="font-display text-xl">No mail here</p><p className="text-sm text-muted-foreground">News and trade updates will land in this box.</p></div>;
-            return list.map(m => { const k = kinds[m.kind] ?? kinds.system; const Icon = k.icon; const isNew = fresh.has(m.id);
+            return list.map(m => { const k = kinds[m.kind] ?? systemKind; const Icon = k.icon; const isNew = fresh.has(m.id);
               return <article key={m.id} className="mail-card" data-new={isNew || undefined} style={{ '--mail-tone': k.tone } as React.CSSProperties}>
                 <div className="flex items-center gap-2.5"><span className="mail-kind-icon"><Icon className="size-4" /></span><p className="flex-1 text-[11px] font-extrabold uppercase tracking-[0.08em]" style={{ color: k.tone }}>{k.label}</p>{isNew && <span className="mail-new">New</span>}<time dateTime={m.created_at} className="text-[11px] font-semibold text-muted-foreground">{timeAgo(m.created_at)}</time></div>
                 <h3 className="mt-2.5 font-display text-xl leading-tight">{m.title}</h3>
