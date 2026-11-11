@@ -1,0 +1,12 @@
+DROP POLICY "tier roles insert" ON public.staff_roles;
+DROP POLICY "tier roles update" ON public.staff_roles;
+DROP POLICY "tier roles delete" ON public.staff_roles;
+DROP POLICY "tier assign insert" ON public.user_staff_roles;
+DROP POLICY "tier assign update" ON public.user_staff_roles;
+DROP POLICY "tier assign delete" ON public.user_staff_roles;
+CREATE POLICY "tier roles insert" ON public.staff_roles AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (public.is_site_owner(auth.uid()) OR sort > public.staff_tier(auth.uid()));
+CREATE POLICY "tier roles update" ON public.staff_roles AS RESTRICTIVE FOR UPDATE TO authenticated USING (public.is_site_owner(auth.uid()) OR sort > public.staff_tier(auth.uid())) WITH CHECK (public.is_site_owner(auth.uid()) OR sort > public.staff_tier(auth.uid()));
+CREATE POLICY "tier roles delete" ON public.staff_roles AS RESTRICTIVE FOR DELETE TO authenticated USING (public.is_site_owner(auth.uid()) OR sort > public.staff_tier(auth.uid()));
+CREATE POLICY "tier assign insert" ON public.user_staff_roles AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (public.is_site_owner(auth.uid()) OR (public.staff_tier(user_id) > public.staff_tier(auth.uid()) AND (SELECT sort FROM public.staff_roles WHERE id=role_id) > public.staff_tier(auth.uid())));
+CREATE POLICY "tier assign update" ON public.user_staff_roles AS RESTRICTIVE FOR UPDATE TO authenticated USING (public.is_site_owner(auth.uid()) OR public.staff_tier(user_id) > public.staff_tier(auth.uid())) WITH CHECK (public.is_site_owner(auth.uid()) OR (public.staff_tier(user_id) > public.staff_tier(auth.uid()) AND (SELECT sort FROM public.staff_roles WHERE id=role_id) > public.staff_tier(auth.uid())));
+CREATE POLICY "tier assign delete" ON public.user_staff_roles AS RESTRICTIVE FOR DELETE TO authenticated USING (public.is_site_owner(auth.uid()) OR (public.staff_tier(user_id) > public.staff_tier(auth.uid()) AND (SELECT sort FROM public.staff_roles WHERE id=role_id) > public.staff_tier(auth.uid())));
