@@ -51,3 +51,6 @@ use the editor.
 - Player displays use the shared profile-backed identity directory; invalidate shared identity caches after edits and refresh across tabs so names, roles, badges and pictures agree. Other-player stats use authenticated, narrowly projected database functions without opening private base-table policies.
 
 - Banner ownership and sale status are independent; purchases run atomically with wallet locks, profile selection is ownership-validated by a database trigger, and shared identities project the selected background.
+- Account bans use protected application state, restrictive RLS and guarded privileged actions, with private per-user broadcasts and a low-frequency recovery check so existing sessions lose access immediately without heavy polling.
+- Player account actions authorize separate permissions server-side; only the verified Owner can grant or assign IP-visibility roles, preventing broad user-management access from revealing sensitive logs.
+- Registration and game-open activity capture IP only from the edge-provided connecting-address header; absent historical/local addresses remain unavailable, and passwords are never persisted in logs.
