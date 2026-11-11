@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
-import { requiredPlayerPermissions } from './account-safety';
+import { requiredPlayerPermissions, sortByAuthority } from './account-safety';
 import { setResponseHeader } from '@tanstack/react-start/server';
 
 type Ctx = { supabase: { rpc: (fn: 'has_permission', args: { _user_id: string; _perm: string }) => PromiseLike<{ data: boolean | null }> }; userId: string };
@@ -18,6 +18,17 @@ async function assertAdmin(context: Ctx, perms: string[] = ['players.view']) {
   const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
   return supabaseAdmin;
 }
+type Admin = Awaited<ReturnType<typeof assertAdmin>>;
+async function tierOf(admin: Admin, id: string) {
+  const r = await admin.rpc('staff_tier', { _user_id: id });
+  if (r.error) throw new Error('Could not check staff tier');
+  return Number(r.data);
+}
+/** Staff may only act on accounts ranked strictly below their own tier. */
+async function assertLowerTier(admin: Admin, callerId: string, targetId: string) {
+  const [caller, target] = await Promise.all([tierOf(admin, callerId), tierOf(admin, targetId)]);
+  if (!(target > caller)) throw new Error('You can only manage players ranked below you');
+}
 
 export const listUsers = createServerFn({ method: 'GET' })
   .middleware([requireSupabaseAuth])
@@ -26,18 +37,31 @@ export const listUsers = createServerFn({ method: 'GET' })
     const { data, error } = await admin.auth.admin.listUsers({ perPage: 200 });
     if (error) throw new Error(error.message);
     const ids = data.users.map(u => u.id);
-    const [profiles, wallets, roles] = await Promise.all([
+    const [profiles, wallets, roles, owners, staff] = await Promise.all([
       admin.from('profiles').select('id, username, display_name').in('id', ids),
       admin.from('wallets').select('user_id, tokens').in('user_id', ids),
       admin.from('user_roles').select('user_id, role').eq('role', 'admin'),
+      admin.from('site_owners').select('user_id'),
+      admin.from('user_staff_roles').select('user_id, staff_roles(name, sort, permissions, colors)'),
     ]);
-    return data.users.map(u => ({
-      id: u.id, email: u.email ?? '', created: u.created_at,
-      username: profiles.data?.find(p => p.id === u.id)?.username ?? '',
-      displayName: profiles.data?.find(p => p.id === u.id)?.display_name ?? '',
-      tokens: wallets.data?.find(w => w.user_id === u.id)?.tokens ?? 0,
-      admin: !!roles.data?.some(r => r.user_id === u.id),
-    }));
+    const callerTier = await tierOf(admin, context.userId);
+    const rows = data.users.map(u => {
+      const owner = !!owners.data?.some(o => o.user_id === u.id);
+      const isAdmin = !!roles.data?.some(r => r.user_id === u.id);
+      const staffRoles = (staff.data ?? []).filter(r => r.user_id === u.id && r.staff_roles).map(r => r.staff_roles!).sort((a, b) => a.sort - b.sort);
+      const tier = owner ? -2 : isAdmin ? -1 : staffRoles[0]?.sort ?? 1e9;
+      const effects = owner ? ['Owner: every permission'] : isAdmin ? ['Full admin: every permission except IP visibility unless granted'] : [...new Set(staffRoles.flatMap(r => r.permissions))];
+      return {
+        id: u.id, email: u.email ?? '', created: u.created_at, tier, owner,
+        roles: [...(owner ? [{ name: 'Owner', colors: [] as string[] }] : []), ...(isAdmin ? [{ name: 'Full admin', colors: [] as string[] }] : []), ...staffRoles.map(r => ({ name: r.name, colors: r.colors }))],
+        effects,
+        username: profiles.data?.find(p => p.id === u.id)?.username ?? '',
+        displayName: profiles.data?.find(p => p.id === u.id)?.display_name ?? '',
+        tokens: wallets.data?.find(w => w.user_id === u.id)?.tokens ?? 0,
+        admin: isAdmin,
+      };
+    });
+    return sortByAuthority(rows.filter(r => r.tier > callerTier));
   });
 
 export const updateUser = createServerFn({ method: 'POST' })
@@ -53,6 +77,7 @@ export const updateUser = createServerFn({ method: 'POST' })
     const full = await context.supabase.rpc('has_role', { _user_id: context.userId, _role: 'admin' });
     if (data.admin !== undefined && (full.error || !full.data)) throw new Error('Only full admins can change full admin access');
     if (data.id === context.userId && data.admin === false) throw new Error("You can't remove your own staff access");
+    await assertLowerTier(admin, context.userId, data.id);
     const owner = await admin.rpc('is_site_owner', { _user_id: data.id });
     const callerOwner = await context.supabase.rpc('is_site_owner', { _user_id: context.userId });
     if (owner.error || callerOwner.error || (owner.data && !callerOwner.data)) throw new Error('Only the Owner can change this account');
@@ -78,6 +103,7 @@ export const deleteUser = createServerFn({ method: 'POST' })
   .handler(async ({ data, context }) => {
     const admin = await assertAdmin(context as unknown as Ctx, ['players.delete']);
     if (data.id === (context as unknown as Ctx).userId) throw new Error("You can't delete yourself");
+    await assertLowerTier(admin, context.userId, data.id);
     const owner = await admin.rpc('is_site_owner', { _user_id: data.id });
     if (owner.error || owner.data) throw new Error('The Owner account cannot be deleted');
     const { error } = await admin.auth.admin.deleteUser(data.id);
@@ -91,6 +117,7 @@ export const setAccountBan = createServerFn({ method: 'POST' }).middleware([requ
     const admin = await assertAdmin(context as unknown as Ctx, ['players.ban']);
     const owner = await admin.rpc('is_site_owner', { _user_id: data.id });
     if (owner.error || owner.data || data.id === context.userId) throw new Error('Cannot ban this account');
+    await assertLowerTier(admin, context.userId, data.id);
     if (data.banned) {
       const r = await admin.from('account_bans').upsert({ user_id: data.id, actor_id: context.userId, reason: data.reason, banned_at: new Date().toISOString(), revoked_at: null, expires_at: data.hours ? new Date(Date.now() + data.hours * 3600000).toISOString() : null });
       if (r.error) throw new Error('Could not ban account');
@@ -122,4 +149,25 @@ export const listGameLog = createServerFn({ method: 'GET' }).middleware([require
     if (r.error) throw new Error('Could not load activity');
     const profiles = await admin.from('profiles').select('id,username,code_id');
     return { count: r.count ?? 0, ips, rows: (r.data ?? []).map(row => { const p = profiles.data?.find(p => p.id===row.user_id); return { id: row.id, kind: row.kind, title: row.game_title, created: row.created_at, player: p?.username || 'Deleted player', code: p?.code_id ?? null, ip: ips && 'ip_address' in row ? String(row.ip_address ?? '') || null : null }; }) };
+  });
+
+export const getUserInventory = createServerFn({ method: 'GET' }).middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const admin = await assertAdmin(context as unknown as Ctx, ['players.inventory']);
+    await assertLowerTier(admin, context.userId, data.id);
+    const r = await admin.from('user_blooks').select('blook_id, quantity').eq('user_id', data.id);
+    if (r.error) throw new Error('Could not load inventory');
+    return r.data;
+  });
+export const setUserBlook = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid(), blookId: z.string().uuid(), quantity: z.number().int().min(0).max(100000) }).parse(d))
+  .handler(async ({ data, context }) => {
+    const admin = await assertAdmin(context as unknown as Ctx, ['players.inventory']);
+    await assertLowerTier(admin, context.userId, data.id);
+    const r = data.quantity === 0
+      ? await admin.from('user_blooks').delete().eq('user_id', data.id).eq('blook_id', data.blookId)
+      : await admin.from('user_blooks').upsert({ user_id: data.id, blook_id: data.blookId, quantity: data.quantity }, { onConflict: 'user_id,blook_id' });
+    if (r.error) throw new Error('Could not save inventory');
+    return { ok: true };
   });

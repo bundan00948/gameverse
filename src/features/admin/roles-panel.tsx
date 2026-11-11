@@ -35,13 +35,22 @@ type Role = { id: string; name: string; colors: string[]; permissions: string[];
 export interface RolesPanelProps extends HTMLAttributes<HTMLDivElement> {}
 export const RolesPanel = forwardRef<HTMLDivElement, RolesPanelProps>(function RolesPanel({ className, ...props }, ref) {
   const cache = useQueryClient(); const players = usePlayers();
-  const { data, error } = useQuery({ queryKey: ['admin-roles'], queryFn: async () => { const r = await supabase.from('staff_roles').select('id, name, colors, permissions, sort, user_staff_roles(user_id)').order('sort'); if (r.error) throw r.error; return r.data as Role[]; } });
-  const add = useMutation({ mutationFn: async () => { const { error } = await supabase.from('staff_roles').insert({ name: 'New role', sort: (data?.length ?? 0) }); if (error) throw error; }, onSuccess: () => refresh(cache) });
+  const { data, error } = useQuery({ queryKey: ['admin-roles'], queryFn: async () => {
+    const { data: s } = await supabase.auth.getSession(); const me = s.session?.user.id;
+    const [r, t] = await Promise.all([supabase.from('staff_roles').select('id, name, colors, permissions, sort, user_staff_roles(user_id)').order('sort'), me ? supabase.rpc('staff_tier', { _user_id: me }) : Promise.resolve({ data: 1e9, error: null })]);
+    if (r.error) throw r.error; if (t.error) throw t.error;
+    const tier = Number(t.data); const all = r.data as Role[];
+    // Only roles ranked below the viewer's own tier are visible or editable.
+    return { roles: all.filter(x => x.sort > tier), next: Math.max(tier + 1, ...all.map(x => x.sort + 1)) };
+  } });
+  const add = useMutation({ mutationFn: async () => { const { error } = await supabase.from('staff_roles').insert({ name: 'New role', sort: data?.next ?? 99 }); if (error) throw error; }, onSuccess: () => refresh(cache) });
   return <div ref={ref} {...props} className={cn("space-y-4", className)}>
-    <div className="flex items-center justify-between"><h2 className="text-xl font-bold">Roles <span className="ml-2 text-sm text-muted-foreground">{data?.length ?? 0}</span></h2><Button type="button" onClick={() => add.mutate()}><Plus />Add role</Button></div>
+    <div className="flex items-center justify-between"><h2 className="text-xl font-bold">Roles <span className="ml-2 text-sm text-muted-foreground">{data?.roles.length ?? 0}</span></h2><Button type="button" onClick={() => add.mutate()}><Plus />Add role</Button></div>
     <p className="text-sm text-muted-foreground">A player's highest role (lowest order number) sets their chat name color. Permissions from every role they hold are combined.</p>
     {error && <p role="alert" className="text-destructive">{error.message}</p>}
-    {data?.map(r => <RoleRow key={r.id} role={r} players={players} />)}
+    {add.error && <p role="alert" className="text-destructive">{add.error.message}</p>}
+    <p className="text-sm text-muted-foreground">You only see roles ranked below your own.</p>
+    {data?.roles.map(r => <RoleRow key={r.id} role={r} players={players} />)}
   </div>;
 });
 function RoleRow({ role, players }: { role: Role; players: Player[] }) {

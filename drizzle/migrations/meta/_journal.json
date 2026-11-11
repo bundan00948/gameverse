@@ -148,6 +148,13 @@
       "when": 1794392943463,
       "tag": "0020_secure_activity_registration_and_banned_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1794394614996,
+      "tag": "0021_staff_tiers_inventory",
+      "breakpoints": true
     }
   ]
 }

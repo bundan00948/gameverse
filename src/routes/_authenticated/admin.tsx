@@ -8,13 +8,13 @@ import { Trash2, Plus, Save, Shield, Users as UsersIcon, Store, Backpack, Gamepa
 import { supabase } from '@/integrations/supabase/client';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { isAdminOptions } from '@/features/dashboard/data';
-import { permissionsOptions, type Permission } from '@/features/dashboard/roles';
+import { permissionsOptions, permissionList, roleTextStyle, type Permission } from '@/features/dashboard/roles';
 import { RolesPanel, BadgesPanel } from '@/features/admin/roles-panel';
 import { PageError, PageTitle, meta } from '@/features/dashboard/page';
 import { ImagePicker } from '@/features/dashboard/image-picker';
 import { Button } from '@/components/ui/button';
 import { rarityColors, rarityDefaults, rarityColorValue, rarityPaint, rarityBadgeImages } from '@/features/dashboard/appearance';
-import { listUsers, updateUser, deleteUser, setAccountBan, listAccountBans, listGameLog } from '@/lib/admin.functions';
+import { listUsers, getUserInventory, setUserBlook, updateUser, deleteUser, setAccountBan, listAccountBans, listGameLog } from '@/lib/admin.functions';
 import { BannersPanel } from '@/features/admin/banners-panel';
 import { BlooksPanel } from '@/features/admin/blooks-panel';
 import { gameEmbedUrl } from '@/features/dashboard/game-embed';
@@ -58,7 +58,7 @@ function Users({ canGrantStaff, perms }: { canGrantStaff: boolean; perms: Permis
   const { data, error, isLoading } = useQuery({ queryKey: ['admin-users'], queryFn: () => fetchUsers() });
   if (isLoading) return <p>Loading players…</p>;
   if (error) return <p className="text-destructive">{error.message}</p>;
-  return <div className="space-y-4">{data?.map(u => <UserRow key={u.id} u={u} canGrantStaff={canGrantStaff} perms={perms} />)}</div>;
+  return <div className="space-y-4"><p className="text-sm text-muted-foreground">Sorted by authority (Owner first), then alphabetically. Only players ranked below you are shown.</p>{data?.map(u => <UserRow key={u.id} u={u} canGrantStaff={canGrantStaff} perms={perms} />)}</div>;
 }
 function UserRow({ u, canGrantStaff, perms }: { u: U; canGrantStaff: boolean; perms: Permission[] }) {
   const cache = useQueryClient(); const save = useServerFn(updateUser); const del = useServerFn(deleteUser);
@@ -67,6 +67,11 @@ function UserRow({ u, canGrantStaff, perms }: { u: U; canGrantStaff: boolean; pe
   const d = useMutation({ mutationFn: () => del({ data: { id: u.id } }), onSuccess: () => invalidatePlayerProfiles(cache) });
   return <EditorSection title={f.username || u.email} summary={u.email}>
     <div className="mb-4 border-b border-surface-border pb-3"><p className="text-xs text-muted-foreground">Result</p><p className="break-words font-display">{f.displayName || f.username}</p><p className="text-xs text-muted-foreground">{f.admin ? 'Full admin' : 'Player'} · {f.tokens} tokens</p></div>
+    <div className="mb-4 space-y-2 border-b border-surface-border pb-3"><p className="text-xs font-bold">Roles</p>
+      <div className="flex flex-wrap gap-1.5">{u.roles.length ? u.roles.map(r => <span key={r.name} className="rounded-full bg-glass-hover px-2 py-0.5 text-xs font-bold"><span style={roleTextStyle(r.colors)}>{r.name}</span></span>) : <span className="text-xs text-muted-foreground">Player (no role)</span>}</div>
+      <p className="text-xs font-bold">Role effects</p>
+      <ul className="flex flex-wrap gap-1.5">{u.effects.length ? u.effects.map(e => <li key={e} className="rounded bg-secondary px-2 py-0.5 text-xs">{permissionList.find(p => p.key === e)?.label ?? e}</li>) : <li className="text-xs text-muted-foreground">No special permissions</li>}</ul>
+    </div>
     <p className="mb-4 break-words border-b border-surface-border pb-3 text-sm text-muted-foreground">{u.email} · joined {new Date(u.created).toLocaleDateString()}</p>
     <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <label className="text-xs">Username<input disabled={!perms.includes('players.profile')} className={input} value={f.username} onChange={e => setF({ ...f, username: e.target.value })} /></label>
@@ -80,9 +85,39 @@ function UserRow({ u, canGrantStaff, perms }: { u: U; canGrantStaff: boolean; pe
       </div>
     </div>
     {perms.includes('players.ban') && <BanControls userId={u.id} />}
+    {perms.includes('players.inventory') && <InventoryEditor userId={u.id} />}
     {(m.error || d.error) && <p role="alert" className="mt-1 text-xs text-destructive">{(m.error ?? d.error)?.message}</p>}
     {m.isSuccess && <p role="status" className="mt-1 text-xs">Saved.</p>}
   </EditorSection>;
+}
+
+function InventoryEditor({ userId }: { userId: string }) {
+  const [open, setOpen] = useState(false);
+  return <div className="mt-4 border-t border-surface-border pt-3">
+    <Button type="button" variant="outline" size="sm" aria-expanded={open} onClick={() => setOpen(o => !o)}><Backpack />{open ? 'Hide inventory' : 'Edit inventory'}</Button>
+    {open && <InventoryList userId={userId} />}
+  </div>;
+}
+function InventoryList({ userId }: { userId: string }) {
+  const cache = useQueryClient(); const load = useServerFn(getUserInventory); const save = useServerFn(setUserBlook);
+  const [search, setSearch] = useState(''); const [draft, setDraft] = useState<Record<string, number>>({});
+  const inv = useQuery({ queryKey: ['admin-inventory', userId], queryFn: () => load({ data: { id: userId } }) });
+  const blooks = useQuery({ queryKey: ['admin-inventory-blooks'], queryFn: async () => { const r = await supabase.from('blooks').select('id, name, rarity, image_url').order('name'); if (r.error) throw r.error; return r.data; } });
+  const m = useMutation({ mutationFn: (v: { blookId: string; quantity: number }) => save({ data: { id: userId, ...v } }), onSuccess: (_d, v) => { setDraft(d => { const n = { ...d }; delete n[v.blookId]; return n; }); cache.invalidateQueries({ queryKey: ['admin-inventory', userId] }); ['inventory', 'collection', 'stats'].forEach(k => cache.invalidateQueries({ queryKey: [k] })); } });
+  if (inv.error || blooks.error) return <p role="alert" className="mt-2 text-xs text-destructive">{(inv.error ?? blooks.error)?.message}</p>;
+  if (!inv.data || !blooks.data) return <p className="mt-2 text-xs">Loading inventory…</p>;
+  const owned = new Map(inv.data.map(r => [r.blook_id, r.quantity]));
+  const list = blooks.data.filter(b => b.name.toLowerCase().includes(search.toLowerCase())).sort((a, b) => Number(owned.has(b.id)) - Number(owned.has(a.id)) || a.name.localeCompare(b.name));
+  return <div className="mt-3 space-y-2">
+    <label className="block text-xs font-bold">Search blooks<input type="search" className={input} value={search} onChange={e => setSearch(e.target.value)} /></label>
+    <ul className="grid max-h-96 gap-2 overflow-y-auto sm:grid-cols-2">{list.map(b => { const q = draft[b.id] ?? owned.get(b.id) ?? 0; return <li key={b.id} className="flex items-center gap-2 rounded-md bg-secondary p-2">
+      {b.image_url ? <img src={b.image_url} alt="" className="size-9 object-contain" /> : <span className="size-9" />}
+      <span className="min-w-0 flex-1"><span className="block truncate text-sm font-bold">{b.name}</span><span className="text-xs capitalize text-muted-foreground">{b.rarity}</span></span>
+      <input aria-label={`${b.name} quantity`} type="number" min={0} className={input + ' mt-0 w-20'} value={q} onChange={e => setDraft(d => ({ ...d, [b.id]: Math.max(0, Math.floor(Number(e.target.value) || 0)) }))} />
+      <Button type="button" size="icon" aria-label={`Save ${b.name}`} disabled={m.isPending || draft[b.id] === undefined} onClick={() => m.mutate({ blookId: b.id, quantity: q })}><Save /></Button>
+    </li>; })}</ul>
+    {m.error && <p role="alert" className="text-xs text-destructive">{m.error.message}</p>}
+  </div>;
 }
 
 type TableName = 'games' | 'missions' | 'packs' | 'blooks';
