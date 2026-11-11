@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { BlookArt } from '@/features/dashboard/blook-art';
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { boostDescription, sacrificeRarities } from '@/features/dashboard/boosts';
+import { supabase } from '@/integrations/supabase/client';
 import { useMemo, useState, type CSSProperties } from 'react';
 import { Lock, Search } from '@/lib/icons';
 import { DashboardShell } from '@/features/account/dashboard-shell';
@@ -28,6 +30,18 @@ function Inventory() {
   const { data: badges } = useQuery(rarityBadgesOptions());
   const [q, setQ] = useState(''); const [rarity, setRarity] = useState('all'); const [show, setShow] = useState('all');
   const [open, setOpen] = useState<Blook | null>(null);
+  const qc = useQueryClient(); const [busy, setBusy] = useState(false); const [note, setNote] = useState('');
+  const sacrifice = async (b: Blook) => {
+    if (!confirm(`Sacrifice one ${b.name}? It will be removed from your inventory to boost everyone.`)) return;
+    setBusy(true); setNote('');
+    const r = await supabase.rpc('sacrifice_blook', { _blook: b.id });
+    setBusy(false);
+    if (r.error) { setNote(r.error.message); return; }
+    const d = r.data as { multiplier: number; minutes: number };
+    setNote(`Boost started: x${d.multiplier} for ${d.minutes} minutes.`);
+    setOpen({ ...b, owned: b.owned - 1 });
+    qc.invalidateQueries({ queryKey: ['collection'] }); qc.invalidateQueries({ queryKey: ['boosts'] }); qc.invalidateQueries({ queryKey: ['stats'] });
+  };
   const all = data.flatMap(p => p.blooks);
   const unlocked = all.filter(b => b.owned > 0).length;
   const groups = useMemo(() => data.map(p => ({ ...p, blooks: p.blooks.filter(b =>
@@ -60,7 +74,7 @@ function Inventory() {
           </Button>))}</div>
       </section>; })}
 
-    {open && <Dialog open onOpenChange={value => { if (!value) setOpen(null); }}><DialogContent aria-describedby={undefined} className="w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-md bg-surface p-8 text-center" style={{ '--pack-start': safeColor(open.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(open.gradient_end, 'var(--market-end)'), backgroundImage: `${open.open_image_url ? `url("${open.open_image_url}"), ` : ''}linear-gradient(to bottom, var(--pack-start), var(--pack-end))`, backgroundSize: 'cover', backgroundPosition: 'center', border: '11px solid rgba(255,255,255,0.4)', boxShadow: 'var(--market-shadow)' } as CSSProperties}>
+    {open && <Dialog open onOpenChange={value => { if (!value) { setOpen(null); setNote(''); } }}><DialogContent aria-describedby={undefined} className="w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-md bg-surface p-8 text-center" style={{ '--pack-start': safeColor(open.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(open.gradient_end, 'var(--market-end)'), backgroundImage: `${open.open_image_url ? `url("${open.open_image_url}"), ` : ''}linear-gradient(to bottom, var(--pack-start), var(--pack-end))`, backgroundSize: 'cover', backgroundPosition: 'center', border: '11px solid rgba(255,255,255,0.4)', boxShadow: 'var(--market-shadow)' } as CSSProperties}>
         <div aria-hidden className="pack-scene-gradient rounded-md" />
         {open.open_image_url && <img aria-hidden src={open.open_image_url} alt="" className="pack-stage-background rounded-md" />}
         {open.pattern_image_url && <img aria-hidden src={open.pattern_image_url} alt="" className="market-pack-pattern" />}
@@ -76,6 +90,8 @@ function Inventory() {
           <div className="rounded-lg border border-white/25 bg-background/70 p-3.5 shadow-tile"><dt className="text-sm text-muted-foreground">Owned</dt><dd className="text-lg font-bold">{open.owned}</dd></div>
           <div className="rounded-lg border border-white/25 bg-background/70 p-3.5 shadow-tile"><dt className="text-sm text-muted-foreground">Worth</dt><dd className="mt-0.5 flex items-center justify-center gap-1.5 text-[20.5px] font-bold"><img src={tokenIcon.url} alt="" className="size-5 object-contain" />{(worthTokens(open.rarity) ?? 0).toLocaleString('en-US')}</dd></div>
         </dl>
+        {open.owned > 0 && (sacrificeRarities as readonly string[]).includes(open.rarity) && <div className="mt-5"><Button disabled={busy} onClick={() => sacrifice(open)}>{busy ? 'Sacrificing…' : 'Sacrifice to boost everyone'}</Button><p className="mt-2 text-sm text-muted-foreground">{boostDescription[open.rarity]}</p></div>}
+        {note && <p role="status" className="mt-2 text-sm font-bold">{note}</p>}
         {!open.owned && open.pack !== 'Unassigned' && <Link to="/shop" className="mt-5 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">Find it in the Market</Link>}
         </div>
     </DialogContent></Dialog>}

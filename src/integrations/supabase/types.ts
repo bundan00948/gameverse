@@ -163,6 +163,56 @@ export type Database = {
           },
         ]
       }
+      boosts: {
+        Row: {
+          affected: string[]
+          blook_name: string
+          created_at: string
+          ends_at: string
+          id: string
+          multiplier: number
+          pack_id: string | null
+          pack_name: string | null
+          player_name: string
+          rarity: string
+          user_id: string
+        }
+        Insert: {
+          affected: string[]
+          blook_name: string
+          created_at?: string
+          ends_at: string
+          id?: string
+          multiplier: number
+          pack_id?: string | null
+          pack_name?: string | null
+          player_name: string
+          rarity: string
+          user_id: string
+        }
+        Update: {
+          affected?: string[]
+          blook_name?: string
+          created_at?: string
+          ends_at?: string
+          id?: string
+          multiplier?: number
+          pack_id?: string | null
+          pack_name?: string | null
+          player_name?: string
+          rarity?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boosts_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "packs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_messages: {
         Row: {
           body: string
@@ -696,6 +746,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      boost_factor: {
+        Args: { _pack: string; _rarity: string }
+        Returns: number
+      }
       claim_daily: { Args: never; Returns: number }
       claim_mission: { Args: { _mission: string }; Returns: number }
       create_auth_link:
@@ -778,6 +832,7 @@ export type Database = {
       }
       purchase_banner: { Args: { _banner: string }; Returns: string }
       record_play: { Args: { _game: string }; Returns: undefined }
+      sacrifice_blook: { Args: { _blook: string }; Returns: Json }
       sell_blook: { Args: { _blook: string }; Returns: number }
       staff_tier: { Args: { _user_id: string }; Returns: number }
     }

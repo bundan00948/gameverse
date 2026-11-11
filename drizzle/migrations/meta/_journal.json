@@ -169,6 +169,13 @@
       "when": 1794398181461,
       "tag": "0023_credits",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1794403290846,
+      "tag": "0024_blook_boosts",
+      "breakpoints": true
     }
   ]
 }
