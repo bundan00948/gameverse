@@ -60,8 +60,8 @@ function Stats() {
         </Button>
         <div className={`${box} gv-nameplate relative w-full min-w-0 flex-1 overflow-hidden text-center sm:max-w-[50%]`}>
           {me?.bannerImage && <img src={me.bannerImage} alt="" className="gv-nameplate-background" />}
-          <h1 className="relative truncate px-4 pt-1 font-display text-3xl leading-[1.05] sm:px-5 sm:pt-2.5 sm:leading-tight"><PlayerName name={name} identity={me} className="font-normal" /></h1>
-          <p className="relative pb-1 text-xs leading-tight text-muted-foreground sm:pb-2.5" style={roleTextStyle(me?.role?.colors)}>{me?.role?.name ?? 'Player'}</p>
+          <h1 className="relative truncate px-4 pt-[5.5px] font-display text-3xl leading-[1.05] sm:px-5 sm:pt-[11.5px] sm:leading-tight"><PlayerName name={name} identity={me} className="font-normal" /></h1>
+          <p className="relative pb-[5.5px] text-xs leading-tight text-muted-foreground sm:pb-[11.5px]" style={roleTextStyle(me?.role?.colors)}>{me?.role?.name ?? 'Player'}</p>
           {own && <Button variant="ghost" aria-label="Change nameplate background" className="gv-nameplate-trigger" onClick={() => setBannerPicking(true)} />}
         </div>
         {me?.badges.length ? <div className={`${box} col-span-2 flex min-h-20 w-full items-center justify-center gap-2 px-5 py-2.5 sm:w-auto sm:flex-1`}><BadgeList identity={me} size="lg" /></div> : null}
