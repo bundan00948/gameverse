@@ -8,6 +8,8 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { BlookArt } from './blook-art';
 import { appearanceOptions, rarityBadgesOptions } from './data';
 import { rarityDefaults, rarityPaint, rarityEndpoints, safeColor } from './appearance';
+import { boostFactor, boostsOptions } from './boosts';
+import { useQuery as useBoostQuery } from '@tanstack/react-query';
 import { dropChanceLabel, raritySortedBlooks } from './blook-catalog';
 import { purchaseTotal, validQuantity } from './purchase';
 
@@ -46,7 +48,9 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   const [rarityStart, rarityEnd] = rarityEndpoints(colors?.[rarity], fallback);
   const badge = badges?.[rarity] ?? null;
   const glow = stage === 'ready' || stage === 'torn' ? safeColor(pack.gradient_start, 'var(--market-start)') : rarityStart;
-  const total = pack.blooks.reduce((s, b) => s + b.weight, 0) || 1;
+  const { data: boosts } = useBoostQuery(boostsOptions());
+  const boosted = (b: Blook) => b.weight * boostFactor(boosts, pack.id, b.rarity);
+  const total = pack.blooks.reduce((s, b) => s + boosted(b), 0) || 1;
   const variables = { '--glow': glow, '--glow-end': rarityEnd, '--rarity-paint': rarityPaint(colors?.[rarity], fallback), '--pack-start': safeColor(pack.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(pack.gradient_end, 'var(--market-end)') } as CSSProperties;
   function crack() {
     if (stage !== 'ready') return;
@@ -65,7 +69,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
             <BlookArt src={b.image_url} alt="" className="size-9 shrink-0" />
             <span className="pack-drop-name" title={b.name}>{b.name}</span>
             <span className="rarity-label" style={{ '--rarity-paint': rarityPaint(colors?.[b.rarity], rarityDefaults[b.rarity] ?? 'var(--muted)') } as CSSProperties}>{b.rarity}</span>
-            <span className="pack-drop-chance">{dropChanceLabel(b.weight, total)}</span>
+            <span className={`pack-drop-chance ${boostFactor(boosts, pack.id, b.rarity) > 1 ? 'pack-drop-boosted' : ''}`} title={boostFactor(boosts, pack.id, b.rarity) > 1 ? `Boosted x${boostFactor(boosts, pack.id, b.rarity).toFixed(2)}` : undefined}>{dropChanceLabel(boosted(b), total)}</span>
           </li>)}</ul> : <>
             {pack.pattern_image_url && <img src={pack.pattern_image_url} alt="" className="market-pack-pattern" />}
             <BlookArt src={pack.image_url} alt={pack.name} className="market-pack-picture" />

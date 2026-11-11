@@ -480,3 +480,5 @@
 @keyframes role-gradient-run { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
 [style*="--role-motion"] { animation-name: role-gradient-run; }
 @media (prefers-reduced-motion: reduce) { :root { --role-gradient-motion: none; } }
+
+.pack-drop-boosted { color: #ffe066; font-weight: 800; text-shadow: 0 0 6px rgb(255 214 64 / 0.9), 0 0 14px rgb(255 170 0 / 0.6); }
