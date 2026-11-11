@@ -24,3 +24,10 @@ describe('Account safety rules', () => {
     expect(activeBan(ban, Date.parse(ban.expires_at))).toBe(false);
   });
 });
+import { sortByAuthority as sortAuth } from '@/lib/account-safety';
+describe('authority ordering', () => {
+  it('puts Owner first, then admin, then roles by order, alphabetical within a tier', () => {
+    const rows = [{ tier: 1e9, username: 'zed', email: '' }, { tier: 2, username: 'bob', email: '' }, { tier: -2, username: 'brendan', email: '' }, { tier: 2, username: 'Amy', email: '' }, { tier: -1, username: 'adm', email: '' }];
+    expect(sortAuth(rows).map(r => r.username)).toEqual(['brendan', 'adm', 'Amy', 'bob', 'zed']);
+  });
+});
