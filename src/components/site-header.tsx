@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { ghostButtonClass, solidButtonClass } from "@/components/ghost-button";
 import { cn } from "@/lib/utils";
 import { PlanetLogo } from "@/components/planet-logo";
@@ -19,8 +18,6 @@ export function SiteHeader() {
           GameVerse
         </Link>
         <nav className="flex items-center gap-2 sm:gap-3">
-          <ThemeToggle />
-          <span className="mx-1 hidden h-7 w-px bg-surface-border sm:block" />
           {user ? <Link to="/dashboard" preload={false} className={cn(solidButtonClass, "h-10 px-4 text-base")}>Dashboard</Link> : <><Link to="/login" className={cn(ghostButtonClass, "h-10 px-4 text-base")}>
             Login
           </Link>
