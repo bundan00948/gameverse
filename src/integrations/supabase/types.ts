@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_bans: {
+        Row: {
+          actor_id: string
+          banned_at: string
+          expires_at: string | null
+          reason: string
+          revoked_at: string | null
+          user_id: string
+        }
+        Insert: {
+          actor_id: string
+          banned_at?: string
+          expires_at?: string | null
+          reason?: string
+          revoked_at?: string | null
+          user_id: string
+        }
+        Update: {
+          actor_id?: string
+          banned_at?: string
+          expires_at?: string | null
+          reason?: string
+          revoked_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       auth_links: {
         Row: {
           created_at: string
@@ -423,6 +450,51 @@ export type Database = {
           },
         ]
       }
+      security_activity: {
+        Row: {
+          created_at: string
+          game_id: string | null
+          game_title: string
+          id: string
+          ip_address: unknown
+          kind: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          game_id?: string | null
+          game_title?: string
+          id?: string
+          ip_address?: unknown
+          kind: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          game_id?: string | null
+          game_title?: string
+          id?: string
+          ip_address?: unknown
+          kind?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      site_owners: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       staff_roles: {
         Row: {
           colors: string[]
@@ -594,7 +666,9 @@ export type Database = {
     Functions: {
       claim_daily: { Args: never; Returns: number }
       claim_mission: { Args: { _mission: string }; Returns: number }
-      create_auth_link: { Args: never; Returns: string }
+      create_auth_link:
+        | { Args: never; Returns: string }
+        | { Args: { _hours: number }; Returns: string }
       ensure_wallet: {
         Args: never
         Returns: {
@@ -621,6 +695,8 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_account_banned: { Args: { _user_id: string }; Returns: boolean }
+      is_site_owner: { Args: { _user_id: string }; Returns: boolean }
       mission_progress: { Args: { _kind: string }; Returns: number }
       my_permissions: { Args: never; Returns: string[] }
       new_player_code: { Args: { _year: number }; Returns: string }

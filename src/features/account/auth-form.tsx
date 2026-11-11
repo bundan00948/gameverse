@@ -1,15 +1,19 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { forwardRef, useEffect, useState, type FormEvent, type HTMLAttributes } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { supabase } from '@/integrations/supabase/client';
 import { usePlayer } from './session';
 import { SiteHeader } from '@/components/site-header';
 import { Button } from '@/components/ui/button';
+import { useServerFn } from '@tanstack/react-start';
+import { registerAccount } from '@/lib/account-safety.functions';
 
 const inputClass =
   'h-12 w-full rounded-md border-2 border-input bg-card px-4 text-lg text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none';
 
-export function AuthForm({ register = false }: { register?: boolean }) {
+export interface AuthFormProps extends HTMLAttributes<HTMLElement> { register?: boolean; }
+export const AuthForm = forwardRef<HTMLElement, AuthFormProps>(function AuthForm({ register = false, className, ...props }, ref) {
   const navigate = useNavigate();
+  const signup = useServerFn(registerAccount);
   const user = usePlayer();
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
@@ -22,7 +26,7 @@ export function AuthForm({ register = false }: { register?: boolean }) {
     if (register && password !== form.get('confirm')) { setMessage('Passwords do not match.'); setBusy(false); return; }
     try {
       const { data, error } = register
-        ? await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin, data: { username: String(form.get('username')) } } })
+        ? await signup({ data: { email, password, username: String(form.get('username')), origin: window.location.origin } }).then(async result => result.session ? await supabase.auth.setSession(result.session) : { data: { session: null }, error: null })
         : await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       if (data.session) await navigate({ to: '/dashboard', replace: true });
@@ -31,7 +35,7 @@ export function AuthForm({ register = false }: { register?: boolean }) {
   }
 
   return (
-    <main className="bg-tiles flex min-h-dvh flex-col">
+    <main ref={ref} {...props} className={['bg-tiles flex min-h-dvh flex-col', className].filter(Boolean).join(' ')}>
       <SiteHeader />
       <div className="flex flex-1 items-center justify-center px-4 pb-16 pt-4">
         <div className="w-full max-w-md rounded-md border border-surface-border bg-surface p-8 shadow-layer">
@@ -64,4 +68,4 @@ export function AuthForm({ register = false }: { register?: boolean }) {
       </div>
     </main>
   );
-}
+});

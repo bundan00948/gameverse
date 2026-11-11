@@ -8,16 +8,17 @@ import { Trash2, Plus, Save, Shield, Users as UsersIcon, Store, Backpack, Gamepa
 import { supabase } from '@/integrations/supabase/client';
 import { DashboardShell } from '@/features/account/dashboard-shell';
 import { isAdminOptions } from '@/features/dashboard/data';
-import { permissionsOptions } from '@/features/dashboard/roles';
+import { permissionsOptions, type Permission } from '@/features/dashboard/roles';
 import { RolesPanel, BadgesPanel } from '@/features/admin/roles-panel';
 import { PageError, PageTitle, meta } from '@/features/dashboard/page';
 import { ImagePicker } from '@/features/dashboard/image-picker';
 import { Button } from '@/components/ui/button';
 import { rarityColors, rarityDefaults, rarityColorValue, rarityPaint, rarityBadgeImages } from '@/features/dashboard/appearance';
-import { listUsers, updateUser, deleteUser } from '@/lib/admin.functions';
+import { listUsers, updateUser, deleteUser, setAccountBan, listAccountBans, listGameLog } from '@/lib/admin.functions';
 import { BannersPanel } from '@/features/admin/banners-panel';
 import { BlooksPanel } from '@/features/admin/blooks-panel';
 import { gameEmbedUrl } from '@/features/dashboard/game-embed';
+import { activeBan, playerPermissions } from '@/lib/account-safety';
 import { invalidatePlayerProfiles } from '@/features/dashboard/player-profile';
 
 export const Route = createFileRoute('/_authenticated/admin')({
@@ -31,14 +32,14 @@ export const Route = createFileRoute('/_authenticated/admin')({
 
 const input = 'mt-1 w-full min-w-0 rounded-md border border-surface-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const btn = 'inline-flex items-center gap-2 rounded-md px-3 py-2 text-xs font-bold disabled:opacity-50';
-const tabs = ['Users', 'Roles', 'Badges', 'Shop', 'Banners', 'Blooks', 'Games', 'Missions'] as const;
-const tabIcons = { Users: UsersIcon, Roles: Crown, Badges: Award, Shop: Store, Banners: Store, Blooks: Backpack, Games: Gamepad2, Missions: Target };
-const tabPerm = { Users: 'users', Roles: 'roles', Badges: 'badges', Shop: 'shop', Banners: 'shop', Blooks: 'blooks', Games: 'games', Missions: 'missions' } as const;
+const tabs = ['Users', 'Roles', 'Badges', 'Shop', 'Banners', 'Blooks', 'Games', 'Missions', 'Game Log'] as const;
+const tabIcons = { Users: UsersIcon, Roles: Crown, Badges: Award, Shop: Store, Banners: Store, Blooks: Backpack, Games: Gamepad2, Missions: Target, 'Game Log': Shield };
+const tabPerm = { Users: 'players.view', Roles: 'roles', Badges: 'badges', Shop: 'shop', Banners: 'shop', Blooks: 'blooks', Games: 'games', Missions: 'missions', 'Game Log': 'logs.view' } as const;
 
 function Admin() {
   const { data: perms = [], isLoading } = useQuery(permissionsOptions());
   const { data: isFullAdmin = false } = useQuery(isAdminOptions());
-  const allowed = tabs.filter(t => perms.includes(tabPerm[t]));
+  const allowed = tabs.filter(t => t === 'Users' ? playerPermissions.some(p => perms.includes(p)) : t === 'Game Log' ? perms.includes('logs.view') || perms.includes('ips.view') : perms.includes(tabPerm[t]));
   const search = Route.useSearch();
   const tab = search.tab && allowed.includes(search.tab) ? search.tab : allowed[0];
   const navigate = Route.useNavigate();
@@ -47,37 +48,38 @@ function Admin() {
   return <DashboardShell bare><div className="staff-workspace">
     <PageTitle kicker="Staff" title="Admin Panel" />
     <nav aria-label="Admin sections" className="staff-tabs">{allowed.map(t => { const Icon = tabIcons[t]; return <Button key={t} type="button" variant={tab === t ? 'default' : 'ghost'} aria-pressed={tab === t} onClick={() => navigate({ search: { tab: t }, replace: true })} className="gap-2 font-bold"><Icon />{t}</Button>; })}</nav>
-    <div className="mt-6">{tab === 'Banners' ? <BannersPanel /> : tab === 'Blooks' ? <BlooksPanel /> : tab === 'Users' ? <Users canGrantStaff={isFullAdmin} /> : tab === 'Roles' ? <RolesPanel /> : tab === 'Badges' ? <BadgesPanel /> : tab === 'Shop' ? <Shop /> : tab === 'Games' ? <Table title="Games" table="games" fields={['title', 'description', 'play_url']} blank={{ emoji: '', title: 'New game', description: '', play_url: '' }} /> : <Table title="Missions" table="missions" fields={['title', 'kind', 'goal', 'reward']} blank={{ title: 'New mission', kind: 'plays', goal: 5, reward: 10 }} />}</div>
+    <div className="mt-6">{tab === 'Game Log' ? <GameLog /> : tab === 'Banners' ? <BannersPanel /> : tab === 'Blooks' ? <BlooksPanel /> : tab === 'Users' ? <Users canGrantStaff={isFullAdmin} perms={perms} /> : tab === 'Roles' ? <RolesPanel /> : tab === 'Badges' ? <BadgesPanel /> : tab === 'Shop' ? <Shop /> : tab === 'Games' ? <Table title="Games" table="games" fields={['title', 'description', 'play_url']} blank={{ emoji: '', title: 'New game', description: '', play_url: '' }} /> : <Table title="Missions" table="missions" fields={['title', 'kind', 'goal', 'reward']} blank={{ title: 'New mission', kind: 'plays', goal: 5, reward: 10 }} />}</div>
   </div></DashboardShell>;
 }
 
 type U = Awaited<ReturnType<typeof listUsers>>[number];
-function Users({ canGrantStaff }: { canGrantStaff: boolean }) {
+function Users({ canGrantStaff, perms }: { canGrantStaff: boolean; perms: Permission[] }) {
   const fetchUsers = useServerFn(listUsers);
   const { data, error, isLoading } = useQuery({ queryKey: ['admin-users'], queryFn: () => fetchUsers() });
   if (isLoading) return <p>Loading players…</p>;
   if (error) return <p className="text-destructive">{error.message}</p>;
-  return <div className="space-y-4">{data?.map(u => <UserRow key={u.id} u={u} canGrantStaff={canGrantStaff} />)}</div>;
+  return <div className="space-y-4">{data?.map(u => <UserRow key={u.id} u={u} canGrantStaff={canGrantStaff} perms={perms} />)}</div>;
 }
-function UserRow({ u, canGrantStaff }: { u: U; canGrantStaff: boolean }) {
+function UserRow({ u, canGrantStaff, perms }: { u: U; canGrantStaff: boolean; perms: Permission[] }) {
   const cache = useQueryClient(); const save = useServerFn(updateUser); const del = useServerFn(deleteUser);
   const [f, setF] = useState({ username: u.username, displayName: u.displayName, tokens: u.tokens, password: '', admin: u.admin });
-  const m = useMutation({ mutationFn: () => save({ data: { id: u.id, ...f, password: f.password || undefined } }), onSuccess: () => { setF(s => ({ ...s, password: '' })); invalidatePlayerProfiles(cache); } });
+  const m = useMutation({ mutationFn: () => save({ data: { id: u.id, ...(perms.includes('players.profile') ? { username: f.username, displayName: f.displayName } : {}), ...(perms.includes('players.tokens') ? { tokens: f.tokens } : {}), ...(perms.includes('players.password_reset') && f.password ? { password: f.password } : {}), ...(canGrantStaff ? { admin: f.admin } : {}) } }), onSuccess: () => { setF(s => ({ ...s, password: '' })); invalidatePlayerProfiles(cache); } });
   const d = useMutation({ mutationFn: () => del({ data: { id: u.id } }), onSuccess: () => invalidatePlayerProfiles(cache) });
   return <EditorSection title={f.username || u.email} summary={u.email}>
     <div className="mb-4 border-b border-surface-border pb-3"><p className="text-xs text-muted-foreground">Result</p><p className="break-words font-display">{f.displayName || f.username}</p><p className="text-xs text-muted-foreground">{f.admin ? 'Full admin' : 'Player'} · {f.tokens} tokens</p></div>
     <p className="mb-4 break-words border-b border-surface-border pb-3 text-sm text-muted-foreground">{u.email} · joined {new Date(u.created).toLocaleDateString()}</p>
     <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-      <label className="text-xs">Username<input className={input} value={f.username} onChange={e => setF({ ...f, username: e.target.value })} /></label>
-      <label className="text-xs">Display name<input className={input} value={f.displayName} onChange={e => setF({ ...f, displayName: e.target.value })} /></label>
-      <label className="text-xs">Tokens<input type="number" className={input} value={f.tokens} onChange={e => setF({ ...f, tokens: Number(e.target.value) })} /></label>
-      <label className="text-xs">New password<input type="password" placeholder="leave blank to keep" className={input} value={f.password} onChange={e => setF({ ...f, password: e.target.value })} /></label>
+      <label className="text-xs">Username<input disabled={!perms.includes('players.profile')} className={input} value={f.username} onChange={e => setF({ ...f, username: e.target.value })} /></label>
+      <label className="text-xs">Display name<input disabled={!perms.includes('players.profile')} className={input} value={f.displayName} onChange={e => setF({ ...f, displayName: e.target.value })} /></label>
+      <label className="text-xs">Tokens<input disabled={!perms.includes('players.tokens')} type="number" className={input} value={f.tokens} onChange={e => setF({ ...f, tokens: Number(e.target.value) })} /></label>
+      <label className="text-xs">New password<input disabled={!perms.includes('players.password_reset')} type="password" placeholder="leave blank to keep" className={input} value={f.password} onChange={e => setF({ ...f, password: e.target.value })} /></label>
       <label className="flex items-end gap-1 pb-1 text-xs font-bold"><input type="checkbox" disabled={!canGrantStaff} checked={f.admin} onChange={e => setF({ ...f, admin: e.target.checked })} /><Shield className="size-3.5" />Full admin</label>
       <div className="flex items-end justify-end gap-2 sm:col-span-2 xl:col-span-3">
         <Button type="button" disabled={m.isPending} onClick={() => m.mutate()}><Save className="size-3.5" />Save</Button>
-        <Button type="button" disabled={d.isPending} onClick={() => confirm(`Delete ${u.email}?`) && d.mutate()} variant="destructive" className={btn} aria-label="Delete user"><Trash2 className="size-3.5" /></Button>
+        <Button type="button" disabled={d.isPending || !perms.includes('players.delete')} onClick={() => confirm(`Delete ${u.email}?`) && d.mutate()} variant="destructive" className={btn} aria-label="Delete user"><Trash2 className="size-3.5" /></Button>
       </div>
     </div>
+    {perms.includes('players.ban') && <BanControls userId={u.id} />}
     {(m.error || d.error) && <p role="alert" className="mt-1 text-xs text-destructive">{(m.error ?? d.error)?.message}</p>}
     {m.isSuccess && <p role="status" className="mt-1 text-xs">Saved.</p>}
   </EditorSection>;
@@ -157,4 +159,18 @@ function RarityEditor() {
     {(error || save.error) && <p role="alert" className="text-destructive">{(error ?? save.error)?.message}</p>}
     {save.isSuccess && <p role="status">Saved.</p>}
   </EditorSection>;
+}
+
+function BanControls({ userId }: { userId: string }) {
+  const cache = useQueryClient(); const fetch = useServerFn(listAccountBans); const update = useServerFn(setAccountBan);
+  const { data } = useQuery({ queryKey: ['account-bans'], queryFn: () => fetch() });
+  const ban = data?.find(b => b.user_id===userId); const banned = activeBan(ban ?? null);
+  const [reason, setReason] = useState(''); const [hours, setHours] = useState('');
+  const save = useMutation({ mutationFn: () => update({ data: { id: userId, banned: !banned, reason, hours: hours ? Number(hours) : null } }), onSuccess: () => cache.invalidateQueries({ queryKey: ['account-bans'] }) });
+  return <section className="mt-5 space-y-3 border-t border-surface-border pt-4"><h3 className="font-bold">Account access · {banned ? 'Banned' : 'Active'}</h3>{banned ? <p className="text-sm">{ban?.reason} · {ban?.expires_at ? `Until ${new Date(ban.expires_at).toLocaleString()}` : 'Permanent'}</p> : <div className="grid gap-3 sm:grid-cols-2"><label className="text-sm">Ban reason<input className={input} value={reason} maxLength={500} onChange={e => setReason(e.target.value)} /></label><label className="text-sm">Duration<select aria-label="Ban duration" className={input} value={hours} onChange={e => setHours(e.target.value)}><option value="">Permanent</option><option value="24">24 hours</option><option value="168">7 days</option><option value="720">30 days</option></select></label></div>}<Button variant={banned ? 'outline' : 'destructive'} disabled={save.isPending} onClick={() => confirm(banned ? 'Restore account access?' : 'Ban this player now?') && save.mutate()}>{banned ? 'Unban account' : 'Ban account'}</Button>{save.error && <p role="alert" className="text-sm text-destructive">{save.error.message}</p>}</section>;
+}
+function GameLog() {
+  const fetch = useServerFn(listGameLog); const [page, setPage] = useState(0); const [kind, setKind] = useState<'all'|'game'|'register'>('all');
+  const { data, error, isFetching, refetch } = useQuery({ queryKey: ['game-log', page, kind], queryFn: () => fetch({ data: { page, kind } }) });
+  return <section><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="font-display text-2xl">Game Log</h2><div className="flex gap-2"><select aria-label="Activity type" value={kind} onChange={e => { setKind(e.target.value as typeof kind); setPage(0); }} className={input}><option value="all">All activity</option><option value="game">Games opened</option><option value="register">Registrations</option></select><Button variant="outline" disabled={isFetching} onClick={() => void refetch()}>Refresh</Button></div></div>{error && <p role="alert" className="text-destructive">{error.message}</p>}<div className="mt-5 overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="border-b border-surface-border"><th className="p-3">Time</th><th className="p-3">Player / ID</th><th className="p-3">Activity</th>{data?.ips && <th className="p-3">IP address</th>}</tr></thead><tbody>{data?.rows.map(r => <tr key={r.id} className="border-b border-surface-border"><td className="whitespace-nowrap p-3">{new Date(r.created).toLocaleString()}</td><td className="p-3">{r.player}<span className="block text-xs text-muted-foreground">{r.code}</span></td><td className="p-3">{r.kind==='game' ? r.title : 'Registered'}</td>{data.ips && <td className="p-3 font-mono">{r.ip || 'Unavailable'}</td>}</tr>)}</tbody></table></div>{data?.count===0 && <p className="py-8 text-muted-foreground">No activity recorded yet.</p>}<div className="mt-4 flex items-center gap-3"><Button variant="outline" disabled={!page || isFetching} onClick={() => setPage(p => p-1)}>Previous</Button><span className="text-sm">Page {page+1}</span><Button variant="outline" disabled={isFetching || (page+1)*50 >= (data?.count ?? 0)} onClick={() => setPage(p => p+1)}>Next</Button></div></section>;
 }

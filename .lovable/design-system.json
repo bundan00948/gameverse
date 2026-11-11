@@ -833,7 +833,7 @@
       "name": "AuthForm",
       "file": "src/features/account/auth-form",
       "import_path": "",
-      "usage": "Use the GameVerse account form for login or registration with visible field labels.",
+      "usage": "Use the GameVerse account form for login or registration with visible field labels. Registration records protected activity server-side; passwords are never stored in activity logs.",
       "examples": [
         {
           "label": "Typical usage",
@@ -841,7 +841,8 @@
         }
       ],
       "antipatterns": [
-        "Do not remove visible labels or expose credentials in error messages."
+        "Do not remove visible labels or expose credentials in error messages.",
+        "Never log or store recoverable passwords for staff viewing; use permission-checked resets instead."
       ]
     },
     {
@@ -903,7 +904,7 @@
       "name": "RolesPanel",
       "file": "src/features/admin/roles-panel",
       "import_path": "",
-      "usage": "Use for permission-gated role editing with folded entries and draft name-color previews.",
+      "usage": "Use for permission-gated role editing with folded entries and draft name-color previews. Player account permissions are independent; IP visibility can only be granted by the verified Owner.",
       "examples": [
         {
           "label": "Admin editing",

@@ -134,6 +134,20 @@
       "when": 1794386851460,
       "tag": "0018_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1794392693273,
+      "tag": "0019_account_safety_permissions_links_logs",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1794392943463,
+      "tag": "0020_secure_activity_registration_and_banned_reads",
+      "breakpoints": true
     }
   ]
 }

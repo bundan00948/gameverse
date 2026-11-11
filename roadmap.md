@@ -1,5 +1,13 @@
 # Roadmap
 
+- [x] Add selectable 24/48/72-hour, 7-day and 30-day login links; preserve two-active limit
+- [x] Add verified Owner access, precise permissions, protected IP/activity logs and password resets (never password viewing)
+- [x] Confirm Owner IP visibility and require explicit Owner-granted permission for other staff
+- [x] Address follow-up password viewing request: irreversible password storage is retained; authorized reset replaces viewing
+- [x] Add live bans with immediate notice/logout and server/database enforcement
+- [x] Verify permissions, link durations, activity readback and live ban flows; all 81 tests pass, retained banned tokens blocked and temporary accounts removed
+- [ ] Verify production IP capture after publishing; local preview has no trusted edge IP header (historical IPs cannot be recovered)
+
 - [x] Support gradient rarity colors and gently running role gradients; verify saving and readback with temporary colors restored
 - [x] Sort pack blooks by ascending rarity then alphabetically, retaining alphabetical admin catalog
 - [x] Lock desktop Market packs to five columns and reduce token artwork; verified desktop and phone without overflow

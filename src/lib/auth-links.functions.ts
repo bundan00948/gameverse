@@ -12,6 +12,10 @@ export const redeemAuthLink = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
     const hash = await sha256(data.key);
+     const candidate = await supabaseAdmin.from('auth_links').select('user_id').eq('token_hash', hash).is('used_at', null).gt('expires_at', new Date().toISOString()).maybeSingle();
+     if (!candidate.data) return { error: 'This login link is invalid, used or expired.', tokenHash: null };
+     const ban = await supabaseAdmin.rpc('is_account_banned', { _user_id: candidate.data.user_id });
+     if (ban.error || ban.data) return { error: 'This account is banned.', tokenHash: null };
     const { data: row } = await supabaseAdmin.from('auth_links').update({ used_at: new Date().toISOString() })
       .eq('token_hash', hash).is('used_at', null).gt('expires_at', new Date().toISOString()).select('user_id').maybeSingle();
     if (!row) return { error: 'This login link is invalid, used or expired.' as string, tokenHash: null };
