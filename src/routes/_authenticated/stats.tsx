@@ -31,8 +31,9 @@ const box = 'rounded-xl border border-white/10 bg-surface shadow-[0_6px_0_rgb(0_
 const tab = 'inline-block rounded-t-xl border border-b-0 border-white/10 bg-surface px-6 pt-2 pb-1 font-display text-3xl shadow-[0_6px_0_rgb(0_0_0/0.35)]';
 const btn = 'flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-bold text-white shadow-[0_4px_0_rgb(0_0_0/0.35)] transition hover:-translate-y-0.5 hover:brightness-110 active:translate-y-1 active:shadow-none disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 
-function Stats() {
-  const { player } = Route.useSearch();
+function Stats() { const { player } = Route.useSearch(); return <StatsView player={player} />; }
+
+export function StatsView({ player }: { player?: string }) {
   const { data } = useSuspenseQuery(statsOptions(player)); const { data: ids } = useSuspenseQuery(identitiesOptions());
   const cache = useQueryClient(); const user = usePlayer(); const [picking, setPicking] = useState(false);
   const target = player ?? user?.id;
@@ -42,7 +43,7 @@ function Stats() {
   const [browsing, setBrowsing] = useState(false);
   const [bannerPicking, setBannerPicking] = useState(false);
   const [search, setSearch] = useState('');
-  const players = [...ids].filter(([, identity]) => `${identity.username} ${identity.displayName}`.toLowerCase().includes(search.trim().toLowerCase())).sort((a, b) => playerName(a[1]).localeCompare(playerName(b[1])));
+  const players = [...ids].filter(([, identity]) => `${identity.username} ${identity.displayName} ${identity.codeId ?? ''}`.toLowerCase().includes(search.trim().toLowerCase())).sort((a, b) => playerName(a[1]).localeCompare(playerName(b[1])));
   const level = Math.floor(data.plays / 5); const xp = (data.plays % 5) * 20;
   const claim = useMutation({ mutationFn: async () => { const { error } = await supabase.rpc('claim_daily'); if (error) throw error; }, onSuccess: () => { for (const key of ['wallet', 'stats', 'missions']) void cache.invalidateQueries({ queryKey: [key] }); } });
   const items = [
@@ -61,7 +62,7 @@ function Stats() {
         <div className={`${box} gv-nameplate relative w-full min-w-0 flex-1 overflow-hidden text-center sm:max-w-[50%]`}>
           {me?.bannerImage && <img src={me.bannerImage} alt="" className="gv-nameplate-background" />}
           <h1 className="relative truncate px-4 pt-2 font-display text-3xl leading-[1.05] sm:px-5 sm:pt-3.5 sm:leading-tight"><PlayerName name={name} identity={me} className="font-normal" /></h1>
-          <p className="relative pb-2 text-xs leading-tight text-muted-foreground sm:pb-3.5" style={roleTextStyle(me?.role?.colors)}>{me?.role?.name ?? 'Player'}</p>
+          <p className="relative pb-2 text-xs leading-tight text-muted-foreground sm:pb-3.5"><span style={roleTextStyle(me?.role?.colors)}>{me?.role?.name ?? 'Player'}</span>{me?.codeId && <span> · #{me.codeId}</span>}</p>
           {own && <Button variant="ghost" aria-label="Change nameplate background" className="gv-nameplate-trigger" onClick={() => setBannerPicking(true)} />}
         </div>
         {me?.badges.length ? <div className={`${box} col-span-2 flex min-h-20 w-full items-center justify-center gap-2 px-5 py-2.5 sm:w-auto sm:flex-1`}><BadgeList identity={me} size="lg" /></div> : null}
@@ -100,10 +101,10 @@ function Stats() {
         <DialogTitle className="font-display text-2xl">View Stats</DialogTitle>
         <DialogDescription className="sr-only">Find a player and open their profile.</DialogDescription>
         <label className="sr-only" htmlFor="player-search">Search players</label>
-        <input id="player-search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search players…" className="h-11 rounded-md border border-input bg-background px-3" />
+        <input id="player-search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name or 7-digit ID…" className="h-11 rounded-md border border-input bg-background px-3" />
         <div className="grid max-h-[55dvh] gap-2 overflow-y-auto">
           {players.map(([id, identity]) => <Button key={id} asChild variant="ghost" className="h-auto justify-start whitespace-normal border border-surface-border p-3">
-            <Link to="/stats" search={{ player: id }} preload={false} onClick={() => setBrowsing(false)}><PlayerAvatar name={playerName(identity)} identity={identity} /><span className="min-w-0 flex-1"><PlayerName name={playerName(identity)} identity={identity} className="block break-words" /><span className="block text-xs text-muted-foreground">{identity.role?.name ?? 'Player'} · @{identity.username}</span></span><BadgeList identity={identity} /></Link>
+            <a href={identity.codeId ? `/stats/view/${identity.codeId}` : `/stats?player=${id}`} onClick={() => setBrowsing(false)}><PlayerAvatar name={playerName(identity)} identity={identity} /><span className="min-w-0 flex-1"><PlayerName name={playerName(identity)} identity={identity} className="block break-words" /><span className="block text-xs text-muted-foreground">{identity.role?.name ?? 'Player'} · @{identity.username}{identity.codeId ? ` · #${identity.codeId}` : ''}</span></span><BadgeList identity={identity} /></a>
           </Button>)}
           {!players.length && <p role="status" className="py-4 text-muted-foreground">No players found.</p>}
         </div>

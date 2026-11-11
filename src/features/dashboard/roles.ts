@@ -41,14 +41,15 @@ export const permissionsOptions = () => queryOptions({ queryKey: ['my-permission
   return (r.data ?? []) as Permission[];
 } });
 
-export type Identity = { username: string; displayName: string; role: { name: string; colors: string[] } | null; badges: { id: string; name: string; image_url: string | null }[]; avatar: string | null; bannerId?: string | null; bannerImage?: string | null };
+export type Identity = { username: string; displayName: string; role: { name: string; colors: string[] } | null; badges: { id: string; name: string; image_url: string | null }[]; avatar: string | null; bannerId?: string | null; bannerImage?: string | null; codeId?: string | null };
 /** Top role (lowest sort) and badges for every player who has any. */
 export const identitiesOptions = () => queryOptions({ queryKey: ['identities'], staleTime: 15_000, refetchInterval: 15_000, queryFn: async () => {
-  const [roles, badges, avatars, banners] = await Promise.all([
+  const [roles, badges, avatars, banners, codes] = await Promise.all([
     supabase.from('user_staff_roles').select('user_id, staff_roles(name, colors, sort)'),
     supabase.from('user_badges').select('user_id, badges(id, name, image_url, sort)'),
     supabase.rpc('player_directory'),
     supabase.rpc('player_banner_directory'),
+    supabase.rpc('player_codes'),
   ]);
   if (roles.error) throw new Error(roles.error.message);
   if (badges.error) throw new Error(badges.error.message);
@@ -60,6 +61,7 @@ export const identitiesOptions = () => queryOptions({ queryKey: ['identities'], 
   for (const b of badges.data) if (b.badges) get(b.user_id).badges.push(b.badges);
   for (const a of avatars.data ?? []) Object.assign(get(a.user_id), { avatar: a.image_url, username: a.username, displayName: a.display_name });
   for (const b of banners.data ?? []) Object.assign(get(b.user_id), { bannerId: b.banner_id, bannerImage: b.image_url });
+  for (const c of codes.data ?? []) get(c.user_id).codeId = c.code_id;
   for (const v of map.values()) v.badges.sort((a, b) => a.name.localeCompare(b.name));
   return map as Map<string, Identity>;
 } });
