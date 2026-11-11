@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Fix mailbox viewport positioning and scrolling; verified signed-in desktop and 390/320px phones, message images, filters, close/reopen and Escape; publishing requested after checks
+
 - [x] Add selectable 24/48/72-hour, 7-day and 30-day login links; preserve two-active limit
 - [x] Add verified Owner access, precise permissions, protected IP/activity logs and password resets (never password viewing)
 - [x] Confirm Owner IP visibility and require explicit Owner-granted permission for other staff

@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { playerId } from '@/features/account/auth-user';
 import { Mail, X, Gavel, Store, Sparkles } from '@/lib/icons';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Content as MailContent } from '@radix-ui/react-dialog';
+import { Dialog, DialogPortal, DialogOverlay, DialogTitle } from '@/components/ui/dialog';
 
 export interface MailItem { id: string; user_id: string | null; kind: string; title: string; body: string; image_url: string | null; created_at: string; read: boolean }
 export const mailOptions = () => queryOptions({ queryKey: ['mail'], staleTime: 20_000, refetchInterval: 30_000, refetchIntervalInBackground: false, queryFn: async (): Promise<MailItem[]> => {
@@ -48,7 +49,9 @@ export function Mailbox() {
       <Mail className="size-5" />{unread.length > 0 && <span aria-hidden className="absolute right-1 top-1 grid min-w-4 place-items-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground">{unread.length}</span>}
     </button>
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent aria-describedby={undefined} className="mail-drawer">
+      <DialogPortal>
+      <DialogOverlay />
+      <MailContent aria-describedby={undefined} className="mail-drawer">
         <DialogTitle className="sr-only">GameVerse Mail</DialogTitle>
         <div role="tablist" aria-label="Mail filter" className="mail-filters">{filters.map(([k, label]) => <button key={k} role="tab" type="button" aria-selected={filter === k} onClick={() => setFilter(k)} className="mail-filter">{label}</button>)}<button type="button" onClick={() => setOpen(false)} aria-label="Close mail" className="ml-auto grid size-8 place-items-center rounded-full hover:bg-glass-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><X className="size-4" /></button></div>
         <div className="mail-list">
@@ -63,7 +66,8 @@ export function Mailbox() {
                 
               </article>; }); })()}
         </div>
-      </DialogContent>
+      </MailContent>
+      </DialogPortal>
     </Dialog>
   </>;
 }

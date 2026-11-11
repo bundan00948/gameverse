@@ -33,6 +33,7 @@ use the editor.
 - Keep privileged admin helpers in `src/lib/admin.server.ts`, imported only inside server-function handlers, so browser bundles never reach server-only headers or clients.
 - The library barrel imports its canonical stylesheet so attached consumers receive theme tokens and base styles when importing the library.
 - All signed-in pages share the unframed GameVerse shell and semantic main landmark; appearance is persisted locally through the shared theme utility and selected in Settings, keeping page data loaders independent.
+- Mail uses its own Radix portal content with right-edge viewport positioning and an independently scrolling message list, avoiding centered-dialog transforms that push drawers offscreen.
 - Signed-in pages live under the client-only `_authenticated` gate; public login remains `/login` with `/auth` redirect compatibility, because browser sessions cannot be read during SSR.
 - Auth identity is subscribed once in the root and shared through SessionContext; profile reads and writes use the browser Cloud client with owner-only RLS.
 - Initial loading uses self-hosted WOFF2 brand fonts, a resized WebP currency derivative, and typed per-icon imports in src/lib/icons.ts; browser query IDs and display identity come from the session while remote user validation remains in the authenticated gate and server/RLS authorization is unchanged. Load the pack-opening dialog only after pack selection.
