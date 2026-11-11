@@ -70,3 +70,6 @@
 - [x] Make the Stats page, sidebar and other dashboard pages more compact so each fits the screen
 - [x] Fix lag: make the drifting background GPU-composited and drop per-frame blur passes
 - Roles (permissions, gradient chat colors) & Badges; chat replies with notifications [done]
+
+- [x] Add Bazaar (fixed-price listings for all blooks, auctions for Legendary+), mail drawer and admin system mail
+- [ ] Live buy/bid/auction-finish flow not yet tested with two real players
