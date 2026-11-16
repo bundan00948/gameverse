@@ -68,7 +68,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
           {rates ? <ul id="pack-drop-rates" className="pack-drop-rates">{raritySortedBlooks(pack.blooks).map(b => <li key={b.id}>
             <BlookArt src={b.image_url} alt="" className="size-9 shrink-0" />
             <span className="pack-drop-name" title={b.name}>{b.name}</span>
-            <span className="rarity-label" style={{ '--rarity-paint': rarityPaint(colors?.[b.rarity], rarityDefaults[b.rarity] ?? 'var(--muted)') } as CSSProperties}>{b.rarity}</span>
+            <span className="rarity-text" style={{ '--rarity-paint': rarityPaint(colors?.[b.rarity], rarityDefaults[b.rarity] ?? 'var(--muted)') } as CSSProperties}>{b.rarity}</span>
             <span className={`pack-drop-chance ${boostFactor(boosts, pack.id, b.rarity) > 1 ? 'pack-drop-boosted' : ''}`} title={boostFactor(boosts, pack.id, b.rarity) > 1 ? `Boosted x${boostFactor(boosts, pack.id, b.rarity).toFixed(2)}` : undefined}>{dropChanceLabel(boosted(b), total)}</span>
           </li>)}</ul> : <>
             {pack.pattern_image_url && <img src={pack.pattern_image_url} alt="" className="market-pack-pattern" />}
@@ -110,7 +110,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
         {stage === 'reveal' && <Button variant="ghost" type="button" id="pack-unbox-dismiss-layer" className="pack-unbox-dismiss-layer" aria-label={pullIndex + 1 < (buy.data?.length ?? 0) ? 'Next pack' : 'Back to Market'} onClick={() => { if (pullIndex + 1 < (buy.data?.length ?? 0)) { setPullIndex(i => i + 1); setSold(null); setStage('ready'); } else onClose(); }} />}
         {stage === 'reveal' && pull && <div key={`result-${pullIndex}`} className="pack-result pack-reveal-card" aria-live="polite">
           <BlookArt src={pull.image_url ?? null} alt={pull.name} className="pack-reveal size-56" />
-          <h2 className="mt-6 font-display text-4xl">{pull.name}</h2><span className="rarity-label mt-2">{pull.rarity}</span>
+          <h2 className="mt-6 font-display text-4xl">{pull.name}</h2><span className="rarity-text mt-2">{pull.rarity}</span>
           <div className="mt-8 flex flex-wrap justify-center gap-3"><Button disabled={sell.isPending || sold !== null} onClick={() => sell.mutate(pull.id)}>{sold !== null ? `Sold for ${sold}` : <>Sell <img src={tokenIcon.url} alt="" className="size-5 object-contain" />{sellPrice[pull.rarity] ?? 2}</>}</Button>{pullIndex + 1 < (buy.data?.length ?? 0) ? <Button onClick={() => { setPullIndex(i => i + 1); setSold(null); setStage('ready'); }}>Next Pack ({pullIndex + 1}/{buy.data?.length})</Button> : <Button variant="secondary" onClick={onClose}>Back to Market</Button>}</div>
           {sell.error && <p role="alert" className="mt-2 text-destructive">{sell.error.message}</p>}
         </div>}

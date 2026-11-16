@@ -87,9 +87,9 @@ function Bazaar() {
 
 function useRefresh() { const qc = useQueryClient(); return () => ['bazaar', 'wallet', 'stats', 'collection', 'inventory', 'mail'].forEach(k => qc.invalidateQueries({ queryKey: [k] })); }
 
-function RarityPill({ rarity }: { rarity: string }) {
+function RarityText({ rarity }: { rarity: string }) {
   const { data: colors } = useQuery(appearanceOptions());
-  return <span className="rounded-full border-2 border-white/50 px-4 py-1 font-display text-sm uppercase text-white shadow-[var(--rarity-shadow)]" style={{ background: rarityPaint(colors?.[rarity], rarityDefaults[rarity] ?? 'var(--secondary)') }}>{rarity}</span>;
+  return <span className="rarity-text" style={{ '--rarity-paint': rarityPaint(colors?.[rarity], rarityDefaults[rarity] ?? 'var(--secondary)') } as React.CSSProperties}>{rarity}</span>;
 }
 
 function ListingDialog({ listing: l, onClose }: { listing: Listing; onClose: () => void }) {
@@ -100,7 +100,7 @@ function ListingDialog({ listing: l, onClose }: { listing: Listing; onClose: () 
   return <Dialog open onOpenChange={v => !v && onClose()}><DialogContent aria-describedby={undefined} className="max-w-md rounded-xl bg-surface p-6 text-center">
     <BlookArt src={l.blook.image_url} alt={l.blook.name} className="mx-auto size-32" />
     <DialogTitle className="font-display text-3xl">{l.blook.name}</DialogTitle>
-    <p><RarityPill rarity={l.blook.rarity} /></p>
+    <p><RarityText rarity={l.blook.rarity} /></p>
     <dl className="mt-2 grid grid-cols-2 gap-2 text-sm">
       <div className="rounded-lg bg-background/60 p-3"><dt className="text-muted-foreground">Seller</dt><dd><PlayerName name={playerName(seller)} identity={seller} /></dd></div>
       <div className="rounded-lg bg-background/60 p-3"><dt className="text-muted-foreground">{l.kind === 'auction' ? (l.current_bid ? 'Highest bid' : 'Starting bid') : 'Price'}</dt><dd><Price n={l.current_bid ?? l.price} className="text-lg" /></dd></div>
@@ -129,7 +129,7 @@ function SellDialog({ onClose }: { onClose: () => void }) {
       {owned.map(o => <button key={o.id} type="button" aria-pressed={pick === o.id} aria-label={`${o.name}, ${o.quantity} owned`} title={o.name} onClick={() => { setPick(o.id); if (!canAuction(o.rarity)) setAuction(false); }} className={`relative rounded-lg p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${pick === o.id ? 'bg-white/20 ring-2 ring-primary' : ''}`}><BlookArt src={o.image_url} alt="" className="size-14" /><span className="absolute bottom-0 right-0 rounded-full bg-black/70 px-1 text-[10px] font-bold">{o.quantity}</span></button>)}
     </div>
     {b && <div className="space-y-3">
-      <p className="flex items-center gap-2 font-display text-xl">{b.name} <RarityPill rarity={b.rarity} /></p>
+      <p className="flex items-center gap-2 font-display text-xl">{b.name} <RarityText rarity={b.rarity} /></p>
       <div role="radiogroup" aria-label="Listing type" className="flex gap-2"><Button variant={!auction ? 'default' : 'secondary'} aria-pressed={!auction} onClick={() => setAuction(false)}>Fixed price</Button><Button variant={auction ? 'default' : 'secondary'} aria-pressed={auction} disabled={!allowAuction} onClick={() => setAuction(true)}><Gavel />Auction</Button></div>
       {!allowAuction && <p className="text-xs text-muted-foreground">Auctions are only for Legendary, Chroma, Mythical and Hidden blooks.</p>}
       <div className="flex flex-wrap gap-3"><label className="text-sm font-bold">{auction ? 'Starting bid' : 'Price'}<input type="number" min={1} value={price} onChange={e => setPrice(Math.floor(Number(e.target.value)))} className="mt-1 block w-40 rounded-md border border-surface-border bg-background px-3 py-2" /></label>
