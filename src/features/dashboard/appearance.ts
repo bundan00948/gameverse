@@ -27,6 +27,11 @@ export function rarityEndpoints(value: unknown, fallback: string): [string, stri
   const colors = rarityColorValue(value, fallback).split(', ');
   return [colors[0] ?? fallback, colors.at(-1) ?? fallback];
 }
+/** Outline for rarity text: a light tint of the rarity's own color so the edge matches the rarity icon. */
+export function rarityStroke(value: unknown, fallback: string): string {
+  const [first] = rarityEndpoints(value, fallback);
+  return `color-mix(in oklab, ${first}, white 55%)`;
+}
 /** Only HTTPS image URLs from saved rarity settings reach image elements. */
 export function rarityBadgeImages(value: unknown): Record<string, string | null> {
   const images = value && typeof value === 'object' ? value as Record<string, unknown> : {};

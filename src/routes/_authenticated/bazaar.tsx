@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Gavel, Search } from '@/lib/icons';
 import tokenIcon from '@/assets/icons/gameverse-token.webp.asset.json';
 import { appearanceOptions, inventoryOptions, walletOptions } from '@/features/dashboard/data';
-import { rarityPaint, rarityDefaults } from '@/features/dashboard/appearance';
+import { rarityPaint, rarityDefaults, rarityStroke } from '@/features/dashboard/appearance';
 import { identitiesOptions } from '@/features/dashboard/roles';
 import { PlayerName } from '@/features/dashboard/player-identity';
 import { playerName } from '@/features/dashboard/player-profile';
@@ -89,7 +89,7 @@ function useRefresh() { const qc = useQueryClient(); return () => ['bazaar', 'wa
 
 function RarityText({ rarity }: { rarity: string }) {
   const { data: colors } = useQuery(appearanceOptions());
-  return <span className="rarity-text" style={{ '--rarity-paint': rarityPaint(colors?.[rarity], rarityDefaults[rarity] ?? 'var(--secondary)') } as React.CSSProperties}>{rarity}</span>;
+  return <span className="rarity-text" style={{ '--rarity-paint': rarityPaint(colors?.[rarity], rarityDefaults[rarity] ?? 'var(--secondary)'), '--rarity-stroke': rarityStroke(colors?.[rarity], rarityDefaults[rarity] ?? 'var(--secondary)') } as React.CSSProperties}>{rarity}</span>;
 }
 
 function ListingDialog({ listing: l, onClose }: { listing: Listing; onClose: () => void }) {

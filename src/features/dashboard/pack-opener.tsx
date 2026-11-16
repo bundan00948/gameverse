@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { BlookArt } from './blook-art';
 import { appearanceOptions, rarityBadgesOptions } from './data';
-import { rarityDefaults, rarityPaint, rarityEndpoints, safeColor } from './appearance';
+import { rarityDefaults, rarityPaint, rarityEndpoints, rarityStroke, safeColor } from './appearance';
 import { boostFactor, boostsOptions } from './boosts';
 import { useQuery as useBoostQuery } from '@tanstack/react-query';
 import { dropChanceLabel, raritySortedBlooks } from './blook-catalog';
@@ -51,7 +51,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   const { data: boosts } = useBoostQuery(boostsOptions());
   const boosted = (b: Blook) => b.weight * boostFactor(boosts, pack.id, b.rarity);
   const total = pack.blooks.reduce((s, b) => s + boosted(b), 0) || 1;
-  const variables = { '--glow': glow, '--glow-end': rarityEnd, '--rarity-paint': rarityPaint(colors?.[rarity], fallback), '--pack-start': safeColor(pack.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(pack.gradient_end, 'var(--market-end)') } as CSSProperties;
+  const variables = { '--glow': glow, '--glow-end': rarityEnd, '--rarity-paint': rarityPaint(colors?.[rarity], fallback), '--rarity-stroke': rarityStroke(colors?.[rarity], fallback), '--pack-start': safeColor(pack.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(pack.gradient_end, 'var(--market-end)') } as CSSProperties;
   function crack() {
     if (stage !== 'ready') return;
     setStage('torn');
@@ -68,7 +68,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
           {rates ? <ul id="pack-drop-rates" className="pack-drop-rates">{raritySortedBlooks(pack.blooks).map(b => <li key={b.id}>
             <BlookArt src={b.image_url} alt="" className="size-9 shrink-0" />
             <span className="pack-drop-name" title={b.name}>{b.name}</span>
-            <span className="rarity-text" style={{ '--rarity-paint': rarityPaint(colors?.[b.rarity], rarityDefaults[b.rarity] ?? 'var(--muted)') } as CSSProperties}>{b.rarity}</span>
+            <span className="rarity-text" style={{ '--rarity-paint': rarityPaint(colors?.[b.rarity], rarityDefaults[b.rarity] ?? 'var(--muted)'), '--rarity-stroke': rarityStroke(colors?.[b.rarity], rarityDefaults[b.rarity] ?? 'var(--muted)') } as CSSProperties}>{b.rarity}</span>
             <span className={`pack-drop-chance ${boostFactor(boosts, pack.id, b.rarity) > 1 ? 'pack-drop-boosted' : ''}`} title={boostFactor(boosts, pack.id, b.rarity) > 1 ? `Boosted x${boostFactor(boosts, pack.id, b.rarity).toFixed(2)}` : undefined}>{dropChanceLabel(boosted(b), total)}</span>
           </li>)}</ul> : <>
             {pack.pattern_image_url && <img src={pack.pattern_image_url} alt="" className="market-pack-pattern" />}
