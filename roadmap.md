@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Speed pack tearing/reveal, remove opening instructions and sale/Market buttons, and allow full-screen result dismissal; verified real purchases on desktop/phone and sequential-pull tests.
+
 - [x] Record every ban and saved admin action with actor, target and duration; protected Admin Log verified signed-in with mission insert/delete and temporary 24-hour ban/unban; test content removed, 47 regression tests passed
 
 - [x] Fix mailbox viewport positioning and scrolling; verified signed-in desktop and 390/320px phones, message images, filters, close/reopen and Escape; publishing requested after checks
