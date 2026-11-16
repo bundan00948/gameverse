@@ -5,12 +5,14 @@ import { playerId } from '@/features/account/auth-user';
 import { Mail, X, Gavel, Store, Sparkles } from '@/lib/icons';
 import { Content as MailContent } from '@radix-ui/react-dialog';
 import { Dialog, DialogPortal, DialogOverlay, DialogTitle } from '@/components/ui/dialog';
+import { NewsText } from './news-text';
+import { NewsInteractions } from './news-interactions';
 
-export interface MailItem { id: string; user_id: string | null; kind: string; title: string; body: string; image_url: string | null; created_at: string; read: boolean }
+export interface MailItem { id: string; user_id: string | null; kind: string; title: string; body: string; image_url: string | null; created_at: string; read: boolean; poll_options: string[]; question_enabled: boolean }
 export const mailOptions = () => queryOptions({ queryKey: ['mail'], staleTime: 20_000, refetchInterval: 30_000, refetchIntervalInBackground: false, queryFn: async (): Promise<MailItem[]> => {
   const id = await playerId();
   const [mail, reads] = await Promise.all([
-    supabase.from('mail').select('id, user_id, kind, title, body, image_url, created_at').or(`user_id.eq.${id},user_id.is.null`).order('created_at', { ascending: false }).limit(50),
+    supabase.from('mail').select('id, user_id, kind, title, body, image_url, created_at, poll_options, question_enabled').or(`user_id.eq.${id},user_id.is.null`).order('created_at', { ascending: false }).limit(50),
     supabase.from('mail_reads').select('mail_id').eq('user_id', id),
   ]);
   if (mail.error) throw mail.error;
@@ -60,9 +62,10 @@ export function Mailbox() {
             return list.map(m => { const k = kinds[m.kind] ?? systemKind; const isNew = fresh.has(m.id);
               return <article key={m.id} className="mail-card" data-new={isNew || undefined} style={{ '--mail-tone': k.tone } as React.CSSProperties}>
                 <div className="flex items-center gap-2.5"><span className="flex-1" />{isNew && <span className="mail-new">New</span>}<time dateTime={m.created_at} className="text-[11px] font-semibold text-muted-foreground">{timeAgo(m.created_at)}</time></div>
-                <h3 className="mt-2.5 font-display text-xl leading-tight">{m.title}</h3>
+                <h3 className="mt-2.5 font-display text-xl leading-tight">{m.kind === 'system' ? <NewsText text={m.title} /> : m.title}</h3>
                 {m.image_url && <div className="mail-image"><img src={m.image_url} alt="" loading="lazy" /></div>}
-                {m.body && <p className="mt-2.5 whitespace-pre-line text-[14.5px] leading-relaxed text-foreground/85">{m.body}</p>}
+                {m.body && <p className="mt-2.5 whitespace-pre-line text-[14.5px] leading-relaxed text-foreground/85">{m.kind === 'system' ? <NewsText text={m.body} /> : m.body}</p>}
+                {m.kind === 'system' && (m.poll_options.length > 0 || m.question_enabled) && <NewsInteractions id={m.id} options={m.poll_options} question={m.question_enabled} />}
                 
               </article>; }); })()}
         </div>

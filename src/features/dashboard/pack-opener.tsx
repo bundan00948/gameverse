@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { RotateCw } from '@/lib/icons';
+import { RotateCw, X } from '@/lib/icons';
 import tokenIcon from '@/assets/icons/gameverse-token.webp.asset.json';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -32,10 +32,10 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   useEffect(() => () => clearTimeout(timer.current), []);
   const refresh = () => ['wallet', 'stats', 'inventory', 'collection', 'missions'].forEach(k => cache.invalidateQueries({ queryKey: [k] }));
   const buy = useMutation({
-    mutationFn: async () => { const r = await supabase.rpc('open_packs', { _pack: pack.id, _quantity: quantity }); if (r.error) throw r.error; return r.data as unknown as Pull[]; },
-    onSuccess: () => { refresh(); setStage('ready'); },
+    mutationFn: async () => { const r = await supabase.rpc('open_pack', { _pack: pack.id }); if (r.error) throw r.error; return r.data as unknown as Pull; },
+    onSuccess: () => { refresh(); setStage('torn'); timer.current = setTimeout(() => { setStage('drop'); timer.current = setTimeout(() => setStage('reveal'), 220); }, 300); },
   });
-  const result = buy.data?.[pullIndex];
+  const result = buy.data;
   const pull = result ? { ...result, ...pack.blooks.find(b => b.id === result.id) } : undefined;
   const rarity = pull?.rarity ?? 'common';
   const fallback = rarityDefaults[rarity] ?? 'var(--muted)';
@@ -48,21 +48,21 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   const obtainedBlook = pack.blooks.find(b => b.id === pull?.id);
   const variables = { '--glow': glow, '--glow-end': rarityEnd, '--rarity-paint': rarityPaint(colors?.[rarity], fallback), '--rarity-stroke': rarityStroke(colors?.[rarity], fallback), '--pack-start': safeColor(pack.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(pack.gradient_end, 'var(--market-end)') } as CSSProperties;
   function crack() {
-    if (stage !== 'ready') return;
-    setStage('torn');
-    timer.current = setTimeout(() => { setStage('drop'); timer.current = setTimeout(() => setStage('reveal'), 220); }, 300);
+    if (stage !== 'ready' || buy.isPending) return;
+    buy.mutate();
   }
-  const finalReveal = stage === 'reveal' && pullIndex + 1 >= (buy.data?.length ?? 0);
+  const finalReveal = stage === 'reveal' && pullIndex + 1 >= quantity;
   function advance() {
     if (stage !== 'reveal') return;
     if (finalReveal) onClose();
-    else { setPullIndex(i => i + 1); setStage('ready'); }
+    else { setPullIndex(i => i + 1); buy.reset(); setStage('ready'); }
   }
 
-  return <Dialog open onOpenChange={open => { if (!open && !buy.isPending && (stage === 'confirm' || finalReveal)) onClose(); }}>
+  const canExit = !buy.isPending && (stage === 'confirm' || stage === 'ready' || stage === 'reveal');
+  return <Dialog open onOpenChange={open => { if (!open && canExit) onClose(); }}>
     <DialogContent ref={scene} aria-describedby={undefined} className={stage === 'confirm' ? 'pack-confirm' : `pack-stage ${stage === 'drop' || stage === 'reveal' ? 'pack-celebrating' : ''}`} style={variables}
-      onPointerDownOutside={e => { if (stage === 'reveal') { e.preventDefault(); advance(); } else if (buy.isPending || stage !== 'confirm') e.preventDefault(); }}
-      onEscapeKeyDown={e => { if (buy.isPending || (stage !== 'confirm' && !finalReveal)) e.preventDefault(); }}>
+      onPointerDownOutside={e => { if (!canExit) e.preventDefault(); }}
+      onEscapeKeyDown={e => { if (!canExit) e.preventDefault(); }}>
       <DialogTitle className="sr-only">{stage === 'confirm' ? pack.name : `Opening ${pack.name}`}</DialogTitle>
       {stage === 'confirm' ? <>
         <div className="pack-preview market-pack-art">
@@ -92,7 +92,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
           <Button variant="secondary" size="icon" aria-label="Reset purchase quantity" disabled={buy.isPending} onClick={() => setQuantity(1)}><RotateCw /></Button>
         </div>
         {buy.error && <p role="alert" className="text-destructive">{buy.error.message}</p>}
-        <Button disabled={buy.isPending || !validQuantity(quantity) || tokens < cost || !pack.blooks.length} onClick={() => buy.mutate()} className="pack-buy">{buy.isPending ? 'Purchasing…' : <>Buy {quantity} for <img src={tokenIcon.url} alt="" className="size-6 object-contain" />{cost}</>}</Button>
+        <Button disabled={!validQuantity(quantity) || tokens < cost || !pack.blooks.length} onClick={() => setStage('ready')} className="pack-buy">Prepare {quantity} for <img src={tokenIcon.url} alt="" className="size-6 object-contain" />{cost}</Button>
         {tokens < cost && <p className="mt-2 text-sm text-muted-foreground">Not enough tokens</p>}
         </div>
       </> : <>
@@ -103,9 +103,11 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
           <div key={`unbox-${pullIndex}`} className={`pack-unbox ${stage !== 'ready' ? 'torn pack-unbox-peek' : ''} ${stage === 'drop' ? 'pack-unbox-cover-drop' : ''}`}>
             {pull && <BlookArt src={pull.image_url ?? null} alt="" className="pack-unbox-blook" />}
             {(['top', 'bot'] as const).map(h => <div key={h} aria-hidden className={`pack-unbox-half pack-unbox-half-${h}`}><BlookArt src={pack.image_url} alt="" className="size-full" />{!pack.image_url && <span className="font-display text-3xl">{pack.name}</span>}</div>)}
-            <Button variant="ghost" type="button" id="pack-unbox-click-layer" className="pack-unbox-click-layer" onClick={crack} disabled={stage !== 'ready'} aria-label={`Open ${pack.name}`} />
+            <Button variant="ghost" type="button" id="pack-unbox-click-layer" className="pack-unbox-click-layer" onClick={crack} disabled={stage !== 'ready' || buy.isPending} aria-label={`Open ${pack.name}`} />
           </div>
+          {buy.error && <p role="alert" className="text-destructive">{buy.error.message}</p>}
         </div>}
+        {(stage === 'ready' || (stage === 'reveal' && !finalReveal)) && <Button variant="ghost" size="icon" className="absolute right-4 top-4 z-10" aria-label="Stop opening packs" onClick={onClose} disabled={buy.isPending}><X /></Button>}
         {stage === 'reveal' && <Button variant="ghost" type="button" id="pack-unbox-dismiss-layer" className="pack-unbox-dismiss-layer" aria-label={finalReveal ? 'Close pack result' : 'Next pack'} onClick={advance} />}
         {stage === 'reveal' && pull && <div key={`result-${pullIndex}`} className="pack-result pack-reveal-card" aria-live="polite">
           <BlookArt src={pull.image_url ?? null} alt={pull.name} className="pack-reveal size-56" />

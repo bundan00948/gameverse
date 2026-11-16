@@ -23,6 +23,7 @@ import { accountStatus } from '@/lib/account-safety.functions';
 import { activeBan } from '@/lib/account-safety';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { NewsPopup } from '@/features/mail/news-popup';
 
 function NotFoundComponent() {
   return (
@@ -207,7 +208,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <SessionProvider user={user}><Outlet /></SessionProvider>
+      <SessionProvider user={user}><Outlet />{user && !banNotice && <NewsPopup />}</SessionProvider>
       <Dialog open={banNotice !== null} onOpenChange={open => { if (!open) setBanNotice(null); }}><DialogContent><DialogHeader><DialogTitle>Account banned</DialogTitle><DialogDescription>{banNotice}</DialogDescription></DialogHeader><p className="text-sm text-muted-foreground">You have been signed out. Contact staff if you believe this is a mistake.</p><Button onClick={() => setBanNotice(null)}>Close</Button></DialogContent></Dialog>
     </QueryClientProvider>
   );

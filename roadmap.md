@@ -1,5 +1,9 @@
 # Roadmap
 
+- [x] Charge and grant only clicked packs; verified three selected, one opened costs 25 tokens, unopened queue costs nothing.
+- [x] Add gradient news mentions, polls, Q&A and dismissible login popups; verified vote/answer/reply readback and persistent dismissal; temporary news removed.
+- [ ] Publish pack and news updates after final checks.
+
 - [x] Speed pack tearing/reveal, remove opening instructions and sale/Market buttons, and allow full-screen result dismissal; verified real purchases on desktop/phone and sequential-pull tests.
 
 - [x] Record every ban and saved admin action with actor, target and duration; protected Admin Log verified signed-in with mission insert/delete and temporary 24-hour ban/unban; test content removed, 47 regression tests passed

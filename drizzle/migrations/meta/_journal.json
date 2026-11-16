@@ -218,6 +218,20 @@
       "when": 1794829460796,
       "tag": "0030_sanitize_admin_audit_details",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1794872074226,
+      "tag": "0031_interactive_news",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1794872586927,
+      "tag": "0032_validate_news_options",
+      "breakpoints": true
     }
   ]
 }

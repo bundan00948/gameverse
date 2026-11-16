@@ -438,6 +438,9 @@ export type Database = {
           id: string
           image_url: string | null
           kind: string
+          poll_options: string[]
+          popup: boolean
+          question_enabled: boolean
           title: string
           user_id: string | null
         }
@@ -447,6 +450,9 @@ export type Database = {
           id?: string
           image_url?: string | null
           kind?: string
+          poll_options?: string[]
+          popup?: boolean
+          question_enabled?: boolean
           title: string
           user_id?: string | null
         }
@@ -456,6 +462,9 @@ export type Database = {
           id?: string
           image_url?: string | null
           kind?: string
+          poll_options?: string[]
+          popup?: boolean
+          question_enabled?: boolean
           title?: string
           user_id?: string | null
         }
@@ -554,6 +563,75 @@ export type Database = {
           title?: string
         }
         Relationships: []
+      }
+      news_popup_dismissals: {
+        Row: {
+          mail_id: string
+          user_id: string
+        }
+        Insert: {
+          mail_id: string
+          user_id: string
+        }
+        Update: {
+          mail_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_popup_dismissals_mail_id_fkey"
+            columns: ["mail_id"]
+            isOneToOne: false
+            referencedRelation: "mail"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "news_popup_dismissals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      news_responses: {
+        Row: {
+          answer: string
+          choice: number | null
+          mail_id: string
+          reply: string
+          user_id: string
+        }
+        Insert: {
+          answer?: string
+          choice?: number | null
+          mail_id: string
+          reply?: string
+          user_id: string
+        }
+        Update: {
+          answer?: string
+          choice?: number | null
+          mail_id?: string
+          reply?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_responses_mail_id_fkey"
+            columns: ["mail_id"]
+            isOneToOne: false
+            referencedRelation: "mail"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "news_responses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notifications: {
         Row: {
@@ -954,6 +1032,20 @@ export type Database = {
       mission_progress: { Args: { _kind: string }; Returns: number }
       my_permissions: { Args: never; Returns: string[] }
       new_player_code: { Args: { _year: number }; Returns: string }
+      news_poll_totals: {
+        Args: { _mail: string }
+        Returns: {
+          choice: number
+          votes: number
+        }[]
+      }
+      news_role_colors: {
+        Args: never
+        Returns: {
+          colors: string[]
+          name: string
+        }[]
+      }
       open_pack: { Args: { _pack: string }; Returns: Json }
       open_packs: { Args: { _pack: string; _quantity: number }; Returns: Json }
       player_avatars: {

@@ -42,10 +42,11 @@ use the editor.
 - Store Market appearance on pack rows and rarity colors/badge image mappings in admin-protected market_settings; derive validated gradient paint and solid endpoints separately so color-mix and celebration effects stay valid, and share badge reads between admin previews and inventory.
 - Share rarity-first sorting across pack catalogs, drop rates and inventory; keep full admin catalogs alphabetical to preserve their independent browsing contract.
 - Role text motion uses a stylesheet token disabled by reduced-motion preferences, so every shared identity display animates consistently without per-frame JavaScript.
-- Quantity purchases use one authenticated atomic database function with a wallet row lock; purchased results are revealed sequentially without additional charges.
+- Multi-pack selection is an uncharged opening queue; each pack click calls atomic open_pack with a wallet row lock, so leaving never charges or grants unopened packs.
 - Currency displays import the canonical token asset used by Stats so Market prices, purchases, rewards and wallet displays stay visually consistent.
 - Pack opening stays in one portal dialog with explicit viewport positioning and state-specific centering with transitions disabled, preventing purchase-to-opening shifts; block accidental dismissal until purchased pulls are revealed.
-- Pack opening uses a 300ms hinged top peel and 220ms cover release; the full-screen result action advances prepaid pulls before closing, so click-anywhere dismissal cannot skip ownership feedback. Result chances reuse the boosted catalog weights shown in pack rates.
+- Pack opening uses a 300ms hinged top peel and 220ms cover release; block dismissal only during payment and reveal animation. Result chances reuse the boosted catalog weights shown in pack rates.
+- News renders rarity/role mentions as safe React spans; polls and private Q&A use validated owner/staff RLS, while root-mounted announcements persist per-player dismissals.
 - Blooks use nullable pack assignments with ON DELETE SET NULL; query the full catalog for admin and inventory so unassigned blooks and owned copies remain visible.
 - Blook editors and weighted draws use the decimal drop_weight column; query aliases preserve display APIs and a legacy-write trigger supports older published clients without rounding fractional draws.
 - Admin sections use validated tab search state and mount only the selected panel; the legacy Blooks URL redirects to its integrated admin tab.
