@@ -45,6 +45,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
   const { data: boosts } = useBoostQuery(boostsOptions());
   const boosted = (b: Blook) => b.weight * boostFactor(boosts, pack.id, b.rarity);
   const total = pack.blooks.reduce((s, b) => s + boosted(b), 0) || 1;
+  const obtainedBlook = pack.blooks.find(b => b.id === pull?.id);
   const variables = { '--glow': glow, '--glow-end': rarityEnd, '--rarity-paint': rarityPaint(colors?.[rarity], fallback), '--rarity-stroke': rarityStroke(colors?.[rarity], fallback), '--pack-start': safeColor(pack.gradient_start, 'var(--market-start)'), '--pack-end': safeColor(pack.gradient_end, 'var(--market-end)') } as CSSProperties;
   function crack() {
     if (stage !== 'ready') return;
@@ -109,6 +110,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
         {stage === 'reveal' && pull && <div key={`result-${pullIndex}`} className="pack-result pack-reveal-card" aria-live="polite">
           <BlookArt src={pull.image_url ?? null} alt={pull.name} className="pack-reveal size-56" />
           <h2 className="mt-6 font-display text-4xl">{pull.name}</h2><span className="rarity-text mt-2">{pull.rarity}</span>
+          {obtainedBlook && <p className="mt-3 text-lg font-extrabold text-market-foreground">Chance: {dropChanceLabel(boosted(obtainedBlook), total)}</p>}
         </div>}
       </>}
     </DialogContent>

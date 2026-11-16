@@ -306,7 +306,7 @@
 .pack-drop-rates { display: flex; flex-direction: column; gap: calc(var(--spacing) * 1.5); width: 100%; height: var(--pack-preview-height); overflow-y: auto; padding: calc(var(--spacing) * 2); background: color-mix(in srgb, var(--pack-start) 25%, var(--pedestal)); }
 .pack-drop-rates li { display: flex; align-items: center; gap: calc(var(--spacing) * 2); flex-shrink: 0; font-size: var(--text-sm); color: var(--market-foreground); }
 .pack-drop-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: bold; }
-.pack-drop-rates .rarity-text { font-size: calc((var(--text-xs) + 2px) * 1.5); }
+.pack-drop-rates .rarity-text { font-size: calc((var(--text-xs) + 2px) * 1.5 * .7); }
 .pack-drop-chance { width: calc(var(--spacing) * 11); flex-shrink: 0; text-align: right; font-weight: bold; }
 .pack-quantity { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--spacing) * 3); margin-top: auto; padding-top: calc(var(--spacing) * 5); font-size: var(--text-lg); font-weight: bold; }
 .pack-quantity input { width: calc(var(--spacing) * 16); border: 3px solid var(--surface-border); border-radius: var(--radius); padding: calc(var(--spacing) * 1.5); background: var(--glass); text-align: center; }
@@ -413,8 +413,8 @@
 .pack-unbox-peek .pack-unbox-blook { opacity: 1; }
 .pack-unbox-cover-drop .pack-unbox-blook { clip-path: inset(0); animation: packBlookRevealPop .22s cubic-bezier(.2,.8,.3,1) forwards; }
 .pack-unbox-half { position: absolute; inset: 0; z-index: 2; padding: 0; border-radius: 0; background: transparent; box-shadow: none; }
-.pack-unbox-half-top { clip-path: polygon(0 0,100% 0,100% 38%,90% 36%,80% 40%,70% 36%,60% 40%,50% 36%,40% 40%,30% 36%,20% 40%,10% 36%,0 38%); transform-origin: 50% 38%; }
-.pack-unbox-half-bot { clip-path: polygon(0 38%,10% 36%,20% 40%,30% 36%,40% 40%,50% 36%,60% 40%,70% 36%,80% 40%,90% 36%,100% 38%,100% 100%,0 100%); transform-origin: 50% 100%; }
+.pack-unbox-half-top { clip-path: inset(0 0 62% 0); transform-origin: 50% 38%; }
+.pack-unbox-half-bot { clip-path: inset(38% 0 0 0); transform-origin: 50% 100%; }
 .torn .pack-unbox-half-top { animation: packRipTopFlap .3s cubic-bezier(.3,.6,.4,1) forwards; }
 .pack-unbox-cover-drop .pack-unbox-half-bot { animation: packCoverFallAway .22s ease-in forwards; }
 .pack-unbox-click-layer { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 6; cursor: pointer; background: transparent; border: 0; box-shadow: none; border-radius: var(--market-radius); -webkit-tap-highlight-color: transparent; }
@@ -424,10 +424,10 @@
 .pack-bg-rip-flash-dark { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at center, transparent 10%, oklch(0 0 0 / .75) 75%); animation: packRipFlash .7s ease-out forwards; }
 .pack-reveal-card { pointer-events: none; animation: packRevealCardIn .25s cubic-bezier(.2,.8,.3,1) both; }
 @keyframes packRipTopFlap {
-  0% { transform: translate(0, 0) rotate(0) scale(1); opacity: 1; }
-  25% { transform: translate(-3%, -4%) rotate(-5deg); opacity: 1; }
-  60% { transform: translate(12%, -22%) rotate(12deg); opacity: 1; }
-  100% { transform: translate(65%, -65%) rotate(32deg); opacity: 0; }
+  0% { transform: translateY(0) rotateX(0); opacity: 1; }
+  30% { transform: translateY(-2%) rotateX(-45deg); opacity: 1; }
+  65% { transform: translateY(-9%) rotateX(-120deg); opacity: 1; }
+  100% { transform: translateY(-30%) rotateX(-170deg); opacity: 0; }
 }
 @keyframes packCoverFallAway {
   0% { transform: translateY(0) rotate(0) scale(1); opacity: 1; filter: brightness(1); }

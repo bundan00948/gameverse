@@ -45,7 +45,7 @@ use the editor.
 - Quantity purchases use one authenticated atomic database function with a wallet row lock; purchased results are revealed sequentially without additional charges.
 - Currency displays import the canonical token asset used by Stats so Market prices, purchases, rewards and wallet displays stay visually consistent.
 - Pack opening stays in one portal dialog with explicit viewport positioning and state-specific centering with transitions disabled, preventing purchase-to-opening shifts; block accidental dismissal until purchased pulls are revealed.
-- Pack tearing uses a 300ms tear and 220ms cover release; the full-screen result action advances prepaid pulls before closing, so click-anywhere dismissal cannot skip ownership feedback.
+- Pack opening uses a 300ms hinged top peel and 220ms cover release; the full-screen result action advances prepaid pulls before closing, so click-anywhere dismissal cannot skip ownership feedback. Result chances reuse the boosted catalog weights shown in pack rates.
 - Blooks use nullable pack assignments with ON DELETE SET NULL; query the full catalog for admin and inventory so unassigned blooks and owned copies remain visible.
 - Blook editors and weighted draws use the decimal drop_weight column; query aliases preserve display APIs and a legacy-write trigger supports older published clients without rounding fractional draws.
 - Admin sections use validated tab search state and mount only the selected panel; the legacy Blooks URL redirects to its integrated admin tab.
