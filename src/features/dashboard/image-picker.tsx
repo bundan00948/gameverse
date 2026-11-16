@@ -12,6 +12,8 @@ export function ImagePicker({ value, label, onChange }: ImagePickerProps) {
       const path = `${crypto.randomUUID()}.${file.name.split('.').pop() || 'png'}`;
       const up = await supabase.storage.from('art').upload(path, file, { contentType: file.type });
       if (up.error) throw up.error;
+      const audit = await supabase.rpc('audit_admin_upload', { _path: path });
+      if (audit.error) throw new Error('Picture uploaded, but its activity record failed. Please retry.');
       const signed = await supabase.storage.from('art').createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
       if (signed.error) throw signed.error;
       onChange(signed.data.signedUrl);

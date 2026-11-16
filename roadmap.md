@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Record every ban and saved admin action with actor, target and duration; protected Admin Log verified signed-in with mission insert/delete and temporary 24-hour ban/unban; test content removed, 47 regression tests passed
+
 - [x] Fix mailbox viewport positioning and scrolling; verified signed-in desktop and 390/320px phones, message images, filters, close/reopen and Escape; publishing requested after checks
 
 - [x] Add selectable 24/48/72-hour, 7-day and 30-day login links; preserve two-active limit

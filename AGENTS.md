@@ -30,6 +30,7 @@ use the editor.
 <!-- LOVABLE:END -->
 
 ## App architecture
+- Admin history is append-only: database triggers audit saved panel changes, request-scoped privileged clients carry verified actor IDs, and auth-admin operations record safe requests/results without passwords; log reads use caller RLS and staff-tier limits.
 - Keep privileged admin helpers in `src/lib/admin.server.ts`, imported only inside server-function handlers, so browser bundles never reach server-only headers or clients.
 - The library barrel imports its canonical stylesheet so attached consumers receive theme tokens and base styles when importing the library.
 - All signed-in pages share the unframed GameVerse shell and semantic main landmark; appearance is persisted locally through the shared theme utility and selected in Settings, keeping page data loaders independent.

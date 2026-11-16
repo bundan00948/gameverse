@@ -41,6 +41,45 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_name: string
+          created_at: string
+          details: Json
+          id: string
+          resource: string
+          resource_id: string | null
+          target_name: string
+          target_user_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_name: string
+          created_at?: string
+          details?: Json
+          id?: string
+          resource: string
+          resource_id?: string | null
+          target_name?: string
+          target_user_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_name?: string
+          created_at?: string
+          details?: Json
+          id?: string
+          resource?: string
+          resource_id?: string | null
+          target_name?: string
+          target_user_id?: string | null
+        }
+        Relationships: []
+      }
       auth_links: {
         Row: {
           created_at: string
@@ -855,6 +894,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      audit_admin_upload: { Args: { _path: string }; Returns: undefined }
       bazaar_bid: {
         Args: { _amount: number; _listing: string }
         Returns: undefined
@@ -961,6 +1001,7 @@ export type Database = {
       purchase_banner: { Args: { _banner: string }; Returns: string }
       record_play: { Args: { _game: string }; Returns: undefined }
       sacrifice_blook: { Args: { _blook: string }; Returns: Json }
+      safe_audit_details: { Args: { _data: Json }; Returns: Json }
       sell_blook: { Args: { _blook: string }; Returns: number }
       settle_auctions: { Args: never; Returns: number }
       staff_tier: { Args: { _user_id: string }; Returns: number }

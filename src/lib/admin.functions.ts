@@ -47,7 +47,7 @@ export const updateUser = createServerFn({ method: 'POST' })
     tokens: z.number().int().min(0).max(1_000_000).optional(), password: z.string().min(6).max(72).optional(), admin: z.boolean().optional(),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    const { assertAdmin, hasPerm, assertLowerTier } = await import('./admin.server');
+    const { assertAdmin, hasPerm, assertLowerTier, recordAdminEvent } = await import('./admin.server');
     const ctx = context as unknown as Ctx;
     for (const permission of requiredPlayerPermissions(data)) if (!await hasPerm(ctx, permission)) throw new Error('Permission denied');
     const admin = await assertAdmin(ctx, ['players.view', ...requiredPlayerPermissions(data)]);
@@ -59,7 +59,9 @@ export const updateUser = createServerFn({ method: 'POST' })
     const callerOwner = await context.supabase.rpc('is_site_owner', { _user_id: context.userId });
     if (owner.error || callerOwner.error || (owner.data && !callerOwner.data)) throw new Error('Only the Owner can change this account');
     if (data.password !== undefined || data.username !== undefined) {
+      await recordAdminEvent(admin, context.userId, 'account_update_requested', data.id, { password_reset: data.password !== undefined, username_update: data.username !== undefined });
       const r = await admin.auth.admin.updateUserById(data.id, { ...(data.password ? { password: data.password } : {}), ...(data.username !== undefined ? { user_metadata: { username: data.username } } : {}) });
+      await recordAdminEvent(admin, context.userId, r.error ? 'account_update_failed' : 'account_updated', data.id, { password_reset: data.password !== undefined, username_update: data.username !== undefined });
       if (r.error) throw new Error(/weak|pwned|leak|breach|known/i.test(r.error.message) ? 'That password is too common or has appeared in a data leak — choose a stronger one.' : `Could not update account: ${r.error.message}`);
     }
     if (data.username !== undefined || data.displayName !== undefined) {
@@ -78,13 +80,15 @@ export const deleteUser = createServerFn({ method: 'POST' })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
-    const { assertAdmin, assertLowerTier } = await import('./admin.server');
+    const { assertAdmin, assertLowerTier, recordAdminEvent } = await import('./admin.server');
     const admin = await assertAdmin(context as unknown as Ctx, ['players.delete']);
     if (data.id === (context as unknown as Ctx).userId) throw new Error("You can't delete yourself");
     await assertLowerTier(admin, context.userId, data.id);
     const owner = await admin.rpc('is_site_owner', { _user_id: data.id });
     if (owner.error || owner.data) throw new Error('The Owner account cannot be deleted');
+    await recordAdminEvent(admin, context.userId, 'account_delete_requested', data.id);
     const { error } = await admin.auth.admin.deleteUser(data.id);
+    await recordAdminEvent(admin, context.userId, error ? 'account_delete_failed' : 'account_deleted', data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -130,6 +134,19 @@ export const listGameLog = createServerFn({ method: 'GET' }).middleware([require
     if (r.error) throw new Error('Could not load activity');
     const profiles = await admin.from('profiles').select('id,username,code_id');
     return { count: r.count ?? 0, ips, rows: (r.data ?? []).map(row => { const p = profiles.data?.find(p => p.id===row.user_id); return { id: row.id, kind: row.kind, title: row.game_title, created: row.created_at, player: p?.username || 'Deleted player', code: p?.code_id ?? null, ip: ips && 'ip_address' in row ? String(row.ip_address ?? '') || null : null }; }) };
+  });
+
+export const listAdminLog = createServerFn({ method: 'GET' }).middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ page: z.number().int().min(0).max(10000), kind: z.enum(['all', 'bans']) }).parse(d))
+  .handler(async ({ context, data }) => {
+    const { assertAdmin } = await import('./admin.server');
+    await assertAdmin(context as unknown as Ctx, ['logs.view']);
+    // Read as the caller so audit RLS also enforces existing staff-tier boundaries.
+    let q = context.supabase.from('admin_audit_log').select('*', { count: 'exact' });
+    if (data.kind === 'bans') q = q.in('action', ['ban', 'unban']);
+    const r = await q.order('created_at', { ascending: false }).order('id').range(data.page * 50, data.page * 50 + 49);
+    if (r.error) throw new Error('Could not load admin activity');
+    return { rows: r.data, count: r.count ?? 0 };
   });
 
 export const getUserInventory = createServerFn({ method: 'GET' }).middleware([requireSupabaseAuth])

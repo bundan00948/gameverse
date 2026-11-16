@@ -9,7 +9,7 @@ export const permissionList = [
   { key: 'players.delete', label: 'Delete player accounts' },
   { key: 'players.ban', label: 'Ban / unban accounts' },
   { key: 'players.inventory', label: 'Edit player inventories' },
-  { key: 'logs.view', label: 'View game / registration logs' },
+  { key: 'logs.view', label: 'View admin / ban / game / registration logs' },
   { key: 'ips.view', label: 'View IP addresses (Owner grants)' },
   { key: 'shop', label: 'Market & packs' },
   { key: 'blooks', label: 'Blooks' },

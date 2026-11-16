@@ -14,7 +14,8 @@ import { PageError, PageTitle, meta } from '@/features/dashboard/page';
 import { ImagePicker } from '@/features/dashboard/image-picker';
 import { Button } from '@/components/ui/button';
 import { rarityColors, rarityDefaults, rarityColorValue, rarityPaint, rarityBadgeImages } from '@/features/dashboard/appearance';
-import { listUsers, getUserInventory, setUserBlook, updateUser, deleteUser, setAccountBan, listAccountBans, listGameLog } from '@/lib/admin.functions';
+import { listUsers, getUserInventory, setUserBlook, updateUser, deleteUser, setAccountBan, listAccountBans, listGameLog, listAdminLog } from '@/lib/admin.functions';
+import { auditDuration, auditChangedFields } from '@/lib/admin-audit';
 import { BannersPanel } from '@/features/admin/banners-panel';
 import { CreditsPanel } from '@/features/admin/credits-panel';
 import { MailPanel } from '@/features/admin/mail-panel';
@@ -34,9 +35,9 @@ export const Route = createFileRoute('/_authenticated/admin')({
 
 const input = 'mt-1 w-full min-w-0 rounded-md border border-surface-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const btn = 'inline-flex items-center gap-2 rounded-md px-3 py-2 text-xs font-bold disabled:opacity-50';
-const tabs = ['Users', 'Roles', 'Badges', 'Shop', 'Banners', 'Blooks', 'Games', 'Missions', 'Credits', 'Mail', 'Game Log'] as const;
-const tabIcons = { Users: UsersIcon, Roles: Crown, Badges: Award, Shop: Store, Banners: Store, Blooks: Backpack, Games: Gamepad2, Missions: Target, Credits: Award, Mail: Award, 'Game Log': Shield };
-const tabPerm = { Users: 'players.view', Roles: 'roles', Badges: 'badges', Shop: 'shop', Banners: 'shop', Blooks: 'blooks', Games: 'games', Missions: 'missions', Credits: 'roles', Mail: 'mail', 'Game Log': 'logs.view' } as const;
+const tabs = ['Users', 'Roles', 'Badges', 'Shop', 'Banners', 'Blooks', 'Games', 'Missions', 'Credits', 'Mail', 'Game Log', 'Admin Log'] as const;
+const tabIcons = { Users: UsersIcon, Roles: Crown, Badges: Award, Shop: Store, Banners: Store, Blooks: Backpack, Games: Gamepad2, Missions: Target, Credits: Award, Mail: Award, 'Game Log': Shield, 'Admin Log': Shield };
+const tabPerm = { Users: 'players.view', Roles: 'roles', Badges: 'badges', Shop: 'shop', Banners: 'shop', Blooks: 'blooks', Games: 'games', Missions: 'missions', Credits: 'roles', Mail: 'mail', 'Game Log': 'logs.view', 'Admin Log': 'logs.view' } as const;
 
 function Admin() {
   const { data: perms = [], isLoading } = useQuery(permissionsOptions());
@@ -50,7 +51,7 @@ function Admin() {
   return <DashboardShell bare><div className="staff-workspace">
     <PageTitle kicker="Staff" title="Admin Panel" />
     <nav aria-label="Admin sections" className="staff-tabs">{allowed.map(t => { const Icon = tabIcons[t]; return <Button key={t} type="button" variant={tab === t ? 'default' : 'ghost'} aria-pressed={tab === t} onClick={() => navigate({ search: { tab: t }, replace: true })} className="gap-2 font-bold"><Icon />{t}</Button>; })}</nav>
-    <div className="mt-6">{tab === 'Mail' ? <MailPanel /> : tab === 'Credits' ? <CreditsPanel /> : tab === 'Game Log' ? <GameLog /> : tab === 'Banners' ? <BannersPanel /> : tab === 'Blooks' ? <BlooksPanel /> : tab === 'Users' ? <Users canGrantStaff={isFullAdmin} perms={perms} /> : tab === 'Roles' ? <RolesPanel /> : tab === 'Badges' ? <BadgesPanel /> : tab === 'Shop' ? <Shop /> : tab === 'Games' ? <Table title="Games" table="games" fields={['title', 'description', 'play_url']} blank={{ emoji: '', title: 'New game', description: '', play_url: '' }} /> : <Table title="Missions" table="missions" fields={['title', 'kind', 'goal', 'reward']} blank={{ title: 'New mission', kind: 'plays', goal: 5, reward: 10 }} />}</div>
+    <div className="mt-6">{tab === 'Admin Log' ? <AdminLog /> : tab === 'Mail' ? <MailPanel /> : tab === 'Credits' ? <CreditsPanel /> : tab === 'Game Log' ? <GameLog /> : tab === 'Banners' ? <BannersPanel /> : tab === 'Blooks' ? <BlooksPanel /> : tab === 'Users' ? <Users canGrantStaff={isFullAdmin} perms={perms} /> : tab === 'Roles' ? <RolesPanel /> : tab === 'Badges' ? <BadgesPanel /> : tab === 'Shop' ? <Shop /> : tab === 'Games' ? <Table title="Games" table="games" fields={['title', 'description', 'play_url']} blank={{ emoji: '', title: 'New game', description: '', play_url: '' }} /> : <Table title="Missions" table="missions" fields={['title', 'kind', 'goal', 'reward']} blank={{ title: 'New mission', kind: 'plays', goal: 5, reward: 10 }} />}</div>
   </div></DashboardShell>;
 }
 
@@ -210,4 +211,24 @@ function GameLog() {
   const fetch = useServerFn(listGameLog); const [page, setPage] = useState(0); const [kind, setKind] = useState<'all'|'game'|'register'>('all');
   const { data, error, isFetching, refetch } = useQuery({ queryKey: ['game-log', page, kind], queryFn: () => fetch({ data: { page, kind } }) });
   return <section><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="font-display text-2xl">Game Log</h2><div className="flex gap-2"><select aria-label="Activity type" value={kind} onChange={e => { setKind(e.target.value as typeof kind); setPage(0); }} className={input}><option value="all">All activity</option><option value="game">Games opened</option><option value="register">Registrations</option></select><Button variant="outline" disabled={isFetching} onClick={() => void refetch()}>Refresh</Button></div></div>{error && <p role="alert" className="text-destructive">{error.message}</p>}<div className="mt-5 overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="border-b border-surface-border"><th className="p-3">Time</th><th className="p-3">Player / ID</th><th className="p-3">Activity</th>{data?.ips && <th className="p-3">IP address</th>}</tr></thead><tbody>{data?.rows.map(r => <tr key={r.id} className="border-b border-surface-border"><td className="whitespace-nowrap p-3">{new Date(r.created).toLocaleString()}</td><td className="p-3">{r.player}<span className="block text-xs text-muted-foreground">{r.code}</span></td><td className="p-3">{r.kind==='game' ? r.title : 'Registered'}</td>{data.ips && <td className="p-3 font-mono">{r.ip || 'Unavailable'}</td>}</tr>)}</tbody></table></div>{data?.count===0 && <p className="py-8 text-muted-foreground">No activity recorded yet.</p>}<div className="mt-4 flex items-center gap-3"><Button variant="outline" disabled={!page || isFetching} onClick={() => setPage(p => p-1)}>Previous</Button><span className="text-sm">Page {page+1}</span><Button variant="outline" disabled={isFetching || (page+1)*50 >= (data?.count ?? 0)} onClick={() => setPage(p => p+1)}>Next</Button></div></section>;
+}
+
+function AdminLog() {
+  const load = useServerFn(listAdminLog);
+  const [page, setPage] = useState(0);
+  const [kind, setKind] = useState<'all' | 'bans'>('all');
+  const { data, error, isFetching, refetch } = useQuery({ queryKey: ['admin-log', page, kind], queryFn: () => load({ data: { page, kind } }) });
+  return <section aria-label="Admin activity history" className="space-y-5">
+    <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="font-display text-2xl">Admin Log</h2><div className="flex items-center gap-2">
+      <select aria-label="Admin activity type" className={input} value={kind} onChange={e => { setKind(e.target.value === 'bans' ? 'bans' : 'all'); setPage(0); }}><option value="all">All actions</option><option value="bans">Bans &amp; unbans</option></select>
+      <Button variant="outline" disabled={isFetching} onClick={() => void refetch()}>Refresh</Button>
+    </div></div>
+    {error && <p role="alert" className="text-destructive">{error.message}</p>}
+    <div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="border-b border-surface-border">{['Time', 'Admin', 'User / item', 'Action', 'Duration', 'Details'].map(h => <th key={h} scope="col" className="p-3">{h}</th>)}</tr></thead>
+      <tbody>{data?.rows.map(r => <tr key={r.id} className="border-b border-surface-border align-top"><td className="whitespace-nowrap p-3">{new Date(r.created_at).toLocaleString()}</td><td className="p-3 font-bold">{r.actor_name}</td><td className="p-3">{r.target_name || r.resource_id || '—'}<span className="block text-xs text-muted-foreground">{r.resource.replaceAll('_', ' ')}</span></td><td className="p-3 capitalize">{r.action.replaceAll('_', ' ')}</td><td className="whitespace-nowrap p-3">{auditDuration(r.details)}</td><td className="min-w-48 p-3"><details><summary className="cursor-pointer rounded-sm text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{auditChangedFields(r.details).join(', ').replaceAll('_', ' ') || 'Recorded'}</summary><pre className="mt-2 max-w-sm whitespace-pre-wrap break-words text-xs">{JSON.stringify(r.details, null, 2)}</pre></details></td></tr>)}</tbody>
+    </table></div>
+    {!data && !error && <p role="status" className="text-muted-foreground">Loading activity…</p>}
+    {data?.count === 0 && <p className="py-6 text-muted-foreground">No recorded actions.</p>}
+    <div className="flex items-center gap-3"><Button variant="outline" disabled={page === 0 || isFetching} onClick={() => setPage(p => p - 1)}>Previous</Button><span className="text-sm">Page {page + 1}</span><Button variant="outline" disabled={isFetching || (page + 1) * 50 >= (data?.count ?? 0)} onClick={() => setPage(p => p + 1)}>Next</Button></div>
+  </section>;
 }

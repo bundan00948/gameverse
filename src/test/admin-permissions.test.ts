@@ -7,11 +7,12 @@ vi.mock('@tanstack/react-start', () => ({ createServerFn: () => {
 vi.mock('@tanstack/react-start/server', () => ({ setResponseHeader: mocks.header }));
 vi.mock('@/integrations/supabase/auth-middleware', () => ({ requireSupabaseAuth: {} }));
 vi.mock('@/integrations/supabase/client.server', () => ({ supabaseAdmin: mocks.admin }));
-import { updateUser, deleteUser, setAccountBan, listGameLog } from '@/lib/admin.functions';
+import { updateUser, deleteUser, setAccountBan, listGameLog, listAdminLog } from '@/lib/admin.functions';
 type Invoke = (input: { data: Record<string, unknown>; context: { userId: string; supabase: { rpc: typeof mocks.rpc } } }) => Promise<unknown>;
 const invoke = (fn: unknown, data: Record<string, unknown>) => (fn as Invoke)({ data, context: { userId: 'staff', supabase: { rpc: mocks.rpc } } });
 beforeEach(() => { mocks.rpc.mockReset(); mocks.rpc.mockImplementation(async (name: string, args: { _perm?: string }) => ({ data: name==='has_permission' && args._perm==='players.view', error: null })); });
 describe('Server-side precise permissions', () => {
+  it('view-only staff cannot read admin history', async () => { await expect(invoke(listAdminLog, { page: 0, kind: 'all' })).rejects.toThrow('Staff only'); });
   it.each([
     ['profile', { username: 'Changed' }], ['tokens', { tokens: 500 }], ['password_reset', { password: 'ChangedPassword' }],
   ])('view-only staff cannot change %s', async (_permission, changes) => {
