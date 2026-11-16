@@ -81,8 +81,8 @@ function Inventory() {
         <div className="relative">
         <div className="mx-auto grid size-36 place-items-center text-6xl">{open.owned ? <BlookArt src={open.image_url} alt={open.name} className="size-32 text-7xl" /> : <span className="relative grid size-32 place-items-center">{open.image_url && <BlookArt src={open.image_url} alt="" aria-hidden className="blook-silhouette size-full" />}<Lock className="absolute size-12 text-foreground/85" /></span>}</div>
         <DialogTitle className="mt-5 font-display text-4xl">{open.owned ? open.name : 'Locked blook'}</DialogTitle>
-        <p className="mt-3 flex items-center justify-center gap-1.5">
-          {badges?.[open.rarity] ? <img aria-hidden="true" src={badges[open.rarity] ?? undefined} alt="" className="size-[2.275rem] object-contain" /> : <span aria-hidden="true" className="size-[2.275rem] [clip-path:polygon(50%_0%,63%_12%,80%_7%,85%_25%,100%_35%,92%_50%,100%_65%,85%_75%,80%_93%,63%_88%,50%_100%,37%_88%,20%_93%,15%_75%,0%_65%,8%_50%,0%_35%,15%_25%,20%_7%,37%_12%)]" style={{ background: rarityPaint(colors?.[open.rarity], rarityDefaults[open.rarity] ?? 'var(--secondary)') }} />}
+        <p className="mt-3 flex items-center justify-center gap-[9px]">
+          {badges?.[open.rarity] ? <img aria-hidden="true" src={badges[open.rarity] ?? undefined} alt="" className="size-[1.82rem] object-contain" /> : <span aria-hidden="true" className="size-[1.82rem] [clip-path:polygon(50%_0%,63%_12%,80%_7%,85%_25%,100%_35%,92%_50%,100%_65%,85%_75%,80%_93%,63%_88%,50%_100%,37%_88%,20%_93%,15%_75%,0%_65%,8%_50%,0%_35%,15%_25%,20%_7%,37%_12%)]" style={{ background: rarityPaint(colors?.[open.rarity], rarityDefaults[open.rarity] ?? 'var(--secondary)') }} />}
           <span className="rarity-text rarity-text-lg" style={{ '--rarity-paint': rarityPaint(colors?.[open.rarity], rarityDefaults[open.rarity] ?? 'var(--foreground)'), '--rarity-stroke': rarityStroke(colors?.[open.rarity], rarityDefaults[open.rarity] ?? 'var(--foreground)') } as CSSProperties}>{open.rarity}</span>
         </p>
         <dl className="mt-5 grid grid-cols-3 gap-3 text-base">
