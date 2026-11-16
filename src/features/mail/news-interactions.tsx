@@ -3,8 +3,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { usePlayer } from '@/features/account/session';
 import { Button } from '@/components/ui/button';
-export interface NewsInteractionsProps { id: string; options: string[]; question: boolean }
-export function NewsInteractions({ id, options, question }: NewsInteractionsProps) {
+export interface NewsInteractionsProps { id: string; options?: string[] | null; question?: boolean }
+export function NewsInteractions({ id, options: suppliedOptions, question = false }: NewsInteractionsProps) {
+ const options = suppliedOptions ?? [];
  const user = usePlayer(); const cache = useQueryClient(); const [answer,setAnswer] = useState('');
  const { data } = useQuery({ queryKey:['news-response',id,user?.id], enabled:!!user, queryFn:async () => { if (!user) return null; const r = await supabase.from('news_responses').select('choice,answer,reply').eq('mail_id',id).eq('user_id',user.id).maybeSingle(); if(r.error) throw r.error; return r.data; } });
  const { data: totals=[] } = useQuery({ queryKey:['news-totals',id], enabled:options.length>0, queryFn:async()=>{const r=await supabase.rpc('news_poll_totals',{_mail:id});if(r.error)throw r.error;return r.data;} });

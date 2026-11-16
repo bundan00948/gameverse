@@ -8,7 +8,7 @@ import { Dialog, DialogPortal, DialogOverlay, DialogTitle } from '@/components/u
 import { NewsText } from './news-text';
 import { NewsInteractions } from './news-interactions';
 
-export interface MailItem { id: string; user_id: string | null; kind: string; title: string; body: string; image_url: string | null; created_at: string; read: boolean; poll_options: string[]; question_enabled: boolean }
+export interface MailItem { id: string; user_id: string | null; kind: string; title: string; body: string; image_url: string | null; created_at: string; read: boolean; poll_options?: string[] | null; question_enabled?: boolean }
 export const mailOptions = () => queryOptions({ queryKey: ['mail'], staleTime: 20_000, refetchInterval: 30_000, refetchIntervalInBackground: false, queryFn: async (): Promise<MailItem[]> => {
   const id = await playerId();
   const [mail, reads] = await Promise.all([
@@ -65,7 +65,7 @@ export function Mailbox() {
                 <h3 className="mt-2.5 font-display text-xl leading-tight">{m.kind === 'system' ? <NewsText text={m.title} /> : m.title}</h3>
                 {m.image_url && <div className="mail-image"><img src={m.image_url} alt="" loading="lazy" /></div>}
                 {m.body && <p className="mt-2.5 whitespace-pre-line text-[14.5px] leading-relaxed text-foreground/85">{m.kind === 'system' ? <NewsText text={m.body} /> : m.body}</p>}
-                {m.kind === 'system' && (m.poll_options.length > 0 || m.question_enabled) && <NewsInteractions id={m.id} options={m.poll_options} question={m.question_enabled} />}
+                {m.kind === 'system' && ((m.poll_options?.length ?? 0) > 0 || m.question_enabled) && <NewsInteractions id={m.id} options={m.poll_options ?? []} question={m.question_enabled ?? false} />}
                 
               </article>; }); })()}
         </div>
