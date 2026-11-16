@@ -336,6 +336,7 @@
 .pack-result .pack-reveal { width: var(--pack-reveal-size); height: var(--pack-reveal-size); }
 .pack-result h2 { font-size: 47px; }
 .pack-result .rarity-text { font-size: 28.5px; }
+.pack-result-chance { font-size: calc(var(--text-lg) * 1.3); }
 /* Unlayered rules outrank Tailwind utilities, so the larger popup size needs its own compound selector. */
 .rarity-text.rarity-text-lg { font-size: 25.5px; }
 /* Rarity words are outlined Nunito text in their rarity gradient, with no pill container. */

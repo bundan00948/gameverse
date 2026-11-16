@@ -110,7 +110,7 @@ export function PackOpener({ pack, tokens, onClose }: PackOpenerProps) {
         {stage === 'reveal' && pull && <div key={`result-${pullIndex}`} className="pack-result pack-reveal-card" aria-live="polite">
           <BlookArt src={pull.image_url ?? null} alt={pull.name} className="pack-reveal size-56" />
           <h2 className="mt-6 font-display text-4xl">{pull.name}</h2><span className="rarity-text mt-2">{pull.rarity}</span>
-          {obtainedBlook && <p className="mt-3 text-lg font-extrabold text-market-foreground">Chance: {dropChanceLabel(boosted(obtainedBlook), total)}</p>}
+          {obtainedBlook && <p className="pack-result-chance mt-3 font-display text-market-foreground">Chance: {dropChanceLabel(boosted(obtainedBlook), total)}</p>}
         </div>}
       </>}
     </DialogContent>
